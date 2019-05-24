@@ -27,13 +27,18 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-activemq")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-integration")
+
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("de.codecentric:spring-boot-admin-starter-server")
+	implementation("de.codecentric:spring-boot-admin-starter-client")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
 	//implementation("org.apache.camel:camel-spring-boot-starter:2.24.0")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.30+")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.30+")
-	//implementation("org.jetbrains.kotlin:kotlinx-coroutines-core:1.2.1")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	runtime("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 dependencyManagement {
@@ -59,14 +64,9 @@ tasks {
 
 	bootRun {
 		dependsOn(composeUp)
-		jvmArgs = listOf("-Dspring.config.location=config/application.properties")
+		workingDir = project.projectDir
 	}
 	test {
 		dependsOn(composeUp)
-
-	}
-	dockerCompose {
-		//isRequiredBy(bootRun.get())
-		//isRequiredBy(test)
 	}
 }

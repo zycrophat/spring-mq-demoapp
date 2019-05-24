@@ -9,10 +9,12 @@ import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory
 import org.springframework.jms.config.JmsListenerContainerFactory
 import org.springframework.jms.connection.CachingConnectionFactory
+import org.springframework.transaction.annotation.EnableTransactionManagement
 import steffan.springmqdemoapp.util.Logging
 
 
 @Configuration
+@EnableTransactionManagement
 @EnableJms
 open class JmsConfiguration : Logging {
 
