@@ -45,11 +45,17 @@ dependencies {
 	//implementation("org.apache.camel:camel-spring-boot-starter:2.24.0")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.30+")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.30+")
-	runtime("com.fasterxml.jackson.module:jackson-module-kotlin")
+	//runtime("com.fasterxml.jackson.module:jackson-module-kotlin")
+	//implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
+	//implementation("com.fasterxml.jackson.module:jackson-module-jaxb-annotations")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-	compileOnly("javax.xml.bind:jaxb-api:2.3.1")
+	implementation("javax.xml.bind:jaxb-api:2.3.1")
+	implementation("org.glassfish.jaxb:jaxb-runtime:2.3.2")
+	implementation("org.springframework:spring-oxm")
+	runtime("org.springframework.boot:spring-boot-starter-jta-atomikos")
+
 	jaxb("org.glassfish.jaxb:jaxb-xjc:2.3.2")
 	jaxb("org.glassfish.jaxb:jaxb-runtime:2.3.2")
 	jaxb("javax.activation:activation:1.1")
