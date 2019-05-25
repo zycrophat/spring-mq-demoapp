@@ -118,6 +118,10 @@ tasks {
 		dependsOn(generateJaxb)
 	}
 
+	compileKotlin {
+		dependsOn(generateJaxb)
+	}
+
 	val idea by getting {
 		dependsOn(generateJaxb)
 	}
