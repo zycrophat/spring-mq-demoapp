@@ -1,3 +1,4 @@
+import org.apache.tools.ant.taskdefs.Ant
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -11,15 +12,23 @@ plugins {
 
 group = "steffan"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
+	jcenter()
 	mavenCentral()
 }
 
 extra["springBootAdminVersion"] = "2.1.5"
 
+val generatedJavaSrcPath = ProjectSettings.GENERATED_JAVA_SRC_PATH
+
+sourceSets {
+	getByName("main").java.srcDirs(generatedJavaSrcPath)
+}
+
+val jaxb = configurations.create("jaxb")
 dependencies {
 	api("org.slf4j:slf4j-api:1.7.26")
 	runtime("ch.qos.logback:logback-classic:1.2.3")
@@ -39,6 +48,11 @@ dependencies {
 	runtime("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	compileOnly("javax.xml.bind:jaxb-api:2.3.1")
+	jaxb("org.glassfish.jaxb:jaxb-xjc:2.3.2")
+	jaxb("org.glassfish.jaxb:jaxb-runtime:2.3.2")
+	jaxb("javax.activation:activation:1.1")
 }
 
 dependencyManagement {
@@ -68,5 +82,37 @@ tasks {
 	}
 	test {
 		dependsOn(composeUp)
+	}
+
+	val generateJaxb by creating {
+		description = "Converts xsds to classes"
+		val jaxbTargetDir = file(generatedJavaSrcPath)
+		val xsdDir = file("src/main/resources/steffan/springmqdemoapp/api/xsd")
+
+		inputs.dir(xsdDir)
+		outputs.dir(jaxbTargetDir)
+
+		doLast {
+			jaxbTargetDir.mkdirs()
+
+			ant.withGroovyBuilder {
+				"taskdef"("name" to "xjc", "classname" to "com.sun.tools.xjc.XJCTask", "classpath" to jaxb.asPath)
+				"xjc"("destdir" to "$jaxbTargetDir", "package" to "steffan.springmqdemoapp.api.messages") {
+					"schema"("dir" to "$xsdDir", "includes" to "*.xsd")
+				}
+			}
+		}
+	}
+
+	val cleanGeneratedSources by creating(Delete::class) {
+		delete(file(generatedJavaSrcPath))
+	}
+
+	val clean by getting {
+		dependsOn(cleanGeneratedSources)
+	}
+
+	val compileJava by getting {
+		dependsOn(generateJaxb)
 	}
 }

@@ -6,7 +6,7 @@ import kotlin.reflect.full.companionObject
 
 
 interface Logging
-inline fun <reified T : Logging> T.logger(): Logger = getLogger(getClassForLogging(T::class.java))
+inline fun <reified T : Logging>  T.logger(): Logger = getLogger(getClassForLogging(T::class.java))
 
 fun getLogger(forClass: Class<*>): Logger = LoggerFactory.getLogger(forClass)
 
