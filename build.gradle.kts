@@ -1,4 +1,3 @@
-import org.apache.tools.ant.taskdefs.Ant
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -42,12 +41,8 @@ dependencies {
 	implementation("de.codecentric:spring-boot-admin-starter-client")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 
-	//implementation("org.apache.camel:camel-spring-boot-starter:2.24.0")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.30+")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.30+")
-	//runtime("com.fasterxml.jackson.module:jackson-module-kotlin")
-	//implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
-	//implementation("com.fasterxml.jackson.module:jackson-module-jaxb-annotations")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
@@ -103,7 +98,7 @@ tasks {
 			jaxbTargetDir.mkdirs()
 
 			ant.withGroovyBuilder {
-				"taskdef"("name" to "xjc", "classname" to "com.sun.tools.xjc.XJCTask", "classpath" to jaxb.asPath)
+				"taskdef"("name" to "xjc", "classname" to "com.sun.tools.xjc.XJC2Task", "classpath" to jaxb.asPath)
 				"xjc"("destdir" to "$jaxbTargetDir", "package" to "steffan.springmqdemoapp.api.messages") {
 					"schema"("dir" to "$xsdDir", "includes" to "*.xsd")
 				}
@@ -115,11 +110,15 @@ tasks {
 		delete(file(generatedJavaSrcPath))
 	}
 
-	val clean by getting {
+	clean {
 		dependsOn(cleanGeneratedSources)
 	}
 
-	val compileJava by getting {
+	compileJava {
+		dependsOn(generateJaxb)
+	}
+
+	val idea by getting {
 		dependsOn(generateJaxb)
 	}
 }
