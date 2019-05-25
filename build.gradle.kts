@@ -19,6 +19,10 @@ repositories {
 	mavenCentral()
 }
 
+springBoot {
+	buildInfo()
+}
+
 extra["springBootAdminVersion"] = "2.1.5"
 
 val generatedJavaSrcPath = ProjectSettings.GENERATED_JAVA_SRC_PATH
@@ -125,4 +129,22 @@ tasks {
 	val idea by getting {
 		dependsOn(generateJaxb)
 	}
+
+	bootJar {
+		launchScript()
+	}
+
+	val copyConfig by creating(Copy::class) {
+		from("config")
+		into("$buildDir/libs/config")
+
+		dependsOn(bootJar)
+	}
+
+	assemble {
+		dependsOn(copyConfig)
+	}
+
 }
+
+
