@@ -2,6 +2,7 @@ package steffan.springmqdemoapp.app.config
 
 
 import org.apache.activemq.ActiveMQConnectionFactory
+import org.reflections.Reflections
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer
 import org.springframework.context.annotation.Bean
@@ -14,6 +15,7 @@ import org.springframework.jms.support.converter.MarshallingMessageConverter
 import org.springframework.oxm.jaxb.Jaxb2Marshaller
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import steffan.springmqdemoapp.util.Logging
+import javax.xml.bind.annotation.XmlRootElement
 
 
 @Configuration
@@ -57,7 +59,10 @@ open class JmsConfiguration : Logging {
     @Bean
     open fun jaxb2marshaller() : Jaxb2Marshaller {
         val marshaller = Jaxb2Marshaller()
-        marshaller.setClassesToBeBound(steffan.springmqdemoapp.api.messages.Doc::class.java)
+        val reflections = Reflections("steffan.springmqdemoapp.api.messages")
+        val xmlRootElementClasses = reflections.getTypesAnnotatedWith(XmlRootElement::class.java)
+        marshaller.setClassesToBeBound(*(xmlRootElementClasses.toTypedArray()))
+
         return marshaller
     }
 
@@ -71,4 +76,3 @@ open class JmsConfiguration : Logging {
     }
 
 }
-

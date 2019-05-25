@@ -54,6 +54,7 @@ dependencies {
 	implementation("javax.xml.bind:jaxb-api:2.3.1")
 	implementation("org.glassfish.jaxb:jaxb-runtime:2.3.2")
 	implementation("org.springframework:spring-oxm")
+	implementation("org.reflections:reflections:0.9.11")
 	runtime("org.springframework.boot:spring-boot-starter-jta-atomikos")
 
 	jaxb("org.glassfish.jaxb:jaxb-xjc:2.3.2")
