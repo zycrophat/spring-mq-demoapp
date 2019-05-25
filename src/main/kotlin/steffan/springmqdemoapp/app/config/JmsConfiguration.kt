@@ -59,7 +59,7 @@ open class JmsConfiguration : Logging {
     @Bean
     open fun jaxb2marshaller() : Jaxb2Marshaller {
         val marshaller = Jaxb2Marshaller()
-        val reflections = Reflections("steffan.springmqdemoapp.api.messages")
+        val reflections = Reflections("steffan.springmqdemoapp.api.bindings")
         val xmlRootElementClasses = reflections.getTypesAnnotatedWith(XmlRootElement::class.java)
         marshaller.setClassesToBeBound(*(xmlRootElementClasses.toTypedArray()))
 

@@ -99,7 +99,7 @@ tasks {
 
 			ant.withGroovyBuilder {
 				"taskdef"("name" to "xjc", "classname" to "com.sun.tools.xjc.XJC2Task", "classpath" to jaxb.asPath)
-				"xjc"("destdir" to "$jaxbTargetDir", "package" to "steffan.springmqdemoapp.api.messages") {
+				"xjc"("destdir" to "$jaxbTargetDir", "package" to "steffan.springmqdemoapp.api.bindings") {
 					"schema"("dir" to "$xsdDir", "includes" to "*.xsd")
 				}
 			}
