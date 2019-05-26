@@ -12,8 +12,8 @@ import steffan.springmqdemoapp.util.logger
 open class Greeter : Logging {
 
     @Transactional()
-    @JmsListener(destination = "mailbox", containerFactory = "myFactory")
-    fun greet(msg : Message<GreetingRequest>) {
+    @JmsListener(destination = "greetMdb", containerFactory = "jmsListenerContainerFactory")
+    fun greet(msg: Message<GreetingRequest>) {
         logger().info("Hello ${msg.payload.name}")
     }
 }

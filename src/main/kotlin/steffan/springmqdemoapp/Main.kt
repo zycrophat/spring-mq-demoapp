@@ -8,10 +8,8 @@ import org.springframework.context.annotation.Configuration
 @SpringBootApplication
 @EnableAdminServer
 @Configuration
-open class SpringMqDemoappApplication {
-
-}
+open class Main
 
 fun main(args: Array<String>) {
-	runApplication<SpringMqDemoappApplication>(*args)
+    runApplication<Main>(*args)
 }
