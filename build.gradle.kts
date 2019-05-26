@@ -26,19 +26,21 @@ springBoot {
 
 gitVersion.rules {
     val versionPattern = """v?(\d+)\.(\d+)\.(\d+)""".toPattern()
-    onBranch("master") {
+
+    before {
         val tag = findLatestTag(versionPattern)
         version.major = tag?.matches?.getAt(1)?.toInt() ?: 0
         version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
+    }
+
+    onBranch("master") {
+        val tag = findLatestTag(versionPattern)
         version.patch = countCommitsSince(tag as HasObjectId)
 
         isSkipOtherRules = true
     }
 
     always {
-        val tag = findLatestTag(versionPattern)
-        version.major = tag?.matches?.getAt(1)?.toInt() ?: 0
-        version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
         version.patch = countCommitsSince(branchPoint() as HasObjectId)
         version.setPrereleaseTag("$branchName-SNAPSHOT")
     }
