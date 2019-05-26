@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.unbrokendome.gradle.plugins.gitversion.model.HasObjectId
 
 plugins {
     id("org.springframework.boot") version "2.1.5.RELEASE"
@@ -7,10 +8,10 @@ plugins {
     id("org.jetbrains.kotlin.plugin.spring") version "1.3.31"
     id("idea")
     id("com.avast.gradle.docker-compose") version "0.9.4"
+    id ("org.unbroken-dome.gitversion") version "0.10.0"
 }
 
 group = "steffan"
-version = "0.0.2-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -22,6 +23,28 @@ repositories {
 springBoot {
     buildInfo()
 }
+
+gitVersion.rules {
+    val versionPattern = """v?(\d+)\.(\d+)\.(\d+)""".toPattern()
+    onBranch("master") {
+        val tag = findLatestTag(versionPattern)
+        version.major = tag?.matches?.getAt(1)?.toInt() ?: 0
+        version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
+        version.patch = countCommitsSince(tag as HasObjectId)
+
+        isSkipOtherRules = true
+    }
+
+    always {
+        val tag = findLatestTag(versionPattern)
+        version.major = tag?.matches?.getAt(1)?.toInt() ?: 0
+        version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
+        version.patch = countCommitsSince(branchPoint() as HasObjectId)
+        version.setPrereleaseTag("$branchName-SNAPSHOT")
+    }
+}
+
+version = gitVersion.determineVersion()
 
 extra["springBootAdminVersion"] = "2.1.5"
 
@@ -169,6 +192,12 @@ tasks {
 
     val distAll by creating {
         dependsOn(distZip, distTar)
+    }
+
+    val printVersion by creating {
+        doLast {
+            println(gitVersion.determineVersion())
+        }
     }
 
 }
