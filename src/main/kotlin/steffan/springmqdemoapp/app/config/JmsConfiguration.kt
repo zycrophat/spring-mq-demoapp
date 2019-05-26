@@ -4,6 +4,8 @@ package steffan.springmqdemoapp.app.config
 import org.apache.activemq.ActiveMQConnectionFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jms.annotation.EnableJms
@@ -11,6 +13,7 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory
 import org.springframework.jms.config.JmsListenerContainerFactory
 import org.springframework.jms.connection.CachingConnectionFactory
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import javax.sql.DataSource
 
 
 @Configuration
@@ -49,6 +52,12 @@ open class JmsConfiguration {
         val factory = DefaultJmsListenerContainerFactory()
         configurer.configure(factory, cachingConnectionFactory())
         return factory
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "app.camel.datasource")
+    open fun messageIdDataSource(): DataSource {
+        return DataSourceBuilder.create().build()
     }
 
 }

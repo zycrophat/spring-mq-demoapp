@@ -62,6 +62,9 @@ dependencies {
     runtime("org.apache.camel:camel-jms:2.24.0")
     implementation("org.apache.camel:camel-jaxb:2.24.0")
     runtime("com.fasterxml.woodstox:woodstox-core:5.2.1")
+    implementation("org.apache.camel:camel-sql:2.24.0")
+    runtime("com.h2database:h2:1.4.199")
+    runtime("org.springframework.boot:spring-boot-starter-jdbc")
 
     jaxb("org.glassfish.jaxb:jaxb-xjc:2.3.2")
     jaxb("org.glassfish.jaxb:jaxb-runtime:2.3.2")
