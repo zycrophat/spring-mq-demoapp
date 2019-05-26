@@ -11,8 +11,7 @@ inline fun <reified T : Logging> T.logger(): Logger = getLogger(getClassForLoggi
 
 fun getLogger(forClass: Class<*>): Logger = LoggerFactory.getLogger(forClass)
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T : Any> getClassForLogging(javaClass: Class<T>): Class<*> {
+fun <T : Any> getClassForLogging(javaClass: Class<T>): Class<*> {
     return javaClass.enclosingClass?.takeIf {
         it.kotlin.companionObject?.java == javaClass
     } ?: javaClass
