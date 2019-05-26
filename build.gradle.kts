@@ -33,7 +33,7 @@ sourceSets {
 
 val jaxb = configurations.create("jaxb")
 dependencies {
-    api("org.slf4j:slf4j-api:1.7.26")
+    implementation("org.slf4j:slf4j-api:1.7.26")
     runtime("ch.qos.logback:logback-classic:1.2.3")
 
     implementation("org.springframework.boot:spring-boot-starter-activemq")
