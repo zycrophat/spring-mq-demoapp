@@ -30,4 +30,5 @@ HELP.md
 .vscode/
 
 /src/main/generated-java
-transaction-logs
+/transaction-logs
+/run
