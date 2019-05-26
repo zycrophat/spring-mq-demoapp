@@ -148,8 +148,24 @@ tasks {
         dependsOn(bootJar)
     }
 
-    assemble {
-        dependsOn(copyConfig)
+    val distCopySpec = project.copySpec {
+        from(copyConfig) {
+            into("config")
+        }
+        from(bootJar)
+    }
+
+    val distZip by creating(Zip::class) {
+        with(distCopySpec)
+    }
+
+    val distTar by creating(Tar::class) {
+        with(distCopySpec)
+        compression = Compression.GZIP
+    }
+
+    val distAll by creating {
+        dependsOn(distZip, distTar)
     }
 
 }
