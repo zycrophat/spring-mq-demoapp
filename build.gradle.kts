@@ -48,8 +48,6 @@ gitVersion.rules {
 
 version = gitVersion.determineVersion()
 
-extra["springBootAdminVersion"] = "2.1.5"
-
 val generatedJavaSrcPath = ProjectSettings.GENERATED_JAVA_SRC_PATH
 
 sourceSets {
@@ -58,47 +56,49 @@ sourceSets {
 
 val jaxb = configurations.create("jaxb")
 dependencies {
-    implementation("org.slf4j:slf4j-api:1.7.26")
-    runtime("ch.qos.logback:logback-classic:1.2.3")
+    implementation("org.slf4j:slf4j-api:1.7.26+")
+    runtime("ch.qos.logback:logback-classic:1.2.3+")
 
-    implementation("org.springframework.boot:spring-boot-starter-activemq")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-integration")
+    implementation("org.springframework.boot:spring-boot-starter-activemq:${LibraryVersions.SPRING_BOOT_VERSION}")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:${LibraryVersions.SPRING_BOOT_VERSION}")
+    implementation("org.springframework.boot:spring-boot-starter-integration:${LibraryVersions.SPRING_BOOT_VERSION}")
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("de.codecentric:spring-boot-admin-starter-server")
-    implementation("de.codecentric:spring-boot-admin-starter-client")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-web:${LibraryVersions.SPRING_BOOT_VERSION}")
+    implementation("de.codecentric:spring-boot-admin-starter-server:${LibraryVersions.SPRING_BOOT_BASE_VERSION}")
+    implementation("de.codecentric:spring-boot-admin-starter-client:${LibraryVersions.SPRING_BOOT_BASE_VERSION}")
+    implementation("org.springframework.boot:spring-boot-starter-security:${LibraryVersions.SPRING_BOOT_VERSION}")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.30+")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.30+")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${LibraryVersions.KOTLIN_VERSION}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${LibraryVersions.SPRING_BOOT_VERSION}")
 
     implementation("javax.xml.bind:jaxb-api:2.3.1")
-    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.2")
-    implementation("org.springframework:spring-oxm")
+    
+    implementation("org.glassfish.jaxb:jaxb-runtime:${LibraryVersions.JAXB_VERSION}")
+    implementation("org.springframework:spring-oxm:5.1.7.RELEASE")
     implementation("org.reflections:reflections:0.9.11")
-    runtime("org.springframework.boot:spring-boot-starter-jta-atomikos")
+    runtime("org.springframework.boot:spring-boot-starter-jta-atomikos:${LibraryVersions.SPRING_BOOT_VERSION}")
 
-    implementation("org.apache.camel:camel-spring-boot:2.24.0")
-    implementation("org.apache.camel:camel-spring-boot-starter:2.24.0")
+
+    implementation("org.apache.camel:camel-spring-boot:${LibraryVersions.CAMEL_VERSION}")
+    implementation("org.apache.camel:camel-spring-boot-starter:${LibraryVersions.CAMEL_VERSION}")
     runtime("org.apache.activemq:activemq-camel:5.15.9")
-    runtime("org.apache.camel:camel-jms:2.24.0")
-    implementation("org.apache.camel:camel-jaxb:2.24.0")
+    runtime("org.apache.camel:camel-jms:${LibraryVersions.CAMEL_VERSION}")
+    implementation("org.apache.camel:camel-jaxb:${LibraryVersions.CAMEL_VERSION}")
     runtime("com.fasterxml.woodstox:woodstox-core:5.2.1")
-    implementation("org.apache.camel:camel-sql:2.24.0")
+    implementation("org.apache.camel:camel-sql:${LibraryVersions.CAMEL_VERSION}")
     runtime("com.h2database:h2:1.4.199")
-    runtime("org.springframework.boot:spring-boot-starter-jdbc")
+    runtime("org.springframework.boot:spring-boot-starter-jdbc:${LibraryVersions.SPRING_BOOT_VERSION}")
 
-    jaxb("org.glassfish.jaxb:jaxb-xjc:2.3.2")
-    jaxb("org.glassfish.jaxb:jaxb-runtime:2.3.2")
+    jaxb("org.glassfish.jaxb:jaxb-xjc:${LibraryVersions.JAXB_VERSION}")
+    jaxb("org.glassfish.jaxb:jaxb-runtime:${LibraryVersions.JAXB_VERSION}")
     jaxb("javax.activation:activation:1.1")
 }
 
 dependencyManagement {
     imports {
-        mavenBom("de.codecentric:spring-boot-admin-dependencies:${property("springBootAdminVersion")}")
+        mavenBom("de.codecentric:spring-boot-admin-dependencies:${LibraryVersions.SPRING_BOOT_BASE_VERSION}")
     }
 }
 
@@ -184,15 +184,24 @@ tasks {
     }
 
     val distZip by creating(Zip::class) {
+        description = "Creates a distributable zip file for the project"
+        group = ProjectSettings.DISTRIBUTION_GROUP_NAME
+
         with(distCopySpec)
     }
 
     val distTar by creating(Tar::class) {
+        description = "Creates a distributable tgz file for the project"
+        group = ProjectSettings.DISTRIBUTION_GROUP_NAME
+
         with(distCopySpec)
         compression = Compression.GZIP
     }
 
     val distAll by creating {
+        description = "Creates distributable archive files for the project"
+        group = ProjectSettings.DISTRIBUTION_GROUP_NAME
+
         dependsOn(distZip, distTar)
     }
 
