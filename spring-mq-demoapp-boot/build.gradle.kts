@@ -30,6 +30,20 @@ sourceSets {
     getByName("main").java.srcDirs(generatedJavaSrcPath)
 }
 
+configurations.all {
+    resolutionStrategy {
+        dependencySubstitution {
+            substitute(module("com.fasterxml.jackson.core:jackson-core"))
+                    .with(module("com.fasterxml.jackson.core:jackson-core:[2.9.9,)"))
+            substitute(module("com.fasterxml.jackson.core:jackson-databind"))
+                    .with(module("com.fasterxml.jackson.core:jackson-databind:[2.9.9,)"))
+
+            substitute(module("com.google.guava:guava"))
+                    .with(module("com.google.guava:guava:[27.1-jre,)"))
+        }
+    }
+}
+
 val jaxb = configurations.create("jaxb")
 dependencies {
     implementation("org.slf4j:slf4j-api:1.7.26+")

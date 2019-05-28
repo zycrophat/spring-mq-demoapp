@@ -44,22 +44,4 @@ allprojects {
         mavenCentral()
     }
 
-    configurations.all {
-        resolutionStrategy {
-            preferProjectModules()
-            dependencySubstitution {
-                substitute(module("com.fasterxml.jackson.core:jackson-core"))
-                        .with(module("com.fasterxml.jackson.core:jackson-core:[2.9.9,)"))
-
-                substitute(module("com.fasterxml.jackson.core:jackson-databind"))
-                        .with(module("com.fasterxml.jackson.core:jackson-databind:[2.9.9,)"))
-
-                substitute(module("com.google.guava:guava"))
-                        .with(module("com.google.guava:guava:[27.1-jre,)"))
-            }
-        }
-    }
-
 }
-
-
