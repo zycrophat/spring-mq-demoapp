@@ -14,6 +14,7 @@ plugins {
     id("com.avast.gradle.docker-compose") version "0.9.4"
     id ("org.unbroken-dome.gitversion") version "0.10.0"
     id("com.github.jk1.dependency-license-report") version "1.6"
+    id("org.owasp.dependencycheck") version "5.0.0-M3.1"
 }
 
 group = "steffan"
@@ -58,6 +59,23 @@ val generatedJavaSrcPath = ProjectSettings.GENERATED_JAVA_SRC_PATH
 sourceSets {
     getByName("main").java.srcDirs(generatedJavaSrcPath)
 }
+
+configurations.all {
+    resolutionStrategy {
+        preferProjectModules()
+        dependencySubstitution {
+            substitute(module("com.fasterxml.jackson.core:jackson-core"))
+                    .with(module("com.fasterxml.jackson.core:jackson-core:[2.9.9,)"))
+
+            substitute(module("com.fasterxml.jackson.core:jackson-databind"))
+                    .with(module("com.fasterxml.jackson.core:jackson-databind:[2.9.9,)"))
+
+            substitute(module("com.google.guava:guava"))
+                    .with(module("com.google.guava:guava:[27.1-jre,)"))
+        }
+    }
+}
+
 
 val jaxb = configurations.create("jaxb")
 dependencies {
