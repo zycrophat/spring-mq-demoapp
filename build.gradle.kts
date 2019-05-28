@@ -1,5 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.unbrokendome.gradle.plugins.gitversion.model.HasObjectId
+import com.github.jk1.license.render.ReportRenderer
+import com.github.jk1.license.render.InventoryHtmlReportRenderer
+import com.github.jk1.license.filter.DependencyFilter
+import com.github.jk1.license.filter.LicenseBundleNormalizer
 
 plugins {
     id("org.springframework.boot") version "2.1.5.RELEASE"
@@ -9,6 +13,7 @@ plugins {
     id("idea")
     id("com.avast.gradle.docker-compose") version "0.9.4"
     id ("org.unbroken-dome.gitversion") version "0.10.0"
+    id("com.github.jk1.dependency-license-report") version "1.6"
 }
 
 group = "steffan"
@@ -213,4 +218,7 @@ tasks {
 
 }
 
-
+licenseReport {
+    renderers = arrayOf<ReportRenderer>(InventoryHtmlReportRenderer("report.html","License Report"))
+    filters = arrayOf<DependencyFilter>(LicenseBundleNormalizer())
+}
