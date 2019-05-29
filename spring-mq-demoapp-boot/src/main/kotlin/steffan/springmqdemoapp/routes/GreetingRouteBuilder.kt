@@ -45,7 +45,6 @@ class GreetingRouteBuilder(
                     .body(GreetingRequest::class.java, GreetingRequest::getName)
                     .messageIdRepository(
                             InfinispanIdempotentRepository(infiniCacheManager, UnmarshalledGreetingRequestProcessor::class.simpleName)
-                            //JdbcMessageIdRepository(messageIdDataSource, UnmarshalledGreetingRequestProcessor::class.simpleName)
                     )
                 .process(unmarshalledGreetingRequestProcessor)
     }

@@ -22,6 +22,7 @@ import org.springframework.jms.config.JmsListenerContainerFactory
 import org.springframework.jms.connection.CachingConnectionFactory
 import org.springframework.mock.jndi.SimpleNamingContextBuilder
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import steffan.springmqdemoapp.routes.UnmarshalledGreetingRequestProcessor
 import java.util.concurrent.TimeUnit
 import javax.sql.DataSource
 import javax.transaction.TransactionManager
@@ -34,13 +35,16 @@ import javax.transaction.TransactionManager
 open class JmsConfiguration {
 
     @Value("\${spring.activemq.broker-url}")
-    val brokerUrl: String? = null
+    lateinit var brokerUrl: String
 
     @Value("\${spring.activemq.user}")
-    val user: String? = null
+    lateinit var user: String
 
     @Value("\${spring.activemq.password}")
-    val pass: String? = null
+    lateinit var pass: String
+
+    @Value("\${app.camel.datasource.jndiName}")
+    lateinit var messageIdDataSourceJndiName: String
 
     @Bean
     open fun activeMQConnectionFactory(): ActiveMQConnectionFactory {
@@ -71,53 +75,59 @@ open class JmsConfiguration {
     open fun messageIdDataSource(): DataSource {
         val dataSource = DataSourceBuilder.create().build()
 
-        val builder = SimpleNamingContextBuilder()
-        builder.bind("java:comp/env/jdbc/messageIdDataSource", dataSource)
-        builder.activate()
+        SimpleNamingContextBuilder().apply {
+            bind(messageIdDataSourceJndiName, dataSource)
+            activate()
+        }
         return dataSource
     }
 
     @Bean
-    open fun globalConfigurer(): InfinispanGlobalConfigurer {
+    open fun infinispanGlobalConfigurerlobalConfigurer(): InfinispanGlobalConfigurer {
         return InfinispanGlobalConfigurer {
             GlobalConfigurationBuilder().transport()
                     .defaultTransport()
-                    .defaultCacheName("infini-cache1")
                     .build()
         }
     }
 
     @Bean
-    open fun cacheConfigurer(txManager: TransactionManager): InfinispanCacheConfigurer {
+    open fun infinispanCacheConfigurer(txManager: TransactionManager): InfinispanCacheConfigurer {
         return InfinispanCacheConfigurer { manager ->
             val config = ConfigurationBuilder()
             config.apply {
                 transaction()
                         .transactionMode(TransactionMode.TRANSACTIONAL)
                         .transactionManagerLookup { txManager}
-                        //.autoCommit(true)
+                        .autoCommit(false)
                         .transactionProtocol(TransactionProtocol.DEFAULT)
+                        .recovery()
+                            .enable()
+
                 persistence()
+                        .passivation(false)
                         .addStore(JdbcStringBasedStoreConfigurationBuilder::class.java)
-                        .fetchPersistentState(true)
+                        .async().disable()
                         .ignoreModifications(false)
+                        .fetchPersistentState(false)
                         .purgeOnStartup(false)
                         .shared(true)
                         .table()
-                        .dropOnExit(true)
-                        .createOnStart(true)
-                        .tableNamePrefix("ISPN_STRING_TABLE")
-                        .idColumnName("ID_COLUMN").idColumnType("VARCHAR(255)")
-                        .dataColumnName("DATA_COLUMN").dataColumnType("VARBINARY(1024)")
-                        .timestampColumnName("TIMESTAMP_COLUMN").timestampColumnType("BIGINT")
-                        .dataSource().jndiUrl("java:comp/env/jdbc/messageIdDataSource")
-
+                            .dropOnExit(false)
+                            .createOnStart(true)
+                            .tableNamePrefix("ISPN_STRING_TABLE")
+                            .idColumnName("ID_COLUMN").idColumnType("VARCHAR(255)")
+                            .dataColumnName("DATA_COLUMN").dataColumnType("VARBINARY(1024)")
+                            .timestampColumnName("TIMESTAMP_COLUMN").timestampColumnType("BIGINT")
+                        .dataSource()
+                            .jndiUrl(messageIdDataSourceJndiName)
 
                 expiration()
                         .lifespan(1, TimeUnit.MINUTES)
+                        .enableReaper()
             }
 
-            manager.defineConfiguration("local-config", config.build(true));
+            manager.defineConfiguration(UnmarshalledGreetingRequestProcessor::class.simpleName, config.build(true));
         }
     }
 
