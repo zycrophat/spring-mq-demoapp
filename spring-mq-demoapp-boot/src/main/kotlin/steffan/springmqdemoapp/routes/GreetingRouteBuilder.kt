@@ -23,6 +23,7 @@ class GreetingRouteBuilder(
         context.isStreamCaching = true
 
         from("jms:greetConvert")
+                .routeId("greetConvert")
                 .transacted()
                 .idempotentConsumer()
                     .xpath("//g:greetingRequest/g:name/text()",
@@ -34,6 +35,7 @@ class GreetingRouteBuilder(
                 .process(typeConvertingGreetingRequestProcessor)
 
         from("jms:greetUnmarshall")
+                .routeId("greetUnmarshall")
                 .transacted()
                 .unmarshal(jaxbDataFormat)
                 .idempotentConsumer()
