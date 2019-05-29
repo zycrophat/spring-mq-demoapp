@@ -11,7 +11,7 @@ import steffan.springmqdemoapp.util.logger
 
 
 @Component
-class UnmarshalledGreetingRequestProcessor : Processor, Logging {
+open class UnmarshalledGreetingRequestProcessor : Processor, Logging {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     override fun process(exchange: Exchange) {
