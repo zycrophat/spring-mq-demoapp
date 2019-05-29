@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.unbrokendome.gradle.plugins.gitversion.model.HasObjectId
 
 plugins {
     id("org.springframework.boot") version LibraryVersions.SPRING_BOOT_VERSION
@@ -85,7 +84,6 @@ dependencies {
     implementation("org.infinispan:infinispan-spring-boot-starter:2.1.5.Final") {
         exclude("org.jboss.slf4j:slf4j-jboss-logging")
     }
-    //implementation("org.springframework.session:spring-session:1.3.5.RELEASE")
     implementation("org.springframework:spring-context")
     implementation("org.springframework:spring-mock:2.0.8")
     implementation("org.infinispan:infinispan-cachestore-jdbc:9.4.14.Final")
