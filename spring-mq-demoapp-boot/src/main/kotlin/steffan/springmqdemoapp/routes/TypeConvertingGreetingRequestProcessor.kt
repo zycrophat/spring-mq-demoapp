@@ -12,7 +12,7 @@ import steffan.springmqdemoapp.util.logger
 
 
 @Component
-class TypeConvertingGreetingRequestProcessor(private val typeConverter: TypeConverter) : Processor, Logging {
+open class TypeConvertingGreetingRequestProcessor(private val typeConverter: TypeConverter) : Processor, Logging {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     override fun process(exchange: Exchange) {

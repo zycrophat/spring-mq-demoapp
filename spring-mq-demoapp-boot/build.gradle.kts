@@ -68,7 +68,7 @@ dependencies {
     implementation("org.glassfish.jaxb:jaxb-runtime:${LibraryVersions.JAXB_VERSION}")
     implementation("org.springframework:spring-oxm:5.1.7.RELEASE")
     implementation("org.reflections:reflections:0.9.11")
-    runtime("org.springframework.boot:spring-boot-starter-jta-atomikos:${LibraryVersions.SPRING_BOOT_VERSION}")
+    implementation("org.springframework.boot:spring-boot-starter-jta-atomikos:${LibraryVersions.SPRING_BOOT_VERSION}")
 
 
     implementation("org.apache.camel:camel-spring-boot:${LibraryVersions.CAMEL_VERSION}")
@@ -78,6 +78,17 @@ dependencies {
     implementation("org.apache.camel:camel-jaxb:${LibraryVersions.CAMEL_VERSION}")
     runtime("com.fasterxml.woodstox:woodstox-core:5.2.1")
     implementation("org.apache.camel:camel-sql:${LibraryVersions.CAMEL_VERSION}")
+
+    implementation("org.apache.camel:camel-infinispan:${LibraryVersions.CAMEL_VERSION}"){
+        exclude("org.jboss.slf4j:slf4j-jboss-logging")
+    }
+    implementation("org.infinispan:infinispan-spring-boot-starter:2.1.5.Final") {
+        exclude("org.jboss.slf4j:slf4j-jboss-logging")
+    }
+    //implementation("org.springframework.session:spring-session:1.3.5.RELEASE")
+    implementation("org.springframework:spring-context")
+    implementation("org.springframework:spring-mock:2.0.8")
+    implementation("org.infinispan:infinispan-cachestore-jdbc:9.4.14.Final")
     runtime("com.h2database:h2:1.4.199")
     runtime("org.springframework.boot:spring-boot-starter-jdbc:${LibraryVersions.SPRING_BOOT_VERSION}")
 
