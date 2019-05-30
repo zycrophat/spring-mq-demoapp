@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.unbrokendome.gradle.plugins.gitversion.model.HasObjectId
 
 plugins {
     id("org.springframework.boot") version LibraryVersions.SPRING_BOOT_VERSION
@@ -42,6 +41,8 @@ configurations.all {
                     .with(module("com.google.guava:guava:[27.1-jre,)"))
         }
     }
+
+    exclude("org.jboss.slf4j", "slf4j-jboss-logging")
 }
 
 val jaxb = configurations.create("jaxb")
@@ -79,13 +80,8 @@ dependencies {
     runtime("com.fasterxml.woodstox:woodstox-core:5.2.1")
     implementation("org.apache.camel:camel-sql:${LibraryVersions.CAMEL_VERSION}")
 
-    implementation("org.apache.camel:camel-infinispan:${LibraryVersions.CAMEL_VERSION}"){
-        exclude("org.jboss.slf4j:slf4j-jboss-logging")
-    }
-    implementation("org.infinispan:infinispan-spring-boot-starter:2.1.5.Final") {
-        exclude("org.jboss.slf4j:slf4j-jboss-logging")
-    }
-    //implementation("org.springframework.session:spring-session:1.3.5.RELEASE")
+    implementation("org.apache.camel:camel-infinispan:${LibraryVersions.CAMEL_VERSION}")
+    implementation("org.infinispan:infinispan-spring-boot-starter:2.1.5.Final")
     implementation("org.springframework:spring-context")
     implementation("org.springframework:spring-mock:2.0.8")
     implementation("org.infinispan:infinispan-cachestore-jdbc:9.4.14.Final")
@@ -166,15 +162,15 @@ tasks {
         dependsOn(generateJaxb)
     }
 
-    bootJar {
-        launchScript()
-    }
-
     val copyConfig by creating(Copy::class) {
         from("config")
         into("$buildDir/libs/config")
+    }
 
-        dependsOn(bootJar)
+    bootJar {
+        launchScript()
+
+        dependsOn(copyConfig)
     }
 
     val distCopySpec = project.copySpec {
