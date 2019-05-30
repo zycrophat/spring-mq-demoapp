@@ -10,7 +10,7 @@ import javax.xml.bind.JAXBContext
 @Component
 class JaxbTypeConverter(private val jaxbClassesToBeBound: Set<Class<*>>) : GenericConverter {
 
-    private val jaxbContext: JAXBContext = JAXBContext.newInstance(*jaxbClassesToBeBound.toTypedArray())
+    private val jaxbContext = JAXBContext.newInstance(*jaxbClassesToBeBound.toTypedArray())
 
     override fun getConvertibleTypes(): MutableSet<GenericConverter.ConvertiblePair> {
         return jaxbClassesToBeBound.asSequence().map { c -> GenericConverter.ConvertiblePair(CharSequence::class.java, c) }.toMutableSet()
