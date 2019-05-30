@@ -15,18 +15,19 @@ gitVersion.rules {
         val tag = findLatestTag(versionPattern)
         version.major = tag?.matches?.getAt(1)?.toInt() ?: 0
         version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
+        version.patch = countCommitsSince(tag as HasObjectId)
     }
 
     onBranch("master") {
         val tag = findLatestTag(versionPattern)
-        version.patch = countCommitsSince(tag as HasObjectId)
-
+        if (countCommitsSince(tag as HasObjectId) != 0) {
+            version.setPrereleaseTag("SNAPSHOT")
+        }
         isSkipOtherRules = true
     }
 
     always {
-        version.patch = countCommitsSince(branchPoint() as HasObjectId)
-        version.setPrereleaseTag("$branchName-SNAPSHOT")
+        version.setPrereleaseTag("$branchName")
     }
 }
 
