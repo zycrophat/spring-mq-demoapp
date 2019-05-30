@@ -27,7 +27,7 @@ gitVersion.rules {
     }
 
     always {
-        version.setPrereleaseTag("$branchName")
+        version.setPrereleaseTag(branchName)
     }
 }
 
