@@ -13,7 +13,7 @@ class JaxbTypeConverter(private val jaxbClassesToBeBound: Set<Class<*>>) : Gener
     private val jaxbContext: JAXBContext = JAXBContext.newInstance(*jaxbClassesToBeBound.toTypedArray())
 
     override fun getConvertibleTypes(): MutableSet<GenericConverter.ConvertiblePair> {
-        return jaxbClassesToBeBound.map { c -> GenericConverter.ConvertiblePair(CharSequence::class.java, c) }.toMutableSet()
+        return jaxbClassesToBeBound.asSequence().map { c -> GenericConverter.ConvertiblePair(CharSequence::class.java, c) }.toMutableSet()
     }
 
     override fun convert(source: Any?, sourceType: TypeDescriptor, targetType: TypeDescriptor): Any? {
