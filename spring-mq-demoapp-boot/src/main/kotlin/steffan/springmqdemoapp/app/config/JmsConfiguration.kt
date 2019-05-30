@@ -3,7 +3,10 @@ package steffan.springmqdemoapp.app.config
 
 import org.apache.activemq.ActiveMQConnectionFactory
 import org.infinispan.configuration.cache.ConfigurationBuilder
+import org.infinispan.configuration.cache.StorageType
 import org.infinispan.configuration.global.GlobalConfigurationBuilder
+import org.infinispan.eviction.EvictionStrategy
+import org.infinispan.eviction.EvictionType
 import org.infinispan.persistence.jdbc.configuration.JdbcStringBasedStoreConfigurationBuilder
 import org.infinispan.spring.starter.embedded.InfinispanCacheConfigurer
 import org.infinispan.spring.starter.embedded.InfinispanGlobalConfigurer
@@ -16,6 +19,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.DependsOn
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory
 import org.springframework.jms.config.JmsListenerContainerFactory
@@ -92,13 +96,14 @@ open class JmsConfiguration {
     }
 
     @Bean
+    @DependsOn("messageIdDataSource")
     open fun infinispanCacheConfigurer(txManager: TransactionManager): InfinispanCacheConfigurer {
         return InfinispanCacheConfigurer { manager ->
             val config = ConfigurationBuilder()
             config.apply {
                 transaction()
                         .transactionMode(TransactionMode.TRANSACTIONAL)
-                        .transactionManagerLookup { txManager}
+                        .transactionManagerLookup { txManager }
                         .autoCommit(false)
                         .transactionProtocol(TransactionProtocol.DEFAULT)
                         .recovery()
@@ -125,6 +130,7 @@ open class JmsConfiguration {
                 expiration()
                         .lifespan(1, TimeUnit.MINUTES)
                         .enableReaper()
+
             }
 
             manager.defineConfiguration(UnmarshalledGreetingRequestProcessor::class.simpleName, config.build(true));
