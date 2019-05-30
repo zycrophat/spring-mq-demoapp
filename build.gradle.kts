@@ -15,7 +15,7 @@ gitVersion.rules {
         val tag = findLatestTag(versionPattern)
         version.major = tag?.matches?.getAt(1)?.toInt() ?: 0
         version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
-        version.patch = countCommitsSince(tag as HasObjectId)
+        version.patch = countCommitsSince(tag as HasObjectId, true)
     }
 
     onBranch("master") {
