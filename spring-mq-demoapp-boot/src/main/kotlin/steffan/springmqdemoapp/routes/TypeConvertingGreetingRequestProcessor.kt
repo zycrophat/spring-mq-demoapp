@@ -19,6 +19,6 @@ open class TypeConvertingGreetingRequestProcessor(private val typeConverter: Typ
         val request = typeConverter
                 .convertTo(GreetingRequest::class.java, exchange, exchange.getIn().body)
 
-        logger().info("Hi ${request?.name ?: "stranger"}!")
+        logger().info("Hi ${request?.name ?: "stranger"} ${request?.dateTimeOfGreet}!")
     }
 }

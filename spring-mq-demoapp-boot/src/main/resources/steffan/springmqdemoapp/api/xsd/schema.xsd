@@ -6,6 +6,7 @@
         <complexType>
             <sequence>
                 <element name="name" type="string"/>
+                <element name="dateTimeOfGreet" type="dateTime"/>
             </sequence>
         </complexType>
     </element>

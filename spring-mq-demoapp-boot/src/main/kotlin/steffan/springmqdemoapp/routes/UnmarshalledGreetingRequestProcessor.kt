@@ -17,6 +17,6 @@ open class UnmarshalledGreetingRequestProcessor : Processor, Logging {
     override fun process(exchange: Exchange) {
         val request = exchange.getIn().getBody(GreetingRequest::class.java)
 
-        logger().info("Hi ${request?.name ?: "stranger"}!")
+        logger().info("Hi ${request?.name ?: "stranger"} ${request?.dateTimeOfGreet}!")
     }
 }

@@ -1,0 +1,22 @@
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1"
+          xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <globalBindings>
+        <xjc:javaType name="java.time.LocalDate" xmlType="xs:date"
+                      adapter="com.migesok.jaxb.adapter.javatime.LocalDateXmlAdapter" />
+        <xjc:javaType name="java.time.LocalDateTime" xmlType="xs:dateTime"
+                      adapter="com.migesok.jaxb.adapter.javatime.LocalDateTimeXmlAdapter" />
+        <xjc:javaType name="java.time.Duration" xmlType="xs:duration"
+                      adapter="com.migesok.jaxb.adapter.javatime.DurationXmlAdapter" />
+    </globalBindings>
+    <bindings
+            schemaLocation="schema.xsd">
+        <schemaBindings>
+            <package name="steffan.springmqdemoapp.api.bindings" />
+        </schemaBindings>
+        <bindings node="/xs:schema/xs:element/xs:complexType/xs:sequence/xs:element[@name='dateTimeOfGreet']">
+                    <xjc:javaType name="java.time.ZonedDateTime"
+                                  adapter="com.migesok.jaxb.adapter.javatime.ZonedDateTimeXmlAdapter" />
+        </bindings>
+    </bindings>
+</bindings>

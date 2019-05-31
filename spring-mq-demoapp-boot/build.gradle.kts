@@ -91,6 +91,7 @@ dependencies {
     jaxb("org.glassfish.jaxb:jaxb-xjc:${LibraryVersions.JAXB_VERSION}")
     jaxb("org.glassfish.jaxb:jaxb-runtime:${LibraryVersions.JAXB_VERSION}")
     jaxb("javax.activation:activation:1.1")
+    implementation("com.migesok:jaxb-java-time-adapters:1.1.3")
 }
 
 dependencyManagement {
@@ -135,8 +136,12 @@ tasks {
 
             ant.withGroovyBuilder {
                 "taskdef"("name" to "xjc", "classname" to "com.sun.tools.xjc.XJC2Task", "classpath" to jaxb.asPath)
-                "xjc"("destdir" to "$jaxbTargetDir", "package" to "steffan.springmqdemoapp.api.bindings") {
+                "xjc"("destdir" to "$jaxbTargetDir",
+                        "binding" to "${xsdDir}/binding.xml"
+                ) {
                     "schema"("dir" to "$xsdDir", "includes" to "*.xsd")
+                    "arg"("value" to "-extension")
+                    "produces"("dir" to jaxbTargetDir, "includes" to "**/*.java")
                 }
             }
         }
