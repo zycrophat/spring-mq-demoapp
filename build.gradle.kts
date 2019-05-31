@@ -3,6 +3,7 @@ import org.unbrokendome.gradle.plugins.gitversion.model.HasObjectId
 plugins {
     id("base")
     id("idea")
+    id("eclipse")
     id("org.unbroken-dome.gitversion") version "0.10.0" apply true
     id("com.github.jk1.dependency-license-report") version "1.6" apply false
     id("org.owasp.dependencycheck") version "5.0.0-M3.1" apply false
@@ -45,6 +46,8 @@ gitVersion.rules {
 version = gitVersion.determineVersion()
 
 allprojects {
+    apply(plugin = "idea")
+    apply(plugin = "eclipse")
     apply(plugin = "com.github.jk1.dependency-license-report")
     apply(plugin = "org.owasp.dependencycheck")
 

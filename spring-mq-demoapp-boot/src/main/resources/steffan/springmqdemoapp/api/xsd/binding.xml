@@ -1,22 +1,29 @@
 <bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1"
           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-          xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          xmlns:xs="http://www.w3.org/2001/XMLSchema"
+          xmlns:gr="urn:steffan.springmqdemoapp:greeting">
     <globalBindings>
         <xjc:javaType name="java.time.LocalDate" xmlType="xs:date"
                       adapter="com.migesok.jaxb.adapter.javatime.LocalDateXmlAdapter" />
-        <xjc:javaType name="java.time.LocalDateTime" xmlType="xs:dateTime"
+
+        <xjc:javaType name="java.time.LocalDateTime" xmlType="gr:localDateTime"
                       adapter="com.migesok.jaxb.adapter.javatime.LocalDateTimeXmlAdapter" />
+
+        <xjc:javaType name="java.time.LocalTime" xmlType="gr:localTime"
+                      adapter="com.migesok.jaxb.adapter.javatime.LocalTimeXmlAdapter" />
+
         <xjc:javaType name="java.time.Duration" xmlType="xs:duration"
                       adapter="com.migesok.jaxb.adapter.javatime.DurationXmlAdapter" />
+
+       	<xjc:javaType name="java.time.OffsetDateTime" xmlType="gr:offsetDateTime"
+                      adapter="com.migesok.jaxb.adapter.javatime.OffsetDateTimeXmlAdapter" />
+
+        <xjc:javaType name="java.time.OffsetTime" xmlType="gr:offsetTime"
+                      adapter="com.migesok.jaxb.adapter.javatime.OffsetTimeXmlAdapter" />
     </globalBindings>
-    <bindings
-            schemaLocation="schema.xsd">
+    <bindings schemaLocation="schema.xsd">
         <schemaBindings>
             <package name="steffan.springmqdemoapp.api.bindings" />
         </schemaBindings>
-        <bindings node="/xs:schema/xs:element/xs:complexType/xs:sequence/xs:element[@name='dateTimeOfGreet']">
-                    <xjc:javaType name="java.time.ZonedDateTime"
-                                  adapter="com.migesok.jaxb.adapter.javatime.ZonedDateTimeXmlAdapter" />
-        </bindings>
     </bindings>
 </bindings>

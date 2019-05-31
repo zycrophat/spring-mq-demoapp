@@ -1,13 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
         targetNamespace="urn:steffan.springmqdemoapp:greeting"
-        elementFormDefault="qualified">
+        elementFormDefault="qualified" xmlns:gr="urn:steffan.springmqdemoapp:greeting">
     <element name="greetingRequest">
         <complexType>
             <sequence>
                 <element name="name" type="string"/>
-                <element name="dateTimeOfGreet" type="dateTime"/>
+                <element name="dateTimeOfGreet" type="gr:offsetDateTime" />
             </sequence>
         </complexType>
     </element>
+
+    <simpleType name="offsetDateTime">
+    	<restriction base="dateTime">
+    		<pattern
+    			value="(-)?\d{2,4}-\d{2,2}-\d{2,2}T\d{2,2}:\d{2,2}:\d{2,2}(\.\d{1,9})?(Z|((\+|-)\d{2,2}:\d{2,2}))">
+    		</pattern>
+    	</restriction>
+    </simpleType>
+    
+    <simpleType name="offsetTime">
+    	<restriction base="time">
+    		<pattern
+    			value="\d{2,2}:\d{2,2}:\d{2,2}(\.\d{1,9})?(Z|((\+|-)\d{2,2}:\d{2,2}))">
+    		</pattern>
+    	</restriction>
+    </simpleType>
+    
+    <simpleType name="localDateTime">
+    	<restriction base="dateTime">
+    		<pattern
+    			value="(-)?\d{2,4}-\d{2,2}-\d{2,2}T\d{2,2}:\d{2,2}:\d{2,2}(\.\d{1,9})?">
+    		</pattern>
+    	</restriction>
+    </simpleType>
+    
+    <simpleType name="localTime">
+    	<restriction base="time">
+    		<pattern
+    			value="\d{2,2}:\d{2,2}:\d{2,2}(\.\d{1,9})?">
+    		</pattern>
+    	</restriction>
+    </simpleType>
 </schema>
