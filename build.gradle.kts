@@ -39,7 +39,9 @@ gitVersion.rules {
 
         val label = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
         val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
-        version.setPrereleaseTag("${countCommitsSinceTag}.${label}")
+        if (countCommitsSinceTag > 0) {
+            version.setPrereleaseTag("${countCommitsSinceTag}.${label}")
+        }
     }
 }
 
