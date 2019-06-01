@@ -182,6 +182,7 @@ tasks {
         from(copyConfig) {
             into("config")
         }
+        from(file("${project.rootDir}/LICENSE"))
         from(bootJar)
     }
 
