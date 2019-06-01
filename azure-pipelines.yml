@@ -25,6 +25,7 @@ steps:
   inputs:
     Contents: 'spring-mq-demoapp-boot/build/distributions/*'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    FlattenFolders: true
 
 - task: PublishBuildArtifacts@1
   inputs:
