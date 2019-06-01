@@ -3,3 +3,20 @@
 # spring-mq-demoapp
 
 Demo playground application for Kotlin, Spring, Camel and other things.
+
+## Prerequisites
+
+- JDK 11 (JDK 8 should also work, but not tested)
+- Docker and Docker Compose (for providing an ActiveMQ broker)
+
+## How to build
+
+```
+$ ./gradlew bootJar
+```
+
+## How to run
+
+```
+$ ./gradlew bootRun
+```
