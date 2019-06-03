@@ -18,7 +18,5 @@ open class TypeConvertingGreetingRequestProcessor : Processor, Logging {
         val request = exchange.getIn().getBody(GreetingRequest::class.java)
 
         logger().info("Hi ${request?.name ?: "stranger"} ${request?.dateTimeOfGreet}!")
-
-        throw RuntimeException("fadfsjasfdjsadf")
     }
 }
