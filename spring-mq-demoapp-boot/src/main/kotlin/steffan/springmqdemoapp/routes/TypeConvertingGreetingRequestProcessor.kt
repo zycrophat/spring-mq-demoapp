@@ -2,7 +2,6 @@ package steffan.springmqdemoapp.routes
 
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
-import org.apache.camel.TypeConverter
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
@@ -12,13 +11,14 @@ import steffan.springmqdemoapp.util.logger
 
 
 @Component
-open class TypeConvertingGreetingRequestProcessor(private val typeConverter: TypeConverter) : Processor, Logging {
+open class TypeConvertingGreetingRequestProcessor : Processor, Logging {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     override fun process(exchange: Exchange) {
-        val request = typeConverter
-                .convertTo(GreetingRequest::class.java, exchange, exchange.getIn().body)
+        val request = exchange.getIn().getBody(GreetingRequest::class.java)
 
         logger().info("Hi ${request?.name ?: "stranger"} ${request?.dateTimeOfGreet}!")
+
+        throw RuntimeException("fadfsjasfdjsadf")
     }
 }

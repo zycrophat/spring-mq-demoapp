@@ -75,10 +75,11 @@ dependencies {
     implementation("org.apache.camel:camel-spring-boot:${LibraryVersions.CAMEL_VERSION}")
     implementation("org.apache.camel:camel-spring-boot-starter:${LibraryVersions.CAMEL_VERSION}")
     runtime("org.apache.activemq:activemq-camel:5.15.9")
-    runtime("org.apache.camel:camel-jms:${LibraryVersions.CAMEL_VERSION}")
+    implementation("org.apache.camel:camel-jms:${LibraryVersions.CAMEL_VERSION}")
     implementation("org.apache.camel:camel-jaxb:${LibraryVersions.CAMEL_VERSION}")
     runtime("com.fasterxml.woodstox:woodstox-core:5.2.1")
     implementation("org.apache.camel:camel-sql:${LibraryVersions.CAMEL_VERSION}")
+
 
     implementation("org.apache.camel:camel-infinispan:${LibraryVersions.CAMEL_VERSION}")
     implementation("org.infinispan:infinispan-spring-boot-starter:2.1.5.Final")
@@ -92,6 +93,10 @@ dependencies {
     jaxb("org.glassfish.jaxb:jaxb-runtime:${LibraryVersions.JAXB_VERSION}")
     jaxb("javax.activation:activation:1.1")
     implementation("com.migesok:jaxb-java-time-adapters:1.1.3")
+
+    runtime("org.springframework.boot:spring-boot-starter-aop:2.1.5.RELEASE")
+    runtime("org.springframework:spring-aop:5.1.7.RELEASE")
+    runtime("org.springframework:spring-aspects:5.1.7.RELEASE")
 }
 
 dependencyManagement {
