@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version LibraryVersions.SPRING_BOOT_VERSION
     id("io.spring.dependency-management") version "1.0.7.RELEASE"
-    kotlin("jvm") version "1.3.31"
+    kotlin("jvm")
     id("org.jetbrains.kotlin.plugin.spring") version "1.3.31"
     id("idea")
     id("com.avast.gradle.docker-compose") version "0.9.4"
@@ -55,7 +55,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-integration:${LibraryVersions.SPRING_BOOT_VERSION}")
 
     implementation("org.springframework.boot:spring-boot-starter-web:${LibraryVersions.SPRING_BOOT_VERSION}")
-    implementation("de.codecentric:spring-boot-admin-starter-server:${LibraryVersions.SPRING_BOOT_BASE_VERSION}")
     implementation("de.codecentric:spring-boot-admin-starter-client:${LibraryVersions.SPRING_BOOT_BASE_VERSION}")
     implementation("org.springframework.boot:spring-boot-starter-security:${LibraryVersions.SPRING_BOOT_VERSION}")
 
