@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository
@@ -18,6 +19,7 @@ import steffan.springmqdemoapp.util.logger as configLogger
 open class SecurityConfiguration(val adminServer: AdminServerProperties,
                                  val applicationClients: ApplicationClients) : WebSecurityConfigurerAdapter() {
 
+    // required to circumvent name clash with WebSecurityConfigurerAdapter::logger()
     companion object LoggerCompanion : Logging
 
     @Throws(Exception::class)
@@ -42,7 +44,6 @@ open class SecurityConfiguration(val adminServer: AdminServerProperties,
                 )
     }
 
-
     @Bean
     fun inMemoryUserDetailsManager(): InMemoryUserDetailsManager {
         val manager = InMemoryUserDetailsManager()
@@ -51,7 +52,7 @@ open class SecurityConfiguration(val adminServer: AdminServerProperties,
         applicationClients.clients.forEach { client ->
             manager.createUser(
                     User.builder()
-                            .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
+                            .passwordEncoder(passwordEncoder()::encode)
                             .username(client.username)
                             .password(client.password)
                             .roles(*client.roles)
@@ -62,5 +63,8 @@ open class SecurityConfiguration(val adminServer: AdminServerProperties,
 
         return manager
     }
+
+    @Bean
+    open fun passwordEncoder(): PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
 }
