@@ -12,6 +12,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 import steffan.springmqdemoapp.util.Logging
+import steffan.springmqdemoapp.util.defer
 import steffan.springmqdemoapp.util.logger as configLogger
 
 
@@ -47,7 +48,7 @@ open class SecurityConfiguration(val adminServer: AdminServerProperties,
     @Bean
     fun inMemoryUserDetailsManager(): InMemoryUserDetailsManager {
         val manager = InMemoryUserDetailsManager()
-        configLogger().info("Importing {} clients:", applicationClients.clients.size)
+        configLogger().info("Importing {} clients:", defer {applicationClients.clients.size})
 
         applicationClients.clients.forEach { client ->
             manager.createUser(
@@ -58,7 +59,7 @@ open class SecurityConfiguration(val adminServer: AdminServerProperties,
                             .roles(*client.roles)
                             .build()
             )
-            configLogger().info("Imported client {}", client.username)
+            configLogger().info("Imported client {}", defer {client.username})
         }
 
         return manager

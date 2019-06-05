@@ -16,3 +16,9 @@ fun <T : Any> getClassForLogging(javaClass: Class<T>): Class<*> {
         it.kotlin.companionObject?.java == javaClass
     } ?: javaClass
 }
+
+fun <T> defer(stringSourceProvider: () -> T) = defer(stringSourceProvider, { it.toString()} )
+
+fun <T> defer(stringSourceProvider: () -> T, mapToString: (T) -> String) = object {
+    override fun toString() = mapToString(stringSourceProvider())
+}
