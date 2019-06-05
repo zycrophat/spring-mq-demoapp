@@ -4,6 +4,7 @@ plugins {
     id("org.springframework.boot") version LibraryVersions.SPRING_BOOT_VERSION
     id("io.spring.dependency-management") version "1.0.7.RELEASE"
     kotlin("jvm")
+    kotlin("kapt")
     id("org.jetbrains.kotlin.plugin.spring") version "1.3.31"
     id("idea")
 }
@@ -39,11 +40,15 @@ configurations.all {
 }
 
 dependencies {
-    implementation("org.slf4j:slf4j-api:1.7.26+")
+    implementation(project(":spring-mq-demoapp-boot-common"))
     runtime("ch.qos.logback:logback-classic:1.2.3+")
+
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${LibraryVersions.SPRING_BOOT_VERSION}")
 
     implementation("org.springframework.boot:spring-boot-starter-web:${LibraryVersions.SPRING_BOOT_VERSION}")
     implementation("de.codecentric:spring-boot-admin-starter-server:${LibraryVersions.SPRING_BOOT_BASE_VERSION}")
+    implementation("de.codecentric:spring-boot-admin-starter-client:${LibraryVersions.SPRING_BOOT_BASE_VERSION}")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:${LibraryVersions.SPRING_BOOT_VERSION}")
     implementation("org.springframework.boot:spring-boot-starter-security:${LibraryVersions.SPRING_BOOT_VERSION}")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:${LibraryVersions.KOTLIN_VERSION}")

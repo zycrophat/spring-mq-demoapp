@@ -1,0 +1,6 @@
+/build
+/out
+/src/main/generated-java
+/transaction-logs
+/run
+/bin

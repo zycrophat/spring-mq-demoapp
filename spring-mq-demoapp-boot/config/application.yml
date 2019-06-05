@@ -1,0 +1,20 @@
+app:
+    camel:
+        datasource:
+            jndiName: java:comp/env/jdbc/messageIdDataSource
+camel:
+    springboot:
+        main-run-controller: true
+management:
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+spring:
+    application:
+        basename: spring-mq-demoapp-boot
+        name: ${spring.application.basename}-${spring.profiles.active}
+    main:
+        banner-mode: 'off'
+    profiles:
+        active: development

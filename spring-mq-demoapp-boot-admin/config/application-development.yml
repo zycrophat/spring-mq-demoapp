@@ -1,0 +1,23 @@
+application:
+    clients:
+      - username: admin
+        password: adminadmin
+        roles: READ,WRITE
+      - username: boot-app
+        password: boot-app-pass
+        roles: READ,WRITE
+      - username: self
+        password: adminadmin
+        roles: READ,WRITE
+spring:
+  boot:
+    admin:
+      client:
+        instance:
+          metadata:
+            user:
+              name: self
+              password: adminadmin
+        password: adminadmin
+        url: http://localhost:8080
+        username: self
