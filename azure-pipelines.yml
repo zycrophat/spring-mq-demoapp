@@ -30,8 +30,8 @@ steps:
 - task: CopyFiles@2
   inputs:
     Contents: |
-      'spring-mq-demoapp-boot/build/distributions/*'
-      'spring-mq-demoapp-boot-admin/build/distributions/*'
+      spring-mq-demoapp-boot/build/distributions/*
+      spring-mq-demoapp-boot-admin/build/distributions/*
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
     FlattenFolders: true
 
