@@ -69,7 +69,8 @@ dependencies {
     implementation("javax.xml.bind:jaxb-api:2.3.1")
     
     implementation("org.glassfish.jaxb:jaxb-runtime:${LibraryVersions.JAXB_VERSION}")
-    implementation("org.springframework:spring-oxm:5.1.7.RELEASE")
+
+    implementation("org.springframework:spring-oxm:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
     implementation("org.reflections:reflections:0.9.11")
     implementation("org.springframework.boot:spring-boot-starter-jta-atomikos:${LibraryVersions.SPRING_BOOT_VERSION}")
 
@@ -96,9 +97,9 @@ dependencies {
     jaxb("javax.activation:activation:1.1")
     implementation("com.migesok:jaxb-java-time-adapters:1.1.3")
 
-    runtime("org.springframework.boot:spring-boot-starter-aop:2.1.5.RELEASE")
-    runtime("org.springframework:spring-aop:5.1.7.RELEASE")
-    runtime("org.springframework:spring-aspects:5.1.7.RELEASE")
+    runtime("org.springframework.boot:spring-boot-starter-aop:${LibraryVersions.SPRING_BOOT_VERSION}")
+    runtime("org.springframework:spring-aop:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
+    runtime("org.springframework:spring-aspects:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
 }
 
 dependencyManagement {
