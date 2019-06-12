@@ -1,5 +1,6 @@
 package steffan.springmqdemoapp.routes
 
+import org.apache.camel.ExchangePattern
 import org.apache.camel.builder.xml.Namespaces
 import org.apache.camel.component.infinispan.processor.idempotent.InfinispanIdempotentRepository
 import org.apache.camel.processor.idempotent.jdbc.JdbcMessageIdRepository
@@ -25,7 +26,8 @@ class GreetingRouteBuilder(
 
         from("jms:greetConvert")
                 .routeId("greetConvert")
-                //.transacted()
+                .transacted()
+                .setExchangePattern(ExchangePattern.InOnly)
                 .idempotentConsumer()
                     .xpath("//g:greetingRequest/g:name/text()",
                             Namespaces("g", "urn:steffan.springmqdemoapp:greeting")
@@ -38,6 +40,7 @@ class GreetingRouteBuilder(
         from("jms:greetUnmarshall")
                 .routeId("greetUnmarshall")
                 .transacted()
+                .setExchangePattern(ExchangePattern.InOnly)
                 .unmarshal(jaxbDataFormat)
                 .idempotentConsumer()
                     .body(GreetingRequest::class.java, GreetingRequest::getName)
