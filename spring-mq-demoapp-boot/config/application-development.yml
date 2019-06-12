@@ -20,3 +20,6 @@ spring:
                 password: boot-app-pass
                 url: http://localhost:8080
                 username: boot-app
+logging:
+    level:
+        steffan: DEBUG

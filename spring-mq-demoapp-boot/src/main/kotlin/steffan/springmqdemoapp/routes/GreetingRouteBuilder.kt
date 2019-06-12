@@ -9,6 +9,8 @@ import org.apache.camel.spring.SpringRouteBuilder
 import org.infinispan.manager.EmbeddedCacheManager
 import org.springframework.stereotype.Component
 import steffan.springmqdemoapp.api.bindings.GreetingRequest
+import steffan.springmqdemoapp.util.Logging
+import steffan.springmqdemoapp.util.logger
 import javax.sql.DataSource
 
 
@@ -19,10 +21,12 @@ class GreetingRouteBuilder(
         private val unmarshalledGreetingRequestProcessor: UnmarshalledGreetingRequestProcessor,
         private val messageIdDataSource: DataSource,
         private val infiniCacheManager: EmbeddedCacheManager
-) : SpringRouteBuilder() {
+) : SpringRouteBuilder(), Logging {
 
     override fun configure() {
         context.isStreamCaching = true
+
+        logger().debug("Start configuring routes")
 
         from("jms:greetConvert")
                 .routeId("greetConvert")
@@ -49,6 +53,6 @@ class GreetingRouteBuilder(
                     )
                 .process(unmarshalledGreetingRequestProcessor)
 
-
+        logger().debug("Finished configuring routes")
     }
 }
