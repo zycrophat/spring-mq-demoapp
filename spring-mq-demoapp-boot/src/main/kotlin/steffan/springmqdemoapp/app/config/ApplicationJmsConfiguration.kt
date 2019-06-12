@@ -115,6 +115,7 @@ open class ApplicationJmsConfiguration {
         return InfinispanGlobalConfigurer {
             GlobalConfigurationBuilder().transport()
                     .defaultTransport()
+                    .defaultCacheName("defaultCache")
                     .build()
         }
     }
