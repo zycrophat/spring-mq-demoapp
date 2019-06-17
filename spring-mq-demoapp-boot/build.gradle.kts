@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.redundent.kotlin.xml.PrintOptions
+import org.redundent.kotlin.xml.xml
 
 plugins {
     id("org.springframework.boot") version LibraryVersions.SPRING_BOOT_VERSION
@@ -214,6 +216,72 @@ tasks {
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
         dependsOn(distZip, distTar)
+    }
+
+    val createWindowsService by creating {
+        val windowsServiceDir = file("${project.buildDir}/windows-service")
+
+        outputs.dir(windowsServiceDir)
+
+        doLast {
+            windowsServiceDir.mkdirs()
+
+            copy {
+                from(bootJar)
+                into("$windowsServiceDir/lib")
+            }
+            copy {
+                from("config")
+                into("$windowsServiceDir/config")
+            }
+            copy {
+                from("${project.rootDir}/winsw/WinSW.NET2.exe")
+                into(windowsServiceDir)
+                rename("WinSW.NET2.exe", "${project.name}-${project.version}.exe")
+            }
+            val winswConfig = xml("configuration") {
+                "id" {
+                    -"${project.name}-${project.version}"
+                }
+                "name" {
+                    -"${project.name}-${project.version}"
+                }
+                "description" {
+                    -"Spring Boot Sample application ${project.name}-${project.version}"
+                }
+                "executable" {
+                    -"java"
+                }
+                "arguments" {
+                    -"-jar %BASE%/lib/${project.name}-${project.version}.jar"
+                }
+                "priority" {
+                    -"Normal"
+                }
+                "stoptimeout" {
+                    -"15 sec"
+                }
+                "stopparentprocessfirst" {
+                    -"false"
+                }
+                "startmode" {
+                    -"Automatic"
+                }
+                "waithint" {
+                    -"15 sec"
+                }
+                "sleeptime" {
+                    -"1 sec"
+                }
+                "log" {
+                    attribute("mode", "append")
+                }
+            }
+            file("$windowsServiceDir/${project.name}-${project.version}.xml")
+                    .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
+        }
+
+        dependsOn(bootJar)
     }
 
 }
