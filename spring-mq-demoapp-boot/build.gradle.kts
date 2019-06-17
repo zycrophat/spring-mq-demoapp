@@ -1,3 +1,5 @@
+import com.github.alexeylisyutenko.windowsserviceplugin.Architecture
+import com.github.alexeylisyutenko.windowsserviceplugin.Startup
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -8,6 +10,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.spring") version "1.3.31"
     id("idea")
     id("com.avast.gradle.docker-compose") version "0.9.4"
+    id("com.github.alexeylisyutenko.windows-service-plugin")
 }
 
 group = "steffan"
@@ -216,4 +219,21 @@ tasks {
         dependsOn(distZip, distTar)
     }
 
+    val createWindowsService by getting {
+        //dependsOn(bootJar)
+    }
+
+}
+
+windowsService {
+    architecture = Architecture.AMD64
+    displayName = "TestService"
+    description = "Service generated with using gradle plugin"
+    startClass = "steffan.springmqdemoapp.MainKt"
+    startMethod = "main"
+    stopClass = "steffan.springmqdemoapp.MainKt"
+    stopMethod = "stop"
+    startup = Startup.AUTO
+
+    overridingClasspath = project.tasks.getByName("bootJar").outputs.files
 }
