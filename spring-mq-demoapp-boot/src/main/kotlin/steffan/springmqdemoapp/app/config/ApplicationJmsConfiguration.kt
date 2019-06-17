@@ -1,9 +1,10 @@
 package steffan.springmqdemoapp.app.config
 
 
-import org.apache.activemq.ActiveMQConnectionFactory
+import org.apache.activemq.ActiveMQXAConnectionFactory
 import org.apache.activemq.RedeliveryPolicy
 import org.apache.camel.component.jms.JmsConfiguration
+import org.h2.jdbcx.JdbcDataSource
 import org.infinispan.configuration.cache.ConfigurationBuilder
 import org.infinispan.configuration.global.GlobalConfigurationBuilder
 import org.infinispan.persistence.jdbc.configuration.JdbcStringBasedStoreConfigurationBuilder
@@ -13,8 +14,8 @@ import org.infinispan.transaction.TransactionMode
 import org.infinispan.transaction.TransactionProtocol
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer
-import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
+import org.springframework.boot.jta.atomikos.AtomikosConnectionFactoryBean
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.AdviceMode
 import org.springframework.context.annotation.Bean
@@ -30,7 +31,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 import steffan.springmqdemoapp.routes.TypeConvertingGreetingRequestProcessor
 import steffan.springmqdemoapp.routes.UnmarshalledGreetingRequestProcessor
 import java.util.concurrent.TimeUnit
-import javax.sql.DataSource
+import javax.jms.ConnectionFactory
+import javax.sql.XADataSource
 import javax.transaction.TransactionManager
 
 
@@ -52,16 +54,21 @@ open class ApplicationJmsConfiguration {
     @Value("\${app.camel.datasource.jndiName}")
     lateinit var messageIdDataSourceJndiName: String
 
-    @Bean
-    open fun activeMQConnectionFactory(): ActiveMQConnectionFactory {
-        val activeMQConnectionFactory = ActiveMQConnectionFactory().apply {
-            brokerURL = brokerUrl
-            userName = user
-            password = pass
-            redeliveryPolicy = redeliveryPolicy()
-        }
+    @Value("\${app.camel.datasource.jdbc-url}")
+    lateinit var messageIdDataSourceUrl: String
 
-        return activeMQConnectionFactory
+    @Bean
+    open fun connectionFactory(): ConnectionFactory {
+        return CachingConnectionFactory(AtomikosConnectionFactoryBean().apply {
+            xaConnectionFactory = ActiveMQXAConnectionFactory().apply {
+                brokerURL = brokerUrl
+                userName = user
+                password = pass
+                redeliveryPolicy = redeliveryPolicy()
+            }
+            setPoolSize(1)
+            uniqueResourceName = "activemqConnectionFactory"
+        })
     }
 
     @Bean
@@ -75,14 +82,9 @@ open class ApplicationJmsConfiguration {
     }
 
     @Bean
-    open fun cachingConnectionFactory(): CachingConnectionFactory {
-        return CachingConnectionFactory(activeMQConnectionFactory())
-    }
-
-    @Bean
     open fun jmsConfiguration(txManager: PlatformTransactionManager): JmsConfiguration {
         return JmsConfiguration().apply {
-            connectionFactory = cachingConnectionFactory()
+            connectionFactory = connectionFactory()
             transactionManager = txManager
             isTransacted = true
             cacheLevelName = "CACHE_CONNECTION"
@@ -93,15 +95,19 @@ open class ApplicationJmsConfiguration {
     open fun jmsListenerContainerFactory(configurer: DefaultJmsListenerContainerFactoryConfigurer):
             JmsListenerContainerFactory<*> {
         val factory = DefaultJmsListenerContainerFactory()
-        configurer.configure(factory, cachingConnectionFactory())
+        configurer.configure(factory, connectionFactory())
         factory.setSessionTransacted(true)
         return factory
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "app.camel.datasource")
-    open fun messageIdDataSource(): DataSource {
-        val dataSource = DataSourceBuilder.create().build()
+    open fun messageIdDataSource(): XADataSource {
+        val dataSource = DataSourceBuilder
+                .create()
+                .type(JdbcDataSource::class.java)
+                .url(messageIdDataSourceUrl)
+                .build()
+        dataSource.description = "messageIdDataSource"
 
         SimpleNamingContextBuilder().apply {
             bind(messageIdDataSourceJndiName, dataSource)
@@ -155,7 +161,6 @@ open class ApplicationJmsConfiguration {
                 expiration()
                         .lifespan(1, TimeUnit.MINUTES)
                         .enableReaper()
-
             }
 
             manager.defineConfiguration(UnmarshalledGreetingRequestProcessor::class.simpleName, config.build(true))

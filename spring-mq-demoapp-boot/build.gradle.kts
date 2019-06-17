@@ -89,7 +89,7 @@ dependencies {
     implementation("org.springframework:spring-context")
     implementation("org.springframework:spring-mock:2.0.8")
     implementation("org.infinispan:infinispan-cachestore-jdbc:9.4.14.Final")
-    runtime("com.h2database:h2:1.4.199")
+    implementation("com.h2database:h2:1.4.199")
     runtime("org.springframework.boot:spring-boot-starter-jdbc:${LibraryVersions.SPRING_BOOT_VERSION}")
 
     jaxb("org.glassfish.jaxb:jaxb-xjc:${LibraryVersions.JAXB_VERSION}")
