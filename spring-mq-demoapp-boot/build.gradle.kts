@@ -20,6 +20,9 @@ java.targetCompatibility = JavaVersion.VERSION_1_8
 repositories {
     jcenter()
     mavenCentral()
+    maven (
+        url = "http://repo.jenkins-ci.org/releases"
+    )
 }
 
 springBoot {
@@ -49,6 +52,7 @@ configurations.all {
 }
 
 val jaxb = configurations.create("jaxb")
+val winsw = configurations.create("winsw")
 dependencies {
     implementation(project(":spring-mq-demoapp-boot-common"))
     runtime("ch.qos.logback:logback-classic:1.2.3+")
@@ -102,6 +106,8 @@ dependencies {
     runtime("org.springframework.boot:spring-boot-starter-aop:${LibraryVersions.SPRING_BOOT_VERSION}")
     runtime("org.springframework:spring-aop:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
     runtime("org.springframework:spring-aspects:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
+
+    winsw("com.sun.winsw:winsw:2.2.0:bin@exe")
 }
 
 dependencyManagement {
@@ -235,9 +241,9 @@ tasks {
                 into("$windowsServiceDir/config")
             }
             copy {
-                from("${project.rootDir}/winsw/WinSW.NET2.exe")
+                from(winsw)
                 into(windowsServiceDir)
-                rename("WinSW.NET2.exe", "${project.name}-${project.version}.exe")
+                rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
             }
             val winswConfig = xml("configuration") {
                 "id" {
