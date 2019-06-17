@@ -9,7 +9,6 @@ plugins {
     id("org.owasp.dependencycheck") version "5.0.0-M3.1" apply false
     kotlin("jvm") version "1.3.31" apply false
     kotlin("kapt") version "1.3.31" apply false
-    id("com.github.alexeylisyutenko.windows-service-plugin") version "1.1.0" apply false
 }
 
 gitVersion.rules {
