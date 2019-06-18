@@ -1,11 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.redundent.kotlin.xml.PrintOptions
+import org.redundent.kotlin.xml.xml
 
 plugins {
-    id("org.springframework.boot") version LibraryVersions.SPRING_BOOT_VERSION
-    id("io.spring.dependency-management") version "1.0.7.RELEASE"
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
     kotlin("jvm")
     kotlin("kapt")
-    id("org.jetbrains.kotlin.plugin.spring") version "1.3.31"
+    id("org.jetbrains.kotlin.plugin.spring")
     id("idea")
 }
 
@@ -39,6 +41,7 @@ configurations.all {
     exclude("org.jboss.slf4j", "slf4j-jboss-logging")
 }
 
+val winsw = configurations.create("winsw")
 dependencies {
     implementation(project(":spring-mq-demoapp-boot-common"))
     runtime("ch.qos.logback:logback-classic:1.2.3+")
@@ -55,6 +58,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:${LibraryVersions.SPRING_BOOT_VERSION}")
+    winsw("com.sun.winsw:winsw:2.2.0:bin@exe")
 }
 
 dependencyManagement {
@@ -115,6 +119,73 @@ tasks {
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
         dependsOn(distZip, distTar)
+    }
+
+    val createWindowsService by creating {
+        description = "Creates installer to deploy the application as a Windows service"
+        group = ProjectSettings.DISTRIBUTION_GROUP_NAME
+
+        dependsOn(bootJar)
+        val windowsServiceDir = file("${project.buildDir}/windows-service")
+        outputs.dir(windowsServiceDir)
+
+        doLast {
+            windowsServiceDir.mkdirs()
+
+            copy {
+                from(bootJar)
+                into("$windowsServiceDir/lib")
+            }
+            copy {
+                from("config")
+                into("$windowsServiceDir/config")
+            }
+            copy {
+                from(winsw)
+                into(windowsServiceDir)
+                rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
+            }
+            val winswConfig = xml("configuration") {
+                "id" {
+                    -"${project.name}-${project.version}"
+                }
+                "name" {
+                    -"${project.name}-${project.version}"
+                }
+                "description" {
+                    -"Spring Boot Admin Sample application ${project.name}-${project.version}"
+                }
+                "executable" {
+                    -"java"
+                }
+                "arguments" {
+                    -"-jar %BASE%/lib/${bootJar.get().archiveFile.orNull?.asFile?.name}"
+                }
+                "priority" {
+                    -"Normal"
+                }
+                "stoptimeout" {
+                    -"15 sec"
+                }
+                "stopparentprocessfirst" {
+                    -"false"
+                }
+                "startmode" {
+                    -"Automatic"
+                }
+                "waithint" {
+                    -"15 sec"
+                }
+                "sleeptime" {
+                    -"1 sec"
+                }
+                "log" {
+                    attribute("mode", "append")
+                }
+            }
+            file("$windowsServiceDir/${project.name}-${project.version}.xml")
+                    .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
+        }
     }
 
 }

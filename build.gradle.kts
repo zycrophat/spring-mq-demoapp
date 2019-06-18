@@ -4,6 +4,9 @@ plugins {
     id("base")
     id("idea")
     id("eclipse")
+    id("org.springframework.boot") version LibraryVersions.SPRING_BOOT_VERSION apply false
+    id("io.spring.dependency-management") version "1.0.7.RELEASE" apply false
+    id("org.jetbrains.kotlin.plugin.spring") version "1.3.31" apply false
     id("org.unbroken-dome.gitversion") version "0.10.0" apply true
     id("com.github.jk1.dependency-license-report") version "1.6" apply false
     id("org.owasp.dependencycheck") version "5.0.0-M3.1" apply false
@@ -42,7 +45,7 @@ gitVersion.rules {
         val label = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
         val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
         if (countCommitsSinceTag > 0) {
-            version.setPrereleaseTag("${countCommitsSinceTag}.${label}")
+            version.setPrereleaseTag("$countCommitsSinceTag.$label")
         }
     }
 }
@@ -61,6 +64,9 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
+        maven (
+                url = "http://repo.jenkins-ci.org/releases"
+        )
     }
 
 }

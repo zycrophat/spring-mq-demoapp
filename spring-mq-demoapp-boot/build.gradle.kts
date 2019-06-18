@@ -3,11 +3,11 @@ import org.redundent.kotlin.xml.PrintOptions
 import org.redundent.kotlin.xml.xml
 
 plugins {
-    id("org.springframework.boot") version LibraryVersions.SPRING_BOOT_VERSION
-    id("io.spring.dependency-management") version "1.0.7.RELEASE"
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
     kotlin("jvm")
     kotlin("kapt")
-    id("org.jetbrains.kotlin.plugin.spring") version "1.3.31"
+    id("org.jetbrains.kotlin.plugin.spring")
     id("idea")
     id("com.avast.gradle.docker-compose") version "0.9.4"
 }
@@ -20,9 +20,6 @@ java.targetCompatibility = JavaVersion.VERSION_1_8
 repositories {
     jcenter()
     mavenCentral()
-    maven (
-        url = "http://repo.jenkins-ci.org/releases"
-    )
 }
 
 springBoot {
@@ -153,7 +150,7 @@ tasks {
             ant.withGroovyBuilder {
                 "taskdef"("name" to "xjc", "classname" to "com.sun.tools.xjc.XJC2Task", "classpath" to jaxb.asPath)
                 "xjc"("destdir" to "$jaxbTargetDir",
-                        "binding" to "${xsdDir}/binding.xml"
+                        "binding" to "$xsdDir/binding.xml"
                 ) {
                     "schema"("dir" to "$xsdDir", "includes" to "*.xsd")
                     "arg"("value" to "-extension")
@@ -225,6 +222,9 @@ tasks {
     }
 
     val createWindowsService by creating {
+        description = "Creates installer to deploy the application as a Windows service"
+        group = ProjectSettings.DISTRIBUTION_GROUP_NAME
+
         dependsOn(bootJar)
         val windowsServiceDir = file("${project.buildDir}/windows-service")
         outputs.dir(windowsServiceDir)
