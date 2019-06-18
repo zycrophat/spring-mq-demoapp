@@ -225,8 +225,8 @@ tasks {
     }
 
     val createWindowsService by creating {
+        dependsOn(bootJar)
         val windowsServiceDir = file("${project.buildDir}/windows-service")
-
         outputs.dir(windowsServiceDir)
 
         doLast {
@@ -259,7 +259,7 @@ tasks {
                     -"java"
                 }
                 "arguments" {
-                    -"-jar %BASE%/lib/${project.name}-${project.version}.jar"
+                    -"-jar %BASE%/lib/${bootJar.get().archiveFile.orNull?.asFile?.name}"
                 }
                 "priority" {
                     -"Normal"
@@ -286,8 +286,6 @@ tasks {
             file("$windowsServiceDir/${project.name}-${project.version}.xml")
                     .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
         }
-
-        dependsOn(bootJar)
     }
 
 }
