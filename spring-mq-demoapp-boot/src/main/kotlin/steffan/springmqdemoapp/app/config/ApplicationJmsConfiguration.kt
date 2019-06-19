@@ -24,7 +24,6 @@ import org.springframework.context.annotation.DependsOn
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory
 import org.springframework.jms.config.JmsListenerContainerFactory
-import org.springframework.jms.connection.CachingConnectionFactory
 import org.springframework.mock.jndi.SimpleNamingContextBuilder
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
@@ -59,16 +58,17 @@ open class ApplicationJmsConfiguration {
 
     @Bean
     open fun connectionFactory(): ConnectionFactory {
-        return CachingConnectionFactory(AtomikosConnectionFactoryBean().apply {
+        return AtomikosConnectionFactoryBean().apply {
             xaConnectionFactory = ActiveMQXAConnectionFactory().apply {
                 brokerURL = brokerUrl
                 userName = user
                 password = pass
                 redeliveryPolicy = redeliveryPolicy()
             }
-            setPoolSize(1)
+            maxPoolSize = 5
+            localTransactionMode = false
             uniqueResourceName = "activemqConnectionFactory"
-        })
+        }
     }
 
     @Bean

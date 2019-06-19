@@ -1,8 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.redundent.kotlin.xml.Node
 import org.redundent.kotlin.xml.PrintOptions
-import org.redundent.kotlin.xml.xml
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot")
@@ -52,7 +49,6 @@ configurations.all {
 
 val jaxb = configurations.create("jaxb")
 val winsw = configurations.create("winsw")
-val stopper = configurations.create("stopper")
 dependencies {
     implementation(project(":spring-mq-demoapp-boot-common"))
     runtime("ch.qos.logback:logback-classic:1.2.3+")
@@ -108,7 +104,6 @@ dependencies {
     runtime("org.springframework:spring-aspects:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
 
     winsw("com.sun.winsw:winsw:2.2.0:bin@exe")
-    stopper(project(":spring-mq-demoapp-boot-stopper"))
 }
 
 dependencyManagement {
@@ -230,6 +225,7 @@ tasks {
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
         dependsOn(bootJar)
+        dependsOn(project(":spring-mq-demoapp-boot-stopper").tasks.named("installDist"))
         val windowsServiceDir = file("${project.buildDir}/windows-service")
         outputs.dir(windowsServiceDir)
 
@@ -250,7 +246,7 @@ tasks {
                 rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
             }
             copy {
-                from(stopper)
+                from(project(":spring-mq-demoapp-boot-stopper").tasks.named("installDist"))
                 into("$windowsServiceDir/stopper")
             }
             val winswConfig = createWinswConfig(project, bootJar.get().archiveFile.orNull?.asFile?.name, 9012)

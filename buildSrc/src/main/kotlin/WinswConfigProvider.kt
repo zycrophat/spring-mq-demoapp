@@ -68,13 +68,10 @@ fun createWinswConfig(theProject: Project, bootJarName: String?, jmxPort: Int): 
             attribute("mode", "append")
         }
         "stopexecutable" {
-            -"java"
+            -"%BASE%/stopper/bin/spring-mq-demoapp-boot-stopper.bat"
         }
         "stopargument" {
-            -"-jar"
-        }
-        "stopargument" {
-            -"%BASE%/stopper/stopper.bat"
+            -"$jmxPort"
         }
     }
 }

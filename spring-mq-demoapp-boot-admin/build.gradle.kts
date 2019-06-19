@@ -145,6 +145,10 @@ tasks {
                 into(windowsServiceDir)
                 rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
             }
+            copy {
+                from(project(":spring-mq-demoapp-boot-stopper").tasks.named("installDist"))
+                into("$windowsServiceDir/stopper")
+            }
             val winswConfig = createWinswConfig(project, bootJar.get().archiveFile.orNull?.asFile?.name, 9011)
             file("$windowsServiceDir/${project.name}-${project.version}.xml")
                     .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
