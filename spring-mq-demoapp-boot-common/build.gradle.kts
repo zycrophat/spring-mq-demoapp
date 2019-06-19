@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.slf4j:slf4j-api:1.7.26+")
+    api("org.slf4j:slf4j-api:1.7.26+")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:${LibraryVersions.KOTLIN_VERSION}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}")

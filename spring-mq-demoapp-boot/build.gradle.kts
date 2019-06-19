@@ -1,6 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.redundent.kotlin.xml.Node
 import org.redundent.kotlin.xml.PrintOptions
 import org.redundent.kotlin.xml.xml
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot")
@@ -245,47 +247,11 @@ tasks {
                 into(windowsServiceDir)
                 rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
             }
-            val winswConfig = xml("configuration") {
-                "id" {
-                    -"${project.name}-${project.version}"
-                }
-                "name" {
-                    -"${project.name}-${project.version}"
-                }
-                "description" {
-                    -"Spring Boot Sample application ${project.name}-${project.version}"
-                }
-                "executable" {
-                    -"java"
-                }
-                "arguments" {
-                    -"-jar %BASE%/lib/${bootJar.get().archiveFile.orNull?.asFile?.name}"
-                }
-                "priority" {
-                    -"Normal"
-                }
-                "stoptimeout" {
-                    -"15 sec"
-                }
-                "stopparentprocessfirst" {
-                    -"false"
-                }
-                "startmode" {
-                    -"Automatic"
-                }
-                "waithint" {
-                    -"15 sec"
-                }
-                "sleeptime" {
-                    -"1 sec"
-                }
-                "log" {
-                    attribute("mode", "append")
-                }
-            }
+            val winswConfig = createWinswConfig(project, bootJar.get().archiveFile.orNull?.asFile?.name, 9012)
             file("$windowsServiceDir/${project.name}-${project.version}.xml")
                     .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
         }
     }
 
 }
+

@@ -145,44 +145,7 @@ tasks {
                 into(windowsServiceDir)
                 rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
             }
-            val winswConfig = xml("configuration") {
-                "id" {
-                    -"${project.name}-${project.version}"
-                }
-                "name" {
-                    -"${project.name}-${project.version}"
-                }
-                "description" {
-                    -"Spring Boot Admin Sample application ${project.name}-${project.version}"
-                }
-                "executable" {
-                    -"java"
-                }
-                "arguments" {
-                    -"-jar %BASE%/lib/${bootJar.get().archiveFile.orNull?.asFile?.name}"
-                }
-                "priority" {
-                    -"Normal"
-                }
-                "stoptimeout" {
-                    -"15 sec"
-                }
-                "stopparentprocessfirst" {
-                    -"false"
-                }
-                "startmode" {
-                    -"Automatic"
-                }
-                "waithint" {
-                    -"15 sec"
-                }
-                "sleeptime" {
-                    -"1 sec"
-                }
-                "log" {
-                    attribute("mode", "append")
-                }
-            }
+            val winswConfig = createWinswConfig(project, bootJar.get().archiveFile.orNull?.asFile?.name, 9011)
             file("$windowsServiceDir/${project.name}-${project.version}.xml")
                     .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
         }

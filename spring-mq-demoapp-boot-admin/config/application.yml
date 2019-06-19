@@ -7,6 +7,8 @@ spring:
     application:
         basename: spring-mq-demoapp-boot-admin
         name: ${spring.application.basename}-${spring.profiles.active}
+        admin:
+            enabled: true
     main:
         banner-mode: 'off'
     profiles:
