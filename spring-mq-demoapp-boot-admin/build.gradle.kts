@@ -80,7 +80,7 @@ tasks {
         workingDir = project.projectDir
     }
 
-    val copyConfig by creating(Copy::class) {
+    val copyConfig by registering(Copy::class) {
         from("config")
         into("$buildDir/libs/config")
     }
@@ -99,14 +99,14 @@ tasks {
         from(bootJar)
     }
 
-    val distZip by creating(Zip::class) {
+    val distZip by registering(Zip::class) {
         description = "Creates a distributable zip file for the project"
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
         with(distCopySpec)
     }
 
-    val distTar by creating(Tar::class) {
+    val distTar by registering(Tar::class) {
         description = "Creates a distributable tgz file for the project"
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
@@ -114,14 +114,14 @@ tasks {
         compression = Compression.GZIP
     }
 
-    val distAll by creating {
+    val distAll by registering {
         description = "Creates distributable archive files for the project"
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
         dependsOn(distZip, distTar)
     }
 
-    val createWindowsService by creating {
+    val createWindowsService by registering {
         description = "Creates installer to deploy the application as a Windows service"
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 

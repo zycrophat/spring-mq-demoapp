@@ -52,6 +52,7 @@ configurations.all {
 
 val jaxb = configurations.create("jaxb")
 val winsw = configurations.create("winsw")
+val stopper = configurations.create("stopper")
 dependencies {
     implementation(project(":spring-mq-demoapp-boot-common"))
     runtime("ch.qos.logback:logback-classic:1.2.3+")
@@ -107,6 +108,7 @@ dependencies {
     runtime("org.springframework:spring-aspects:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
 
     winsw("com.sun.winsw:winsw:2.2.0:bin@exe")
+    stopper(project(":spring-mq-demoapp-boot-stopper"))
 }
 
 dependencyManagement {
@@ -138,7 +140,7 @@ tasks {
         dependsOn(composeUp)
     }
 
-    val generateJaxb by creating {
+    val generateJaxb by registering {
         description = "Converts xsds to classes"
         val jaxbTargetDir = file(generatedJavaSrcPath)
         val xsdDir = file("src/main/resources/steffan/springmqdemoapp/api/xsd")
@@ -162,27 +164,27 @@ tasks {
         }
     }
 
-    val cleanGeneratedSources by creating(Delete::class) {
+    val cleanGeneratedSources by registering(Delete::class) {
         delete(file(generatedJavaSrcPath))
     }
 
     clean {
-        dependsOn(cleanGeneratedSources)
+        dependsOn(named("cleanGeneratedSources"))
     }
 
     compileJava {
-        dependsOn(generateJaxb)
+        dependsOn(named("generateJaxb"))
     }
 
     compileKotlin {
-        dependsOn(generateJaxb)
+        dependsOn(named("generateJaxb"))
     }
 
     val idea by getting {
-        dependsOn(generateJaxb)
+        dependsOn(named("generateJaxb"))
     }
 
-    val copyConfig by creating(Copy::class) {
+    val copyConfig by registering(Copy::class) {
         from("config")
         into("$buildDir/libs/config")
     }
@@ -201,14 +203,14 @@ tasks {
         from(bootJar)
     }
 
-    val distZip by creating(Zip::class) {
+    val distZip by registering(Zip::class) {
         description = "Creates a distributable zip file for the project"
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
         with(distCopySpec)
     }
 
-    val distTar by creating(Tar::class) {
+    val distTar by registering(Tar::class) {
         description = "Creates a distributable tgz file for the project"
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
@@ -216,14 +218,14 @@ tasks {
         compression = Compression.GZIP
     }
 
-    val distAll by creating {
+    val distAll by registering {
         description = "Creates distributable archive files for the project"
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
         dependsOn(distZip, distTar)
     }
 
-    val createWindowsService by creating {
+    val createWindowsService by registering {
         description = "Creates installer to deploy the application as a Windows service"
         group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
@@ -246,6 +248,10 @@ tasks {
                 from(winsw)
                 into(windowsServiceDir)
                 rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
+            }
+            copy {
+                from(stopper)
+                into("$windowsServiceDir/stopper")
             }
             val winswConfig = createWinswConfig(project, bootJar.get().archiveFile.orNull?.asFile?.name, 9012)
             file("$windowsServiceDir/${project.name}-${project.version}.xml")
