@@ -6,12 +6,12 @@ plugins {
     id("eclipse")
     id("org.springframework.boot") version LibraryVersions.SPRING_BOOT_VERSION apply false
     id("io.spring.dependency-management") version "1.0.7.RELEASE" apply false
-    id("org.jetbrains.kotlin.plugin.spring") version "1.3.31" apply false
+    id("org.jetbrains.kotlin.plugin.spring") version LibraryVersions.KOTLIN_VERSION apply false
     id("org.unbroken-dome.gitversion") version "0.10.0" apply true
     id("com.github.jk1.dependency-license-report") version "1.6" apply false
     id("org.owasp.dependencycheck") version "5.0.0-M3.1" apply false
-    kotlin("jvm") version "1.3.31" apply false
-    kotlin("kapt") version "1.3.31" apply false
+    kotlin("jvm") version LibraryVersions.KOTLIN_VERSION apply false
+    kotlin("kapt") version LibraryVersions.KOTLIN_VERSION apply false
 }
 
 gitVersion.rules {

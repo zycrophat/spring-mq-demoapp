@@ -57,7 +57,7 @@ fun createWinswConfig(theProject: Project, bootJarName: String?, jmxPort: Int, j
     }
 }
 
-fun getBootRunJvmArgs(jmxPort: Int): List<String> = listOf(
+fun getBootRunJvmArgs(jmxPort: Int) = listOf(
         "-Dcom.sun.management.jmxremote",
         "-Dcom.sun.management.jmxremote.host=localhost",
         "-Dcom.sun.management.jmxremote.port=$jmxPort",
