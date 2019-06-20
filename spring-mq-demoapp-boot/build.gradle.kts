@@ -9,7 +9,11 @@ plugins {
     id("org.jetbrains.kotlin.plugin.spring")
     id("idea")
     id("com.avast.gradle.docker-compose") version "0.9.4"
+    application
+    distribution
 }
+
+project.evaluationDependsOn(":spring-mq-demoapp-boot-stopper")
 
 group = "steffan"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
@@ -182,81 +186,60 @@ tasks {
         dependsOn(named("generateJaxb"))
     }
 
-    val copyConfig by registering(Copy::class) {
-        from("config")
-        into("$buildDir/libs/config")
-    }
-
     bootJar {
         launchScript()
-
-        dependsOn(copyConfig)
     }
 
-    val distCopySpec = project.copySpec {
-        from(copyConfig) {
-            into("config")
-        }
-        from(file("${project.rootDir}/LICENSE"))
-        from(bootJar)
+}
+
+val createWindowsServiceConfig by tasks.registering {
+    description = "Creates xml config for deploying the application as a Windows service via winsw"
+    group = ProjectSettings.DISTRIBUTION_GROUP_NAME
+
+    val windowsServiceDir = file("${project.buildDir}/windows-service")
+    outputs.dir(windowsServiceDir)
+
+    doLast {
+        windowsServiceDir.mkdirs()
+
+        val winswConfig = createWinswConfig(project, tasks.bootJar.get().archiveFile.orNull?.asFile?.name, jmxPort, getBootRunJvmArgs(jmxPort))
+        file("$windowsServiceDir/${project.name}-${project.version}.xml")
+                .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
     }
+}
 
-    val distZip by registering(Zip::class) {
-        description = "Creates a distributable zip file for the project"
-        group = ProjectSettings.DISTRIBUTION_GROUP_NAME
-
-        with(distCopySpec)
+val distCopySpec = project.copySpec {
+    from("config") {
+        into("config")
     }
+    from(file("${project.rootDir}/LICENSE"))
+}
 
-    val distTar by registering(Tar::class) {
-        description = "Creates a distributable tgz file for the project"
-        group = ProjectSettings.DISTRIBUTION_GROUP_NAME
+application {
+    mainClassName = "steffan.springmqdemoapp.MainKt"
+}
 
-        with(distCopySpec)
-        compression = Compression.GZIP
-    }
-
-    val distAll by registering {
-        description = "Creates distributable archive files for the project"
-        group = ProjectSettings.DISTRIBUTION_GROUP_NAME
-
-        dependsOn(distZip, distTar)
-    }
-
-    val createWindowsService by registering {
-        description = "Creates installer to deploy the application as a Windows service"
-        group = ProjectSettings.DISTRIBUTION_GROUP_NAME
-
-        dependsOn(bootJar)
-        dependsOn(project(":spring-mq-demoapp-boot-stopper").tasks.named("installDist"))
-        val windowsServiceDir = file("${project.buildDir}/windows-service")
-        outputs.dir(windowsServiceDir)
-
-        doLast {
-            windowsServiceDir.mkdirs()
-
-            copy {
-                from(bootJar)
-                into("$windowsServiceDir/lib")
-            }
-            copy {
-                from("config")
-                into("$windowsServiceDir/config")
-            }
-            copy {
-                from(winsw)
-                into(windowsServiceDir)
-                rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
-            }
-            copy {
-                from(project(":spring-mq-demoapp-boot-stopper").tasks.named("installDist"))
-                into("$windowsServiceDir/stopper")
-            }
-            val winswConfig = createWinswConfig(project, bootJar.get().archiveFile.orNull?.asFile?.name, jmxPort, getBootRunJvmArgs(jmxPort))
-            file("$windowsServiceDir/${project.name}-${project.version}.xml")
-                    .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
+val stopperInstallDistTask = project(":spring-mq-demoapp-boot-stopper").tasks.named("installDist")
+distributions {
+    boot {
+        contents {
+            with(distCopySpec)
         }
     }
 
+    create("bootWinService") {
+        contents {
+            with(boot.get().contents)
+
+            from(winsw)
+            rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
+
+            from(createWindowsServiceConfig)
+
+            from(stopperInstallDistTask) {
+                into("stopper")
+            }
+        }
+    }
 }
 

@@ -12,7 +12,7 @@ Demo playground application for Kotlin, Spring, Camel and other things.
 ## How to build
 
 ```
-$ ./gradlew bootJar
+$ ./gradlew installBootDist
 ```
 
 ## How to run
