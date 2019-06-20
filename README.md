@@ -20,3 +20,25 @@ $ ./gradlew installBootDist
 ```
 $ ./gradlew bootRun
 ```
+
+## How to build a Windows Service
+
+You can build a [winsw](https://github.com/kohsuke/winsw) based Windows service using the
+following commands:
+```
+$ ./gradlew installBootWinServiceDist
+```
+
+To install & uninstall the service admin privileges are required:
+```
+# cd spring-mq-demoapp-boot/build/install/spring-mq-demoapp-boot-bootWinService
+# ./spring-mq-demoapp-boot-x.y.z.exe install
+# ./spring-mq-demoapp-boot-x.y.z.exe uninstall
+```
+
+This also works for the spring-mq-demoapp-boot-admin subproject.
+
+Distribution zip files can also be created:
+```
+$ ./gradlew bootWinServiceDistZip
+```
