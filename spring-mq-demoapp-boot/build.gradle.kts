@@ -125,11 +125,14 @@ dockerCompose {
     stopContainers = false
 }
 
+val jmxPort = 9012
 tasks {
 
     bootRun {
         dependsOn(composeUp)
         workingDir = project.projectDir
+
+        jvmArgs(getBootRunJvmArgs(jmxPort))
     }
     test {
         dependsOn(composeUp)
@@ -249,7 +252,7 @@ tasks {
                 from(project(":spring-mq-demoapp-boot-stopper").tasks.named("installDist"))
                 into("$windowsServiceDir/stopper")
             }
-            val winswConfig = createWinswConfig(project, bootJar.get().archiveFile.orNull?.asFile?.name, 9012)
+            val winswConfig = createWinswConfig(project, bootJar.get().archiveFile.orNull?.asFile?.name, jmxPort, getBootRunJvmArgs(jmxPort))
             file("$windowsServiceDir/${project.name}-${project.version}.xml")
                     .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
         }

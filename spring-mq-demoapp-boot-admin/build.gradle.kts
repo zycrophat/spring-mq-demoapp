@@ -74,10 +74,13 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+val jmxPort = 9011
 tasks {
 
     bootRun {
         workingDir = project.projectDir
+
+        jvmArgs(getBootRunJvmArgs(jmxPort))
     }
 
     val copyConfig by registering(Copy::class) {
@@ -149,7 +152,7 @@ tasks {
                 from(project(":spring-mq-demoapp-boot-stopper").tasks.named("installDist"))
                 into("$windowsServiceDir/stopper")
             }
-            val winswConfig = createWinswConfig(project, bootJar.get().archiveFile.orNull?.asFile?.name, 9011)
+            val winswConfig = createWinswConfig(project, bootJar.get().archiveFile.orNull?.asFile?.name, jmxPort, getBootRunJvmArgs(jmxPort))
             file("$windowsServiceDir/${project.name}-${project.version}.xml")
                     .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
         }

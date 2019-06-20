@@ -2,7 +2,7 @@ import org.gradle.api.Project
 import org.redundent.kotlin.xml.Node
 import org.redundent.kotlin.xml.xml
 
-fun createWinswConfig(theProject: Project, bootJarName: String?, jmxPort: Int): Node {
+fun createWinswConfig(theProject: Project, bootJarName: String?, jmxPort: Int, jvmArgs: List<String>): Node {
     return xml("configuration") {
         "id" {
             -"${theProject.name}-${theProject.version}"
@@ -16,29 +16,10 @@ fun createWinswConfig(theProject: Project, bootJarName: String?, jmxPort: Int): 
         "executable" {
             -"java"
         }
-        "startargument" {
-            -"-Dcom.sun.management.jmxremote"
-        }
-        "startargument" {
-            -"-Dcom.sun.management.jmxremote.host=localhost"
-        }
-        "startargument" {
-            -"-Dcom.sun.management.jmxremote.port=$jmxPort"
-        }
-        "startargument" {
-            -"-Dcom.sun.management.jmxremote.local.only=true"
-        }
-        "startargument" {
-            -"-Dcom.sun.management.jmxremote.authenticate=false"
-        }
-        "startargument" {
-            -"-Dcom.sun.management.jmxremote.ssl=false"
-        }
-        "startargument" {
-            -"-Dcom.sun.management.jmxremote.rmi.port=$jmxPort"
-        }
-        "startargument" {
-            -"-Djava.rmi.server.hostname=localhost"
+        jvmArgs.forEach {
+            "startargument" {
+                -it
+            }
         }
         "startargument" {
             -"-jar"
@@ -75,3 +56,14 @@ fun createWinswConfig(theProject: Project, bootJarName: String?, jmxPort: Int): 
         }
     }
 }
+
+fun getBootRunJvmArgs(jmxPort: Int): List<String> = listOf(
+        "-Dcom.sun.management.jmxremote",
+        "-Dcom.sun.management.jmxremote.host=localhost",
+        "-Dcom.sun.management.jmxremote.port=$jmxPort",
+        "-Dcom.sun.management.jmxremote.local.only=true",
+        "-Dcom.sun.management.jmxremote.authenticate=false",
+        "-Dcom.sun.management.jmxremote.ssl=false",
+        "-Dcom.sun.management.jmxremote.rmi.port=$jmxPort",
+        "-Djava.rmi.server.hostname=localhost"
+)
