@@ -202,7 +202,7 @@ val createWindowsServiceConfig by tasks.registering {
     doLast {
         windowsServiceDir.mkdirs()
 
-        val winswConfig = createWinswConfig(project, tasks.bootJar.get().archiveFile.orNull?.asFile?.name, jmxPort, getBootRunJvmArgs(jmxPort))
+        val winswConfig = createWinswConfig(project, "bin/${project.name}.bat", jmxPort)
         file("$windowsServiceDir/${project.name}-${project.version}.xml")
                 .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
     }

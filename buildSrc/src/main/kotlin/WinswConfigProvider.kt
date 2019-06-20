@@ -2,7 +2,7 @@ import org.gradle.api.Project
 import org.redundent.kotlin.xml.Node
 import org.redundent.kotlin.xml.xml
 
-fun createWinswConfig(theProject: Project, bootJarName: String?, jmxPort: Int, jvmArgs: List<String>): Node {
+fun createWinswConfig(theProject: Project, executable: String, jmxPort: Int): Node {
     return xml("configuration") {
         "id" {
             -"${theProject.name}-${theProject.version}"
@@ -14,18 +14,7 @@ fun createWinswConfig(theProject: Project, bootJarName: String?, jmxPort: Int, j
             -"Spring Boot Sample application ${theProject.name}-${theProject.version}"
         }
         "executable" {
-            -"java"
-        }
-        jvmArgs.forEach {
-            "startargument" {
-                -it
-            }
-        }
-        "startargument" {
-            -"-jar"
-        }
-        "startargument" {
-            -"%BASE%/lib/$bootJarName"
+            -"$executable"
         }
         "priority" {
             -"Normal"
