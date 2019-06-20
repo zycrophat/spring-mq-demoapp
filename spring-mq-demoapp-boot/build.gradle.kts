@@ -171,19 +171,19 @@ tasks {
     }
 
     clean {
-        dependsOn(named("cleanGeneratedSources"))
+        dependsOn(cleanGeneratedSources)
     }
 
     compileJava {
-        dependsOn(named("generateJaxb"))
+        dependsOn(generateJaxb)
     }
 
     compileKotlin {
-        dependsOn(named("generateJaxb"))
+        dependsOn(generateJaxb)
     }
 
     val idea by getting {
-        dependsOn(named("generateJaxb"))
+        dependsOn(generateJaxb)
     }
 
     bootJar {
