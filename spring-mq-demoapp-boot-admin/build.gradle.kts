@@ -115,6 +115,7 @@ val distCopySpec = project.copySpec {
 
 application {
     mainClassName = "steffan.springmqdemoapp.admin.MainKt"
+    applicationDefaultJvmArgs = getBootRunJvmArgs(jmxPort)
 }
 
 val stopperInstallDistTask = project(":spring-mq-demoapp-boot-stopper").tasks.named("installDist")
