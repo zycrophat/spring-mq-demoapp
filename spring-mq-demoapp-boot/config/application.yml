@@ -20,3 +20,5 @@ spring:
         banner-mode: 'off'
     profiles:
         active: development
+logging:
+    path: ./log
