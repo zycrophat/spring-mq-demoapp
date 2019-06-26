@@ -2,49 +2,48 @@ import org.gradle.api.Project
 import org.redundent.kotlin.xml.Node
 import org.redundent.kotlin.xml.xml
 
-fun createWinswConfig(theProject: Project, executable: String, jmxPort: Int): Node {
-    return xml("configuration") {
-        "id" {
-            -"${theProject.name}-${theProject.version}"
+fun createWinswConfig(theProject: Project, executable: String, jmxPort: Int): Node =
+        xml("configuration") {
+            "id" {
+                -"${theProject.name}-${theProject.version}"
+            }
+            "name" {
+                -"${theProject.name}-${theProject.version}"
+            }
+            "description" {
+                -"Spring Boot Sample application ${theProject.name}-${theProject.version}"
+            }
+            "executable" {
+                -executable
+            }
+            "priority" {
+                -"Normal"
+            }
+            "stoptimeout" {
+                -"15 sec"
+            }
+            "stopparentprocessfirst" {
+                -"false"
+            }
+            "startmode" {
+                -"Automatic"
+            }
+            "waithint" {
+                -"15 sec"
+            }
+            "sleeptime" {
+                -"1 sec"
+            }
+            "log" {
+                attribute("mode", "append")
+            }
+            "stopexecutable" {
+                -"%BASE%/stopper/bin/spring-mq-demoapp-boot-stopper.bat"
+            }
+            "stopargument" {
+                -"$jmxPort"
+            }
         }
-        "name" {
-            -"${theProject.name}-${theProject.version}"
-        }
-        "description" {
-            -"Spring Boot Sample application ${theProject.name}-${theProject.version}"
-        }
-        "executable" {
-            -executable
-        }
-        "priority" {
-            -"Normal"
-        }
-        "stoptimeout" {
-            -"15 sec"
-        }
-        "stopparentprocessfirst" {
-            -"false"
-        }
-        "startmode" {
-            -"Automatic"
-        }
-        "waithint" {
-            -"15 sec"
-        }
-        "sleeptime" {
-            -"1 sec"
-        }
-        "log" {
-            attribute("mode", "append")
-        }
-        "stopexecutable" {
-            -"%BASE%/stopper/bin/spring-mq-demoapp-boot-stopper.bat"
-        }
-        "stopargument" {
-            -"$jmxPort"
-        }
-    }
-}
 
 fun getBootRunJvmArgs(jmxPort: Int) = listOf(
         "-Dcom.sun.management.jmxremote",
