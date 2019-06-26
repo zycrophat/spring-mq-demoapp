@@ -59,7 +59,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:${LibraryVersions.SPRING_BOOT_VERSION}")
-    winsw("com.sun.winsw:winsw:2.2.0:bin@exe")
+    winsw("com.sun.winsw:winsw:${LibraryVersions.WINSW_VERSION}")
 }
 
 dependencyManagement {
@@ -136,7 +136,7 @@ distributions {
             with(boot.get().contents)
 
             from(winsw)
-            rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
+            rename(winsw.resolve().single().name, "${project.name}-${project.version}.exe")
 
             from(createWindowsServiceConfig)
 

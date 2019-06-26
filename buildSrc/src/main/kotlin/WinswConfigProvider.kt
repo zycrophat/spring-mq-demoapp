@@ -14,7 +14,7 @@ fun createWinswConfig(theProject: Project, executable: String, jmxPort: Int): No
             -"Spring Boot Sample application ${theProject.name}-${theProject.version}"
         }
         "executable" {
-            -"$executable"
+            -executable
         }
         "priority" {
             -"Normal"

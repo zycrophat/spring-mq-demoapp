@@ -107,7 +107,7 @@ dependencies {
     runtime("org.springframework:spring-aop:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
     runtime("org.springframework:spring-aspects:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
 
-    winsw("com.sun.winsw:winsw:2.2.0:bin@exe")
+    winsw("com.sun.winsw:winsw:${LibraryVersions.WINSW_VERSION}")
 }
 
 dependencyManagement {
@@ -238,7 +238,7 @@ distributions {
             with(boot.get().contents)
 
             from(winsw)
-            rename("winsw-2.2.0-bin.exe", "${project.name}-${project.version}.exe")
+            rename(winsw.resolve().single().name, "${project.name}-${project.version}.exe")
 
             from(createWindowsServiceConfig)
 

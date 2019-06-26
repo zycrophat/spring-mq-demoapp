@@ -5,4 +5,5 @@ object LibraryVersions {
     const val SPRING_BOOT_VERSION = "$SPRING_BOOT_BASE_VERSION.RELEASE"
     const val CAMEL_VERSION = "2.24.0"
     const val JAXB_VERSION = "2.3.2"
+    const val WINSW_VERSION = "2.2.0:bin@exe"
 }
