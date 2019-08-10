@@ -24,6 +24,7 @@ import org.springframework.context.annotation.DependsOn
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory
 import org.springframework.jms.config.JmsListenerContainerFactory
+import org.springframework.jms.listener.DefaultMessageListenerContainer
 import org.springframework.mock.jndi.SimpleNamingContextBuilder
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
@@ -63,21 +64,10 @@ open class ApplicationJmsConfiguration {
                 brokerURL = brokerUrl
                 userName = user
                 password = pass
-                redeliveryPolicy = redeliveryPolicy()
             }
             maxPoolSize = 5
             localTransactionMode = false
             uniqueResourceName = "activemqConnectionFactory"
-        }
-    }
-
-    @Bean
-    open fun redeliveryPolicy(): RedeliveryPolicy {
-        return RedeliveryPolicy().apply {
-            initialRedeliveryDelay = 500L
-            backOffMultiplier = 1.5
-            isUseExponentialBackOff = true
-            maximumRedeliveries = 2
         }
     }
 
@@ -87,7 +77,7 @@ open class ApplicationJmsConfiguration {
             connectionFactory = connectionFactory()
             transactionManager = txManager
             isTransacted = true
-            cacheLevelName = "CACHE_CONNECTION"
+            cacheLevelName = "CACHE_CONSUMER"
         }
     }
 
@@ -97,6 +87,7 @@ open class ApplicationJmsConfiguration {
         val factory = DefaultJmsListenerContainerFactory()
         configurer.configure(factory, connectionFactory())
         factory.setSessionTransacted(true)
+        factory.setCacheLevel(DefaultMessageListenerContainer.CACHE_CONSUMER)
         return factory
     }
 

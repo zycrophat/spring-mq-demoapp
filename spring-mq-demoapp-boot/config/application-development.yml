@@ -6,7 +6,7 @@ server:
     port: 8081
 spring:
     activemq:
-        broker-url: tcp://localhost:61616
+        broker-url: failover:(tcp://localhost:61616)?nested.keepAlive=true&jms.redeliveryPolicy.useExponentialBackOff=true&jms.redeliveryPolicy.maximumRedeliveries=2&jms.redeliveryPolicy.initialRedeliveryDelay=2000&jms.redeliveryPolicy.backOffMultiplier=2
         password: admin
         user: admin
     boot:

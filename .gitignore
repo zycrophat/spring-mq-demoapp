@@ -28,3 +28,7 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+
+### application specific ignores ###
+log
+trace.db
