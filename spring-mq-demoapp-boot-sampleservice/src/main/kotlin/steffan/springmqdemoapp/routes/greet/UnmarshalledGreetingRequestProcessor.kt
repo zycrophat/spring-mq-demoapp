@@ -1,4 +1,4 @@
-package steffan.springmqdemoapp.routes
+package steffan.springmqdemoapp.routes.greet
 
 import org.apache.camel.Exchange
 import org.apache.camel.Processor

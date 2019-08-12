@@ -28,3 +28,7 @@ spring:
 logging:
     level:
         steffan: DEBUG
+
+filecopy:
+    inputdir: "C:/tmp/input"
+    targetdir: "C:/tmp/target"

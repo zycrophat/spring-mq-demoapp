@@ -63,6 +63,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator:${LibraryVersions.SPRING_BOOT_VERSION}")
     implementation("org.springframework.boot:spring-boot-starter-integration:${LibraryVersions.SPRING_BOOT_VERSION}")
 
+    implementation("org.springframework.boot:spring-boot-starter-quartz:${LibraryVersions.SPRING_BOOT_VERSION}")
+    implementation("org.springframework:spring-context-support:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
+
     implementation("org.springframework.boot:spring-boot-starter-web:${LibraryVersions.SPRING_BOOT_VERSION}")
     implementation("de.codecentric:spring-boot-admin-starter-client:${LibraryVersions.SPRING_BOOT_BASE_VERSION}")
     implementation("org.springframework.boot:spring-boot-starter-security:${LibraryVersions.SPRING_BOOT_VERSION}")
@@ -76,6 +79,10 @@ dependencies {
     
     implementation("org.glassfish.jaxb:jaxb-runtime:${LibraryVersions.JAXB_VERSION}")
 
+    implementation("com.fasterxml.jackson.core:jackson-core:2.9.9")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
+    implementation("org.apache.camel:camel-jackson:${LibraryVersions.CAMEL_VERSION}")
+
     implementation("org.springframework:spring-oxm:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
     implementation("org.reflections:reflections:0.9.11")
     implementation("org.springframework.boot:spring-boot-starter-jta-atomikos:${LibraryVersions.SPRING_BOOT_VERSION}")
@@ -88,6 +95,7 @@ dependencies {
     implementation("org.apache.camel:camel-jaxb:${LibraryVersions.CAMEL_VERSION}")
     runtime("com.fasterxml.woodstox:woodstox-core:5.2.1")
     implementation("org.apache.camel:camel-sql:${LibraryVersions.CAMEL_VERSION}")
+    implementation("org.apache.camel:camel-quartz2:${LibraryVersions.CAMEL_VERSION}")
 
 
     implementation("org.apache.camel:camel-infinispan:${LibraryVersions.CAMEL_VERSION}")
@@ -106,6 +114,8 @@ dependencies {
     runtime("org.springframework.boot:spring-boot-starter-aop:${LibraryVersions.SPRING_BOOT_VERSION}")
     runtime("org.springframework:spring-aop:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
     runtime("org.springframework:spring-aspects:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
+
+    implementation("commons-io:commons-io:2.6")
 
     winsw("com.sun.winsw:winsw:${LibraryVersions.WINSW_VERSION}")
 }

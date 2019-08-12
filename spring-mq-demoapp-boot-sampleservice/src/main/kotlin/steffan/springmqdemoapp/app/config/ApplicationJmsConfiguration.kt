@@ -2,11 +2,12 @@ package steffan.springmqdemoapp.app.config
 
 
 import org.apache.activemq.ActiveMQXAConnectionFactory
-import org.apache.activemq.RedeliveryPolicy
+import org.apache.camel.component.infinispan.processor.idempotent.InfinispanIdempotentRepository
 import org.apache.camel.component.jms.JmsConfiguration
 import org.h2.jdbcx.JdbcDataSource
 import org.infinispan.configuration.cache.ConfigurationBuilder
 import org.infinispan.configuration.global.GlobalConfigurationBuilder
+import org.infinispan.manager.EmbeddedCacheManager
 import org.infinispan.persistence.jdbc.configuration.JdbcStringBasedStoreConfigurationBuilder
 import org.infinispan.spring.starter.embedded.InfinispanCacheConfigurer
 import org.infinispan.spring.starter.embedded.InfinispanGlobalConfigurer
@@ -28,8 +29,8 @@ import org.springframework.jms.listener.DefaultMessageListenerContainer
 import org.springframework.mock.jndi.SimpleNamingContextBuilder
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
-import steffan.springmqdemoapp.routes.TypeConvertingGreetingRequestProcessor
-import steffan.springmqdemoapp.routes.UnmarshalledGreetingRequestProcessor
+import steffan.springmqdemoapp.routes.greet.TypeConvertingGreetingRequestProcessor
+import steffan.springmqdemoapp.routes.greet.UnmarshalledGreetingRequestProcessor
 import java.util.concurrent.TimeUnit
 import javax.jms.ConnectionFactory
 import javax.sql.XADataSource
@@ -56,6 +57,8 @@ open class ApplicationJmsConfiguration {
 
     @Value("\${app.camel.datasource.jdbc-url}")
     lateinit var messageIdDataSourceUrl: String
+
+    private val FILE_INPUT_CACHE_NAME = "fileInputCache"
 
     @Bean
     open fun connectionFactory(): ConnectionFactory {
@@ -121,42 +124,78 @@ open class ApplicationJmsConfiguration {
     @DependsOn("messageIdDataSource")
     open fun infinispanCacheConfigurer(txManager: TransactionManager): InfinispanCacheConfigurer {
         return InfinispanCacheConfigurer { manager ->
-            val config = ConfigurationBuilder()
-            config.apply {
-                transaction()
-                        .transactionMode(TransactionMode.TRANSACTIONAL)
-                        .transactionManagerLookup { txManager }
-                        .autoCommit(false)
-                        .transactionProtocol(TransactionProtocol.DEFAULT)
-                        .recovery()
-                            .enable()
+            val txCacheConfig = createTransactionalCacheConfig(txManager)
+            val nonTxCacheConfig = createNonTransactionalCacheConfig()
 
-                persistence()
-                        .passivation(false)
-                        .addStore(JdbcStringBasedStoreConfigurationBuilder::class.java)
-                        .async().disable()
-                        .ignoreModifications(false)
-                        .fetchPersistentState(false)
-                        .purgeOnStartup(false)
-                        .shared(true)
-                        .table()
-                            .dropOnExit(false)
-                            .createOnStart(true)
-                            .tableNamePrefix("ISPN_STRING_TABLE")
-                            .idColumnName("ID_COLUMN").idColumnType("VARCHAR(255)")
-                            .dataColumnName("DATA_COLUMN").dataColumnType("VARBINARY(1024)")
-                            .timestampColumnName("TIMESTAMP_COLUMN").timestampColumnType("BIGINT")
-                        .dataSource()
-                            .jndiUrl(messageIdDataSourceJndiName)
-
-                expiration()
-                        .lifespan(1, TimeUnit.MINUTES)
-                        .enableReaper()
-            }
-
-            manager.defineConfiguration(UnmarshalledGreetingRequestProcessor::class.simpleName, config.build(true))
-            manager.defineConfiguration(TypeConvertingGreetingRequestProcessor::class.simpleName, config.build(true))
+            manager.defineConfiguration(UnmarshalledGreetingRequestProcessor::class.simpleName, txCacheConfig.build(true))
+            manager.defineConfiguration(TypeConvertingGreetingRequestProcessor::class.simpleName, txCacheConfig.build(true))
+            manager.defineConfiguration(FILE_INPUT_CACHE_NAME, nonTxCacheConfig.build(true))
         }
     }
+
+    private fun createTransactionalCacheConfig(txManager: TransactionManager) = ConfigurationBuilder().apply {
+        transaction()
+                .transactionMode(TransactionMode.TRANSACTIONAL)
+                .transactionManagerLookup { txManager }
+                .autoCommit(false)
+                .transactionProtocol(TransactionProtocol.DEFAULT)
+                .recovery()
+                .enable()
+
+        persistence()
+                .passivation(false)
+                .addStore(JdbcStringBasedStoreConfigurationBuilder::class.java)
+                .async().disable()
+                .ignoreModifications(false)
+                .fetchPersistentState(false)
+                .purgeOnStartup(false)
+                .shared(true)
+                .table()
+                .dropOnExit(false)
+                .createOnStart(true)
+                .tableNamePrefix("ISPN_STRING_TABLE")
+                .idColumnName("ID_COLUMN").idColumnType("VARCHAR(255)")
+                .dataColumnName("DATA_COLUMN").dataColumnType("VARBINARY(1024)")
+                .timestampColumnName("TIMESTAMP_COLUMN").timestampColumnType("BIGINT")
+                .dataSource()
+                .jndiUrl(messageIdDataSourceJndiName)
+
+        expiration()
+                .lifespan(1, TimeUnit.DAYS)
+                .enableReaper()
+    }
+
+    private fun createNonTransactionalCacheConfig() = ConfigurationBuilder().apply {
+        transaction()
+                .transactionMode(TransactionMode.NON_TRANSACTIONAL)
+                .recovery()
+                .disable()
+
+        persistence()
+                .passivation(false)
+                .addStore(JdbcStringBasedStoreConfigurationBuilder::class.java)
+                .async().disable()
+                .ignoreModifications(false)
+                .fetchPersistentState(false)
+                .purgeOnStartup(false)
+                .shared(true)
+                .table()
+                .dropOnExit(false)
+                .createOnStart(true)
+                .tableNamePrefix("ISPN_STRING_TABLE_NON_TX")
+                .idColumnName("ID_COLUMN").idColumnType("VARCHAR(255)")
+                .dataColumnName("DATA_COLUMN").dataColumnType("VARBINARY(1024)")
+                .timestampColumnName("TIMESTAMP_COLUMN").timestampColumnType("BIGINT")
+                .dataSource()
+                .jndiUrl(messageIdDataSourceJndiName)
+
+        expiration()
+                .lifespan(-1, TimeUnit.DAYS)
+                .disableReaper()
+    }
+
+    @Bean
+    open fun fileInputIdempotentRepository(infiniCacheManager: EmbeddedCacheManager): InfinispanIdempotentRepository =
+            InfinispanIdempotentRepository(infiniCacheManager, FILE_INPUT_CACHE_NAME)
 
 }

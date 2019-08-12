@@ -20,5 +20,7 @@ spring:
         banner-mode: 'off'
     profiles:
         active: development
+    quartz:
+        job-store-type: MEMORY
 logging:
     path: ./log
