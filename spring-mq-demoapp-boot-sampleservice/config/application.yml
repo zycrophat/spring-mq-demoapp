@@ -22,5 +22,10 @@ spring:
         active: development
     quartz:
         job-store-type: MEMORY
+    jta:
+        atomikos:
+            properties:
+                maxTimeout: 60000
+                defaultJtaTimeout: 60000
 logging:
     path: ./log

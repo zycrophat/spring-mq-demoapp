@@ -5,15 +5,10 @@ import org.apache.camel.ExchangePattern
 import org.apache.camel.builder.xml.Namespaces
 import org.apache.camel.component.infinispan.processor.idempotent.InfinispanIdempotentRepository
 import org.apache.camel.model.dataformat.JsonLibrary
-import org.apache.camel.processor.idempotent.jdbc.JdbcMessageIdRepository
+import org.apache.camel.processor.RedeliveryPolicy
 import org.apache.camel.spi.DataFormat
 import org.apache.camel.spring.SpringRouteBuilder
 import org.infinispan.manager.EmbeddedCacheManager
-import org.quartz.DateBuilder
-import org.quartz.DateBuilder.futureDate
-import org.quartz.JobBuilder
-import org.quartz.Scheduler
-import org.quartz.TriggerBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import steffan.springmqdemoapp.api.bindings.GreetingRequest
@@ -21,12 +16,11 @@ import steffan.springmqdemoapp.routes.filecopy.FileCopyProcessor
 import steffan.springmqdemoapp.routes.filecopy.FileInfoProcessor
 import steffan.springmqdemoapp.routes.greet.TypeConvertingGreetingRequestProcessor
 import steffan.springmqdemoapp.routes.greet.UnmarshalledGreetingRequestProcessor
+import steffan.springmqdemoapp.services.FileInfo
 import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.logger
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
-import javax.sql.DataSource
+import java.util.*
 
 
 @Component
@@ -34,81 +28,112 @@ class SampleRouteBuilder(
         private val jaxbDataFormat: DataFormat,
         private val typeConvertingGreetingRequestProcessor: TypeConvertingGreetingRequestProcessor,
         private val unmarshalledGreetingRequestProcessor: UnmarshalledGreetingRequestProcessor,
-        private val messageIdDataSource: DataSource,
         private val infiniCacheManager: EmbeddedCacheManager,
         private val fileInfoProcessor: FileInfoProcessor,
         private val fileCopyProcessor: FileCopyProcessor,
-        @Value("\${filecopy.inputdir}")
+        @Value("\${steffan.springmqdemoapp.sampleservice.filecopy.inputdir}")
         private val inputDirectoryPath: String,
-        private val scheduler: Scheduler
+        private val jdbcMessageIdRepositoryFactory: JdbcMessageIdRepositoryFactory,
+        @Value("\${steffan.springmqdemoapp.sampleservice.camel.message-id-max-length}")
+        private val messageIdMaxLength: Int
 ) : SpringRouteBuilder(), Logging {
 
+    private val redeliveryByCamelPolicy = RedeliveryPolicy().apply {
+        maximumRedeliveries = 10
+        delayPattern = "1:1000;4:2000;8:5000;10:30000"
+    }
+
     override fun configure() {
-        context.isStreamCaching = true
+        configureContextScoped()
 
         logger().debug("Start configuring routes")
 
+        configureGreetConvertRoute()
+        configureGreetUnmarshallRoute()
+
+        configureCreateFilesRoute()
+        configureReadFilesRoute()
+        configureCopyFilesRoute()
+
+        logger().info("Finished configuring routes")
+    }
+
+    private fun configureContextScoped() {
+        context.isStreamCaching = true
+    }
+
+    private fun configureGreetConvertRoute() {
         from("jms:greetConvert")
                 .routeId("greetConvert")
                 .transacted()
                 .setExchangePattern(ExchangePattern.InOnly)
                 .idempotentConsumer()
-                    .xpath("//g:greetingRequest/g:name/text()",
-                            Namespaces("g", "urn:steffan.springmqdemoapp:greeting")
-                    )
-                    .messageIdRepository(
-                            JdbcMessageIdRepository(messageIdDataSource, TypeConvertingGreetingRequestProcessor::class.simpleName)
-                    )
+                .xpath("//g:greetingRequest/g:name/text()",
+                        Namespaces("g", "urn:steffan.springmqdemoapp:greeting")
+                )
+                .messageIdRepository(
+                        jdbcMessageIdRepositoryFactory.createIdempotentRepository(TypeConvertingGreetingRequestProcessor::class.simpleName)
+                )
                 .process(typeConvertingGreetingRequestProcessor)
+    }
 
+    private fun configureGreetUnmarshallRoute() {
         from("jms:greetUnmarshall")
                 .routeId("greetUnmarshall")
                 .transacted()
                 .setExchangePattern(ExchangePattern.InOnly)
                 .unmarshal(jaxbDataFormat)
                 .idempotentConsumer()
-                    .body(GreetingRequest::class.java, GreetingRequest::getName)
-                    .messageIdRepository(
-                            InfinispanIdempotentRepository(infiniCacheManager, UnmarshalledGreetingRequestProcessor::class.simpleName)
-                    )
+                .body(GreetingRequest::class.java, GreetingRequest::getName)
+                .messageIdRepository(
+                        InfinispanIdempotentRepository(infiniCacheManager, UnmarshalledGreetingRequestProcessor::class.simpleName)
+                )
                 .process(unmarshalledGreetingRequestProcessor)
+    }
 
-        from("file://$inputDirectoryPath?recursive=true&noop=true&" +
-                "idempotentRepository=#fileInputIdempotentRepository&readLock=idempotent")
-                .onException(Exception::class.java)
-                    .maximumRedeliveries(10)
-                    .handled(true)
-                    .process { e ->
-                        logger().warn("Reached maximum redelivery count. Stopping route ${e.fromRouteId}")
-                        e.context.stopRoute("readFiles", 5, TimeUnit.SECONDS)
-                        scheduleRouteRestart(e)
-                    }
-                    .rollback()
-                .end()
+    private fun configureCopyFilesRoute() {
+        from("jms:filesToCopy?concurrentConsumers=12")
+                .autoStartup(true)
+                .routeId("copyFiles")
                 .transacted()
-                .routeId("readFiles")
-                .process(fileInfoProcessor).id("fileInfoProcessor")
+                .unmarshal().json(JsonLibrary.Jackson, FileInfo::class.java)
+                .idempotentConsumer()
+                    .body(FileInfo::class.java) { b -> b.path.takeLast(messageIdMaxLength).reversed() }
+                    .messageIdRepository(
+                            jdbcMessageIdRepositoryFactory.createIdempotentRepository("fileCopyProcessor")
+                    )
                 .process(fileCopyProcessor).id("fileCopyProcessor")
                 .marshal().json(JsonLibrary.Jackson)
                 .to("jms:filesToMove")
-
-        logger().info("Finished configuring routes")
     }
 
-    private fun scheduleRouteRestart(e: Exchange) {
-        scheduler.scheduleJob(
-                JobBuilder.newJob()
-                        .ofType(RouteRestartQuartzJob::class.java)
-                        .withIdentity("restart ${DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(
-                                LocalDateTime.now())}"
-                        )
-                        .usingJobData("routeId", e.fromRouteId)
-                        .build(),
-                TriggerBuilder.newTrigger()
-                        .startAt(
-                                futureDate(20, DateBuilder.IntervalUnit.SECOND)
-                        ).build()
-        )
+    private fun configureReadFilesRoute() {
+        from("file://$inputDirectoryPath?recursive=true&noop=true")
+                .errorHandler(defaultErrorHandler().apply { this.redeliveryPolicy = redeliveryByCamelPolicy })
+                .onException(RuntimeException::class.java)
+                    .redeliveryPolicy(redeliveryByCamelPolicy)
+                    .handled(true)
+                    .rollback()
+                .end()
+                .routeId("readFiles")
+                .transacted()
+                .process(fileInfoProcessor).id("fileInfoProcessor")
+                .marshal().json(JsonLibrary.Jackson)
+                .to("jms:filesToCopy")
     }
+
+    private fun configureCreateFilesRoute() {
+        from("timer:foo?repeatCount=1000000&period=1&delay=0")
+                .autoStartup(false)
+                .routeId("createFiles")
+                .process { e ->
+                    val counter = e.properties[Exchange.TIMER_COUNTER] as Long
+                    val date = e.properties[Exchange.TIMER_FIRED_TIME] as Date
+                    e.`in`.body = "$counter,${DateTimeFormatter.ISO_INSTANT.format(date.toInstant())}"
+                    e.`in`.headers[Exchange.FILE_NAME] = "$counter.txt"
+                }
+                .to("file://$inputDirectoryPath?fileExist=Ignore")
+    }
+
 }
 

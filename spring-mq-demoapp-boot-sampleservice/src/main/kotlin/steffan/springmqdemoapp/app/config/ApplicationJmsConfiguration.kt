@@ -6,7 +6,9 @@ import org.apache.camel.component.infinispan.processor.idempotent.InfinispanIdem
 import org.apache.camel.component.jms.JmsConfiguration
 import org.h2.jdbcx.JdbcDataSource
 import org.infinispan.configuration.cache.ConfigurationBuilder
+import org.infinispan.configuration.cache.StorageType
 import org.infinispan.configuration.global.GlobalConfigurationBuilder
+import org.infinispan.eviction.EvictionStrategy
 import org.infinispan.manager.EmbeddedCacheManager
 import org.infinispan.persistence.jdbc.configuration.JdbcStringBasedStoreConfigurationBuilder
 import org.infinispan.spring.starter.embedded.InfinispanCacheConfigurer
@@ -68,7 +70,7 @@ open class ApplicationJmsConfiguration {
                 userName = user
                 password = pass
             }
-            maxPoolSize = 5
+            maxPoolSize = 25
             localTransactionMode = false
             uniqueResourceName = "activemqConnectionFactory"
         }
@@ -116,6 +118,8 @@ open class ApplicationJmsConfiguration {
             GlobalConfigurationBuilder().transport()
                     .defaultTransport()
                     .defaultCacheName("defaultCache")
+                    .globalJmxStatistics()
+                    .enable()
                     .build()
         }
     }
@@ -125,11 +129,9 @@ open class ApplicationJmsConfiguration {
     open fun infinispanCacheConfigurer(txManager: TransactionManager): InfinispanCacheConfigurer {
         return InfinispanCacheConfigurer { manager ->
             val txCacheConfig = createTransactionalCacheConfig(txManager)
-            val nonTxCacheConfig = createNonTransactionalCacheConfig()
 
             manager.defineConfiguration(UnmarshalledGreetingRequestProcessor::class.simpleName, txCacheConfig.build(true))
             manager.defineConfiguration(TypeConvertingGreetingRequestProcessor::class.simpleName, txCacheConfig.build(true))
-            manager.defineConfiguration(FILE_INPUT_CACHE_NAME, nonTxCacheConfig.build(true))
         }
     }
 
@@ -163,39 +165,7 @@ open class ApplicationJmsConfiguration {
         expiration()
                 .lifespan(1, TimeUnit.DAYS)
                 .enableReaper()
+
+        jmxStatistics().enable()
     }
-
-    private fun createNonTransactionalCacheConfig() = ConfigurationBuilder().apply {
-        transaction()
-                .transactionMode(TransactionMode.NON_TRANSACTIONAL)
-                .recovery()
-                .disable()
-
-        persistence()
-                .passivation(false)
-                .addStore(JdbcStringBasedStoreConfigurationBuilder::class.java)
-                .async().disable()
-                .ignoreModifications(false)
-                .fetchPersistentState(false)
-                .purgeOnStartup(false)
-                .shared(true)
-                .table()
-                .dropOnExit(false)
-                .createOnStart(true)
-                .tableNamePrefix("ISPN_STRING_TABLE_NON_TX")
-                .idColumnName("ID_COLUMN").idColumnType("VARCHAR(255)")
-                .dataColumnName("DATA_COLUMN").dataColumnType("VARBINARY(1024)")
-                .timestampColumnName("TIMESTAMP_COLUMN").timestampColumnType("BIGINT")
-                .dataSource()
-                .jndiUrl(messageIdDataSourceJndiName)
-
-        expiration()
-                .lifespan(-1, TimeUnit.DAYS)
-                .disableReaper()
-    }
-
-    @Bean
-    open fun fileInputIdempotentRepository(infiniCacheManager: EmbeddedCacheManager): InfinispanIdempotentRepository =
-            InfinispanIdempotentRepository(infiniCacheManager, FILE_INPUT_CACHE_NAME)
-
 }

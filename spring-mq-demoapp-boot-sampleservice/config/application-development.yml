@@ -9,8 +9,8 @@ spring:
         broker-url: "failover:(tcp://localhost:61616)?\
                     nested.keepAlive=true&\
                     jms.redeliveryPolicy.useExponentialBackOff=true&\
-                    jms.redeliveryPolicy.maximumRedeliveries=2&\
-                    jms.redeliveryPolicy.initialRedeliveryDelay=2000&\
+                    jms.redeliveryPolicy.maximumRedeliveries=5&\
+                    jms.redeliveryPolicy.initialRedeliveryDelay=1000&\
                     jms.redeliveryPolicy.backOffMultiplier=2"
         password: admin
         user: admin
@@ -29,6 +29,11 @@ logging:
     level:
         steffan: DEBUG
 
-filecopy:
-    inputdir: "C:/tmp/input"
-    targetdir: "C:/tmp/target"
+steffan:
+    springmqdemoapp:
+        sampleservice:
+            camel:
+                message-id-max-length: 255
+            filecopy:
+                inputdir: "C:/tmp/input"
+                targetdir: "C:/tmp/target"

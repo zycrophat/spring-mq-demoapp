@@ -6,4 +6,5 @@ object LibraryVersions {
     const val CAMEL_VERSION = "2.24.0"
     const val JAXB_VERSION = "2.3.2"
     const val WINSW_VERSION = "2.2.0:bin@exe"
+    const val JACKSON_VERSION = "2.9.9"
 }
