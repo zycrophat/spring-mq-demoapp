@@ -17,7 +17,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  JAVA_HOME: $(JAVA_HOME_11_X64)
+  JAVA_HOME: 'C:\\Program Files\\Java\\zulu-11-azure-jdk_11.31.11-11.0.3-win_x64'
 
 steps:
 
