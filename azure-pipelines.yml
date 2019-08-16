@@ -14,7 +14,7 @@ trigger:
     - v*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 steps:
 
@@ -25,6 +25,7 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
     sonarQubeRunAnalysis: false
 
 - task: CopyFiles@2
