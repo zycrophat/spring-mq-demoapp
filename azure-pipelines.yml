@@ -16,11 +16,7 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
-variables:
-  JAVA_HOME: 'C:/Program Files/Java/zulu-11-azure-jdk_11.31.11-11.0.3-win_x64'
-
 steps:
-
 
 - task: Gradle@2
   inputs:
@@ -29,6 +25,7 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
     sonarQubeRunAnalysis: false
 
 - task: CopyFiles@2
