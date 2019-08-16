@@ -14,9 +14,13 @@ trigger:
     - v*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
+
+variables:
+  JAVA_HOME: $(JAVA_HOME_11_X64)
 
 steps:
+
 
 - task: Gradle@2
   inputs:
