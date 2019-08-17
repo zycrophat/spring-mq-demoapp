@@ -29,12 +29,18 @@ gitVersion.rules {
         val countCommitsSinceLatestMinorVersionTag = countCommitsSince(latestMinorVersionTag as HasObjectId, true)
         val latestPatchVersionTag = findLatestTag(patchVersionPattern)
         val latestPatch = latestPatchVersionTag?.matches?.getAt(3)?.toInt() ?: 0
-        version.patch = countCommitsSinceLatestMinorVersionTag
-        
-        version.patch = countCommitsSinceLatestMinorVersionTag
-        if (countCommitsSinceLatestMinorVersionTag != latestPatch) {
-            version.setPrereleaseTag("SNAPSHOT")
+
+        val head = head
+        if (head?.id != latestPatchVersionTag?.commit?.id) {
+
+            version.patch = countCommitsSinceLatestMinorVersionTag
+            if (countCommitsSinceLatestMinorVersionTag != latestPatch) {
+                version.setPrereleaseTag("SNAPSHOT")
+            }
+        } else {
+            version.patch = latestPatch
         }
+
         isSkipOtherRules = true
     }
     
