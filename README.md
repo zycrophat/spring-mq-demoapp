@@ -31,9 +31,9 @@ $ ./gradlew installBootWinServiceDist
 
 To install & uninstall the service admin privileges are required:
 ```
-# cd spring-mq-demoapp-boot/build/install/spring-mq-demoapp-boot-bootWinService
-# ./spring-mq-demoapp-boot-x.y.z.exe install
-# ./spring-mq-demoapp-boot-x.y.z.exe uninstall
+# cd spring-mq-demoapp-boot-sampleservice/build/install/spring-mq-demoapp-boot-sampleservice-bootWinService
+# ./spring-mq-demoapp-boot-sampleservice-x.y.z.exe install
+# ./spring-mq-demoapp-boot-sampleservice-x.y.z.exe uninstall
 ```
 
 This also works for the spring-mq-demoapp-boot-admin subproject.
