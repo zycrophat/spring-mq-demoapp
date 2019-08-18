@@ -1,4 +1,4 @@
-package steffan.springmqdemoapp.services
+package steffan.springmqdemoapp.sampleservice.services
 
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.messaging.Message

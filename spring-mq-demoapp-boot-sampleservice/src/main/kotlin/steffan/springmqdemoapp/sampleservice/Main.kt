@@ -1,4 +1,4 @@
-package steffan.springmqdemoapp
+package steffan.springmqdemoapp.sampleservice
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

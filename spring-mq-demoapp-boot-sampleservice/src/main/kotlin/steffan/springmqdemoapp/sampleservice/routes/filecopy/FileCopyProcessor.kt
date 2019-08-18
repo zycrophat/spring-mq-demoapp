@@ -1,11 +1,11 @@
-package steffan.springmqdemoapp.routes.filecopy
+package steffan.springmqdemoapp.sampleservice.routes.filecopy
 
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.apache.commons.io.FileUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import steffan.springmqdemoapp.services.FileInfo
+import steffan.springmqdemoapp.sampleservice.services.FileInfo
 import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.logger
 import java.io.File

@@ -1,4 +1,4 @@
-package steffan.springmqdemoapp.routes
+package steffan.springmqdemoapp.sampleservice.routes
 
 import org.apache.camel.Exchange
 import org.apache.camel.ExchangePattern
@@ -12,11 +12,11 @@ import org.infinispan.manager.EmbeddedCacheManager
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import steffan.springmqdemoapp.api.bindings.GreetingRequest
-import steffan.springmqdemoapp.routes.filecopy.FileCopyProcessor
-import steffan.springmqdemoapp.routes.filecopy.FileInfoProcessor
-import steffan.springmqdemoapp.routes.greet.TypeConvertingGreetingRequestProcessor
-import steffan.springmqdemoapp.routes.greet.UnmarshalledGreetingRequestProcessor
-import steffan.springmqdemoapp.services.FileInfo
+import steffan.springmqdemoapp.sampleservice.routes.filecopy.FileCopyProcessor
+import steffan.springmqdemoapp.sampleservice.routes.filecopy.FileInfoProcessor
+import steffan.springmqdemoapp.sampleservice.routes.greet.TypeConvertingGreetingRequestProcessor
+import steffan.springmqdemoapp.sampleservice.routes.greet.UnmarshalledGreetingRequestProcessor
+import steffan.springmqdemoapp.sampleservice.services.FileInfo
 import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.logger
 import java.time.format.DateTimeFormatter

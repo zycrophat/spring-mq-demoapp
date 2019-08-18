@@ -1,4 +1,4 @@
-package steffan.springmqdemoapp.app.config
+package steffan.springmqdemoapp.sampleservice.app.config
 
 import org.apache.camel.converter.jaxb.JaxbDataFormat
 import org.reflections.Reflections

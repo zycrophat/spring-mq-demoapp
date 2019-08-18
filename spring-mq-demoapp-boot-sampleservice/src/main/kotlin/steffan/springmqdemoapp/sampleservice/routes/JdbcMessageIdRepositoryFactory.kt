@@ -1,4 +1,4 @@
-package steffan.springmqdemoapp.routes
+package steffan.springmqdemoapp.sampleservice.routes
 
 import org.apache.camel.processor.idempotent.jdbc.JdbcMessageIdRepository
 import org.springframework.beans.factory.annotation.Value

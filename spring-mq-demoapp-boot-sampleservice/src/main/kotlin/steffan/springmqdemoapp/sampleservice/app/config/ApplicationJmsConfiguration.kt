@@ -1,4 +1,4 @@
-package steffan.springmqdemoapp.app.config
+package steffan.springmqdemoapp.sampleservice.app.config
 
 
 import org.apache.activemq.ActiveMQXAConnectionFactory
@@ -31,8 +31,8 @@ import org.springframework.jms.listener.DefaultMessageListenerContainer
 import org.springframework.mock.jndi.SimpleNamingContextBuilder
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
-import steffan.springmqdemoapp.routes.greet.TypeConvertingGreetingRequestProcessor
-import steffan.springmqdemoapp.routes.greet.UnmarshalledGreetingRequestProcessor
+import steffan.springmqdemoapp.sampleservice.routes.greet.TypeConvertingGreetingRequestProcessor
+import steffan.springmqdemoapp.sampleservice.routes.greet.UnmarshalledGreetingRequestProcessor
 import java.util.concurrent.TimeUnit
 import javax.jms.ConnectionFactory
 import javax.sql.XADataSource

@@ -1,4 +1,4 @@
-package steffan.springmqdemoapp.services
+package steffan.springmqdemoapp.sampleservice.services
 
 import com.fasterxml.jackson.annotation.JsonInclude
 

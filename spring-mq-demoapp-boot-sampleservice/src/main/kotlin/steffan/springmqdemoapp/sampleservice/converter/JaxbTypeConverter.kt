@@ -1,4 +1,4 @@
-package steffan.springmqdemoapp.converter
+package steffan.springmqdemoapp.sampleservice.converter
 
 import org.springframework.core.convert.TypeDescriptor
 import org.springframework.core.convert.converter.GenericConverter

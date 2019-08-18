@@ -230,7 +230,7 @@ val distCopySpec = project.copySpec {
 }
 
 application {
-    mainClassName = "steffan.springmqdemoapp.MainKt"
+    mainClassName = "steffan.springmqdemoapp.sampleservice.MainKt"
     applicationDefaultJvmArgs = getBootRunJvmArgs(jmxPort)
 }
 
