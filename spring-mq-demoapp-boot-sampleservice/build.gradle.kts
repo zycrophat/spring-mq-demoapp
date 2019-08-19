@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.redundent.kotlin.xml.PrintOptions
+import org.redundent.kotlin.xml.urlset
 
 plugins {
     id("org.springframework.boot")
@@ -11,6 +12,7 @@ plugins {
     id("com.avast.gradle.docker-compose") version "0.9.4"
     application
     distribution
+    id("maven-publish")
 }
 
 project.evaluationDependsOn(":spring-mq-demoapp-boot-stopper")
@@ -66,7 +68,7 @@ dependencies {
     implementation("org.springframework:spring-context-support:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
 
     implementation("org.springframework.boot:spring-boot-starter-web:${LibraryVersions.SPRING_BOOT_VERSION}")
-    implementation("de.codecentric:spring-boot-admin-starter-client:${LibraryVersions.SPRING_BOOT_BASE_VERSION}")
+    implementation("de.codecentric:spring-boot-admin-starter-client:${LibraryVersions.SPRING_BOOT_ADMIN_VERSION}")
     implementation("org.springframework.boot:spring-boot-starter-security:${LibraryVersions.SPRING_BOOT_VERSION}")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:${LibraryVersions.KOTLIN_VERSION}")
@@ -120,7 +122,7 @@ dependencies {
 
 dependencyManagement {
     imports {
-        mavenBom("de.codecentric:spring-boot-admin-dependencies:${LibraryVersions.SPRING_BOOT_BASE_VERSION}")
+        mavenBom("de.codecentric:spring-boot-admin-dependencies:${LibraryVersions.SPRING_BOOT_ADMIN_VERSION}")
     }
 }
 
@@ -253,6 +255,20 @@ distributions {
 
             from(stopperInstallDistTask) {
                 into("stopper")
+            }
+        }
+    }
+}
+
+
+publishing {
+    publications {
+        register("mavenDistPublication", MavenPublication::class) {
+            artifact(tasks.named("bootWinServiceDistZip").get()) {
+                classifier = "bootWinServiceDistZip"
+            }
+            artifact(tasks.named("bootDistZip").get()) {
+                classifier = "bootDistZip"
             }
         }
     }
