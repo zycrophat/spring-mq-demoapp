@@ -28,7 +28,7 @@ gitVersion.rules {
         version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
     }
 
-    onBranch("master") {
+    always {
         val latestMinorVersionTag = findLatestTag(minorVersionPattern)
         val countCommitsSinceLatestMinorVersionTag = countCommitsSince(latestMinorVersionTag as HasObjectId, true)
         val latestPatchVersionTag = findLatestTag(patchVersionPattern)
@@ -36,30 +36,23 @@ gitVersion.rules {
 
         val head = head
         if (head?.id != latestPatchVersionTag?.commit?.id) {
-
-            version.patch = countCommitsSinceLatestMinorVersionTag
             if (countCommitsSinceLatestMinorVersionTag != latestPatch) {
                 val timeStamp =
                         DateTimeFormatter
                         .ofPattern("YYYYMMddHHmmss")
                         .format(LocalDateTime.now(ZoneOffset.UTC))
-                version.setPrereleaseTag("SNAPSHOT-$timeStamp")
+
+                val tag = findLatestTag(patchVersionPattern)
+                version.patch = tag?.matches?.getAt(3)?.toInt() ?: 0
+
+                val label = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
+                val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
+
+                version.setPrereleaseTag("SNAPSHOT")
+                version.setBuildMetadata("$countCommitsSinceTag-$label-$timeStamp")
             }
         } else {
             version.patch = latestPatch
-        }
-
-        isSkipOtherRules = true
-    }
-    
-    always {
-        val tag = findLatestTag(patchVersionPattern)
-        version.patch = tag?.matches?.getAt(3)?.toInt() ?: 0
-
-        val label = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
-        val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
-        if (countCommitsSinceTag > 0) {
-            version.setPrereleaseTag("$countCommitsSinceTag.$label")
         }
     }
 }
