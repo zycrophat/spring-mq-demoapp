@@ -260,10 +260,9 @@ distributions {
     }
 }
 
-
 publishing {
     publications {
-        register("mavenDistPublication", MavenPublication::class) {
+        register<MavenPublication>("mavenDist") {
             artifact(tasks.named("bootWinServiceDistZip").get()) {
                 classifier = "bootWinServiceDistZip"
             }

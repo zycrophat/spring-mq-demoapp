@@ -86,6 +86,18 @@ allprojects {
                         url.set("https://raw.githubusercontent.com/zycrophat/spring-mq-demoapp/master/LICENSE")
                     }
                 }
+                developers {
+                    developer {
+                        id.set("zycrophat")
+                        name.set("Andreas Steffan")
+                        url.set("https://github.com/zycrophat")
+                    }
+                }
+                scm {
+                    url.set("https://github.com/zycrophat/spring-mq-demoapp")
+                    connection.set("scm:git:git@github.com:zycrophat/spring-mq-demoapp.git")
+                    developerConnection.set("scm:git:git@github.com:zycrophat/spring-mq-demoapp.git")
+                }
             }
         }
     }
