@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.redundent.kotlin.xml.PrintOptions
-import org.redundent.kotlin.xml.urlset
 
 plugins {
     id("org.springframework.boot")
