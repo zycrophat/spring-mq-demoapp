@@ -12,7 +12,7 @@ spring:
                     jms.redeliveryPolicy.maximumRedeliveries=5&\
                     jms.redeliveryPolicy.initialRedeliveryDelay=1000&\
                     jms.redeliveryPolicy.backOffMultiplier=2"
-        password: admin
+        password: ENC(d/q1RfnMwBreQxRnN5SJUYVTVroT4Awb2Cu0scR+9FM4aD0Vc4KirhdyQpF7cl1Y)
         user: admin
     boot:
         admin:
@@ -21,8 +21,8 @@ spring:
                     metadata:
                         user:
                             name: adminserver
-                            password: secret
-                password: boot-app-pass
+                            password: ENC(Dq75t/pmQya0RAApPJY2+AiC7Aiyb/Fymhf1PG23prvFoFTwaqYb+Tas9zZbsJMo)
+                password: ENC(icf7/ZNrHGU9yrpemnQXQ5OOHdJj4h2Jd6yIggXY0MpqQq0LHWy4c0czZR8bbLnA)
                 url: http://localhost:8080
                 username: boot-app
 logging:
@@ -35,5 +35,9 @@ steffan:
             camel:
                 message-id-max-length: 255
             filecopy:
-                inputdir: "C:/tmp/input"
-                targetdir: "C:/tmp/target"
+                inputdir: "~/tmp/input"
+                targetdir: "~/tmp/target"
+
+jasypt:
+    encryptor:
+        password: secretmasterpassword

@@ -15,3 +15,8 @@ spring:
         active: development
 logging:
     path: ./log
+
+jasypt:
+    encryptor:
+        algorithm: PBEWITHHMACSHA512ANDAES_256
+        ivGeneratorClassname: org.jasypt.iv.RandomIvGenerator

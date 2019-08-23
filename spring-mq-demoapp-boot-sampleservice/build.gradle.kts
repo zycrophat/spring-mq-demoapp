@@ -47,6 +47,11 @@ configurations.all {
 
             substitute(module("com.google.guava:guava"))
                     .with(module("com.google.guava:guava:[27.1-jre,)"))
+
+            substitute(module("com.melloware:jasypt"))
+                    .with(module("org.jasypt:jasypt:[1.9.3,)"))
+            substitute(module("org.jasypt:jasypt"))
+                    .with(module("org.jasypt:jasypt:[1.9.3,)"))
         }
     }
 
@@ -96,7 +101,6 @@ dependencies {
     implementation("org.apache.camel:camel-jaxb:${LibraryVersions.CAMEL_VERSION}")
     runtime("com.fasterxml.woodstox:woodstox-core:5.2.1")
     implementation("org.apache.camel:camel-sql:${LibraryVersions.CAMEL_VERSION}")
-    implementation("org.apache.camel:camel-jsonpath:${LibraryVersions.CAMEL_VERSION}")
 
     implementation("org.apache.camel:camel-infinispan:${LibraryVersions.CAMEL_VERSION}")
     implementation("org.infinispan:infinispan-spring-boot-starter:2.1.5.Final")
@@ -116,6 +120,8 @@ dependencies {
     runtime("org.springframework:spring-aspects:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
 
     implementation("commons-io:commons-io:2.6")
+
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.1")
 
     winsw("com.sun.winsw:winsw:${LibraryVersions.WINSW_VERSION}")
 }

@@ -38,6 +38,11 @@ configurations.all {
 
             substitute(module("com.google.guava:guava"))
                     .with(module("com.google.guava:guava:[27.1-jre,)"))
+
+            substitute(module("com.melloware:jasypt"))
+                    .with(module("org.jasypt:jasypt:[1.9.3,)"))
+            substitute(module("org.jasypt:jasypt"))
+                    .with(module("org.jasypt:jasypt:[1.9.3,)"))
         }
     }
 
@@ -59,6 +64,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:${LibraryVersions.KOTLIN_VERSION}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}")
+
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.1")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:${LibraryVersions.SPRING_BOOT_VERSION}")
     winsw("com.sun.winsw:winsw:${LibraryVersions.WINSW_VERSION}")

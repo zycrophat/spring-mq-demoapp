@@ -1,13 +1,13 @@
 application:
     clients:
       - username: admin
-        password: adminadmin
+        password: ENC(LfexnZYWo0Oxt+pkcnMl8otcizfelS9sz8r/Pfuulj+DA1I+1e/CUWADMuA6S//n)
         roles: READ,WRITE
       - username: boot-app
-        password: boot-app-pass
+        password: ENC(jvUxBrtCjDcXpyGnx7Zx9nhMdZlAhKu3EdUFm575Jx5+DbRyZuCrM9ygG/npyjnq)
         roles: READ,WRITE
       - username: self
-        password: adminadmin
+        password: ENC(Q+obuw+6fTY5AnMwUX97B26tAJ+CqNBJRDkNTIHmYkGiliqe03nUwc+uCdCzLxDY)
         roles: READ,WRITE
 spring:
   boot:
@@ -17,7 +17,11 @@ spring:
           metadata:
             user:
               name: self
-              password: adminadmin
-        password: adminadmin
+              password: ENC(h0b6RC9ru/dx1bDzjLrcYtcnwyOakH4/IoGZPBF50ruPiXzR6l2AhK1TTR/YbvQV)
+        password: ENC(ixYFJbbIwdPTAL8uY6Fin119DdubPzFShnI67fsY9uCigmbf1Knb0khzVfjd/8Xo)
         url: http://localhost:8080
         username: self
+
+jasypt:
+  encryptor:
+    password: secretadminmasterpassword

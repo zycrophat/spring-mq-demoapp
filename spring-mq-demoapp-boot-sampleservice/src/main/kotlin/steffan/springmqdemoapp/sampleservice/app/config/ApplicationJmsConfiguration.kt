@@ -151,7 +151,7 @@ open class ApplicationJmsConfiguration {
                 .ignoreModifications(false)
                 .fetchPersistentState(false)
                 .purgeOnStartup(false)
-                .shared(true)
+                .shared(false)
                 .table()
                 .dropOnExit(false)
                 .createOnStart(true)

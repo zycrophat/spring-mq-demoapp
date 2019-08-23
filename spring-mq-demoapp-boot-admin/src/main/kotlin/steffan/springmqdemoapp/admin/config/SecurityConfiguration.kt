@@ -1,5 +1,6 @@
 package steffan.springmqdemoapp.admin.config
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 import de.codecentric.boot.admin.server.config.AdminServerProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -17,6 +18,7 @@ import steffan.springmqdemoapp.util.logger as configLogger
 
 
 @Configuration
+@EnableEncryptableProperties
 open class SecurityConfiguration(val adminServer: AdminServerProperties,
                                  val applicationClients: ApplicationClients) : WebSecurityConfigurerAdapter() {
 
