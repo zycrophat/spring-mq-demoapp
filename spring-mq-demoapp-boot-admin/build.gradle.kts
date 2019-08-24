@@ -126,6 +126,9 @@ val distCopySpec = project.copySpec {
     }
     from(file("${project.rootDir}/LICENSE"))
     from(file("${project.rootDir}/README.md"))
+    from(file("${project.rootDir}/utils")) {
+        into("utils")
+    }
 }
 
 application {
