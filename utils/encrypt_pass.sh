@@ -6,6 +6,6 @@ ivGeneratorClassName="org.jasypt.iv.RandomIvGenerator"
 
 read -s -p "Master password:" masterpass
 echo
-read -s -p "Password to encrypt:" password
+read -s -p "String to encrypt:" input
 echo
-"$encryptCmd" input=$password password=$masterpass algorithm=$algorithm ivGeneratorClassName=$ivGeneratorClassName verbose=false
+"$encryptCmd" input=$input password=$masterpass algorithm=$algorithm ivGeneratorClassName=$ivGeneratorClassName verbose=false
