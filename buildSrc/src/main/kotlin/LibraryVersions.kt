@@ -8,4 +8,5 @@ object LibraryVersions {
     const val JAXB_VERSION = "2.3.2"
     const val WINSW_VERSION = "2.2.0:bin@exe"
     const val JACKSON_VERSION = "2.9.9+"
+    const val JASYPT_SPRING_BOOT_VERSION = "2.1.2"
 }

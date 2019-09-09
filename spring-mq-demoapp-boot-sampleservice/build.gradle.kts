@@ -46,11 +46,6 @@ configurations.all {
 
             substitute(module("com.google.guava:guava"))
                     .with(module("com.google.guava:guava:[27.1-jre,)"))
-
-            substitute(module("com.melloware:jasypt"))
-                    .with(module("org.jasypt:jasypt:[1.9.3,)"))
-            substitute(module("org.jasypt:jasypt"))
-                    .with(module("org.jasypt:jasypt:[1.9.3,)"))
         }
     }
 
@@ -120,7 +115,7 @@ dependencies {
 
     implementation("commons-io:commons-io:2.6")
 
-    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:2.1.1")
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:${LibraryVersions.JASYPT_SPRING_BOOT_VERSION}")
 
     winsw("com.sun.winsw:winsw:${LibraryVersions.WINSW_VERSION}")
 }
