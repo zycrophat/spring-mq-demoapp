@@ -43,6 +43,20 @@ fun createWinswConfig(theProject: Project, executable: String, jmxPort: Int): No
             "stopargument" {
                 -"$jmxPort"
             }
+            "onfailure" {
+                attribute("action", "restart")
+            }
+            "onfailure" {
+                attribute("action", "restart")
+                attribute("delay", "10 sec")
+            }
+            "onfailure" {
+                attribute("action", "restart")
+                attribute("delay", "20 sec")
+            }
+            "resetfailure" {
+                -"1 hour"
+            }
         }
 
 fun getBootRunJvmArgs(jmxPort: Int) = listOf(

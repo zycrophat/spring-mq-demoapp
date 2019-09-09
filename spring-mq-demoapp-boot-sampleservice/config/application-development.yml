@@ -35,8 +35,8 @@ steffan:
             camel:
                 message-id-max-length: 255
             filecopy:
-                inputdir: "~/tmp/input"
-                targetdir: "~/tmp/target"
+                inputdir: "tmp/input"
+                targetdir: "tmp/target"
 
 jasypt:
     encryptor:
