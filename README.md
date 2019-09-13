@@ -6,7 +6,7 @@ Demo playground application for Kotlin, Spring, Camel and other things.
 
 ## Prerequisites
 
-- JDK 11 (JDK 8 should also work, but not tested)
+- JDK 11
 - Docker and Docker Compose (for providing an ActiveMQ broker)
 
 ## How to build
