@@ -93,7 +93,7 @@ dependencies {
     runtime("org.apache.activemq:activemq-camel:5.15.9")
     implementation("org.apache.camel:camel-jms:${LibraryVersions.CAMEL_VERSION}")
     implementation("org.apache.camel:camel-jaxb:${LibraryVersions.CAMEL_VERSION}")
-    runtime("com.fasterxml.woodstox:woodstox-core:5.2.1")
+    runtime("com.fasterxml.woodstox:woodstox-core:5.3.0")
     implementation("org.apache.camel:camel-sql:${LibraryVersions.CAMEL_VERSION}")
 
     implementation("org.apache.camel:camel-infinispan:${LibraryVersions.CAMEL_VERSION}")
