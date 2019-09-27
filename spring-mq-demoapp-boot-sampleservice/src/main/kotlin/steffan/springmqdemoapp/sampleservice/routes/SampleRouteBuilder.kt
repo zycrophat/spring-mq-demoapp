@@ -149,6 +149,7 @@ class SampleRouteBuilder(
         .to("vm:fooLogging?waitForTaskToComplete=Always&timeout=-1")
 
         from("jms:fooLogger")
+                .transacted()
                 .routeId("jmsFooLoggingRoute")
         .to("vm:fooLogging?waitForTaskToComplete=Always&timeout=-1")
 
