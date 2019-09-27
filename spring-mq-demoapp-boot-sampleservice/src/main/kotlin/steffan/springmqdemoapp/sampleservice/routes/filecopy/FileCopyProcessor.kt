@@ -5,7 +5,7 @@ import org.apache.camel.Processor
 import org.apache.commons.io.FileUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import steffan.springmqdemoapp.sampleservice.services.FileInfo
+import steffan.springmqdemoapp.sampleservice.services.interfaces.FileInfo
 import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.logger
 import java.io.File

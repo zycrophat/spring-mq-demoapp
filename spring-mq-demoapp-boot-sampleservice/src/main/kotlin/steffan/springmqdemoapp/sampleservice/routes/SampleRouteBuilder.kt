@@ -16,7 +16,7 @@ import steffan.springmqdemoapp.sampleservice.routes.filecopy.FileCopyProcessor
 import steffan.springmqdemoapp.sampleservice.routes.filecopy.FileInfoProcessor
 import steffan.springmqdemoapp.sampleservice.routes.greet.TypeConvertingGreetingRequestProcessor
 import steffan.springmqdemoapp.sampleservice.routes.greet.UnmarshalledGreetingRequestProcessor
-import steffan.springmqdemoapp.sampleservice.services.FileInfo
+import steffan.springmqdemoapp.sampleservice.services.interfaces.FileInfo
 import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.logger
 import java.time.format.DateTimeFormatter

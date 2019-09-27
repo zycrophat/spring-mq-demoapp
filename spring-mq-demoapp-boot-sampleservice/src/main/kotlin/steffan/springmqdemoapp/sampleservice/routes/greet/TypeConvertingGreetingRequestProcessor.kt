@@ -6,17 +6,17 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import steffan.springmqdemoapp.api.bindings.GreetingRequest
+import steffan.springmqdemoapp.sampleservice.services.interfaces.Greeter
 import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.logger
 
 
 @Component
-open class TypeConvertingGreetingRequestProcessor : Processor, Logging {
+open class TypeConvertingGreetingRequestProcessor(private val greeter: Greeter) : Processor, Logging {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     override fun process(exchange: Exchange) {
         val request = exchange.getIn().getBody(GreetingRequest::class.java)
-
-        logger().info("Hi ${request?.name ?: "stranger"} ${request?.dateTimeOfGreet}!")
+        greeter.greet(request)
     }
 }
