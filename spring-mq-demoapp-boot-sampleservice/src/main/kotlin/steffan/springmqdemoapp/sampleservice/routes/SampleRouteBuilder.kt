@@ -12,6 +12,7 @@ import org.infinispan.manager.EmbeddedCacheManager
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import steffan.springmqdemoapp.api.bindings.GreetingRequest
+import steffan.springmqdemoapp.sampleservice.routes.processors.foologging.FooLoggingProcessor
 import steffan.springmqdemoapp.sampleservice.routes.processors.filecopy.FileCopyProcessor
 import steffan.springmqdemoapp.sampleservice.routes.processors.filecopy.FileInfoProcessor
 import steffan.springmqdemoapp.sampleservice.routes.processors.greet.TypeConvertingGreetingRequestProcessor
@@ -35,7 +36,8 @@ class SampleRouteBuilder(
         private val inputDirectoryPath: String,
         private val jdbcMessageIdRepositoryFactory: JdbcMessageIdRepositoryFactory,
         @Value("\${steffan.springmqdemoapp.sampleservice.camel.message-id-max-length}")
-        private val messageIdMaxLength: Int
+        private val messageIdMaxLength: Int,
+        private val fooLoggingProcessor: FooLoggingProcessor
 ) : SpringRouteBuilder(), Logging {
 
     private val redeliveryByCamelPolicy = RedeliveryPolicy().apply {
@@ -54,6 +56,8 @@ class SampleRouteBuilder(
         configureCreateFilesRoute()
         configureReadFilesRoute()
         configureCopyFilesRoute()
+
+        configureFooLoggingRoute()
 
         logger().info("Finished configuring routes")
     }
@@ -133,6 +137,24 @@ class SampleRouteBuilder(
                     e.`in`.headers[Exchange.FILE_NAME] = "$counter.txt"
                 }
                 .to("file://$inputDirectoryPath?fileExist=Ignore")
+    }
+
+    private fun configureFooLoggingRoute() {
+        from("timer:foologging?period=30000&delay=10000")
+        .routeId("timerFooLoggingRoute")
+                .process { e ->
+                    val date = e.properties[Exchange.TIMER_FIRED_TIME] as Date
+                    e.`in`.body = "timer ${DateTimeFormatter.ISO_INSTANT.format(date.toInstant())}"
+                }
+        .to("vm:fooLogging?waitForTaskToComplete=Always&timeout=-1")
+
+        from("jms:fooLogger")
+                .routeId("jmsFooLoggingRoute")
+        .to("vm:fooLogging?waitForTaskToComplete=Always&timeout=-1")
+
+        from("vm:fooLogging")
+        .routeId("fooLoggingRoute")
+                .process(fooLoggingProcessor)
     }
 
 }
