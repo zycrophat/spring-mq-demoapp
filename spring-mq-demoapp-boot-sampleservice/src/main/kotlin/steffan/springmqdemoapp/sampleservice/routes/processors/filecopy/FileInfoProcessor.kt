@@ -1,4 +1,4 @@
-package steffan.springmqdemoapp.sampleservice.routes.filecopy
+package steffan.springmqdemoapp.sampleservice.routes.processors.filecopy
 
 import org.apache.camel.Exchange
 import org.apache.camel.Processor

@@ -12,10 +12,10 @@ import org.infinispan.manager.EmbeddedCacheManager
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import steffan.springmqdemoapp.api.bindings.GreetingRequest
-import steffan.springmqdemoapp.sampleservice.routes.filecopy.FileCopyProcessor
-import steffan.springmqdemoapp.sampleservice.routes.filecopy.FileInfoProcessor
-import steffan.springmqdemoapp.sampleservice.routes.greet.TypeConvertingGreetingRequestProcessor
-import steffan.springmqdemoapp.sampleservice.routes.greet.UnmarshalledGreetingRequestProcessor
+import steffan.springmqdemoapp.sampleservice.routes.processors.filecopy.FileCopyProcessor
+import steffan.springmqdemoapp.sampleservice.routes.processors.filecopy.FileInfoProcessor
+import steffan.springmqdemoapp.sampleservice.routes.processors.greet.TypeConvertingGreetingRequestProcessor
+import steffan.springmqdemoapp.sampleservice.routes.processors.greet.UnmarshalledGreetingRequestProcessor
 import steffan.springmqdemoapp.sampleservice.services.interfaces.FileInfo
 import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.logger

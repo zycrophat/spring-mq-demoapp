@@ -2,14 +2,10 @@ package steffan.springmqdemoapp.sampleservice.app.config
 
 
 import org.apache.activemq.ActiveMQXAConnectionFactory
-import org.apache.camel.component.infinispan.processor.idempotent.InfinispanIdempotentRepository
 import org.apache.camel.component.jms.JmsConfiguration
 import org.h2.jdbcx.JdbcDataSource
 import org.infinispan.configuration.cache.ConfigurationBuilder
-import org.infinispan.configuration.cache.StorageType
 import org.infinispan.configuration.global.GlobalConfigurationBuilder
-import org.infinispan.eviction.EvictionStrategy
-import org.infinispan.manager.EmbeddedCacheManager
 import org.infinispan.persistence.jdbc.configuration.JdbcStringBasedStoreConfigurationBuilder
 import org.infinispan.spring.starter.embedded.InfinispanCacheConfigurer
 import org.infinispan.spring.starter.embedded.InfinispanGlobalConfigurer
@@ -31,8 +27,8 @@ import org.springframework.jms.listener.DefaultMessageListenerContainer
 import org.springframework.mock.jndi.SimpleNamingContextBuilder
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
-import steffan.springmqdemoapp.sampleservice.routes.greet.TypeConvertingGreetingRequestProcessor
-import steffan.springmqdemoapp.sampleservice.routes.greet.UnmarshalledGreetingRequestProcessor
+import steffan.springmqdemoapp.sampleservice.routes.processors.greet.TypeConvertingGreetingRequestProcessor
+import steffan.springmqdemoapp.sampleservice.routes.processors.greet.UnmarshalledGreetingRequestProcessor
 import java.util.concurrent.TimeUnit
 import javax.jms.ConnectionFactory
 import javax.sql.XADataSource
