@@ -16,19 +16,29 @@ class JaxbTypeConverter(private val jaxbClassesToBeBound: Set<Class<*>>): Generi
         return jaxbClassesToBeBound.asSequence().map { c -> GenericConverter.ConvertiblePair(CharSequence::class.java, c) }.toMutableSet()
     }
 
-    override fun convert(source: Any?, sourceType: TypeDescriptor, targetType: TypeDescriptor): Any? {
-        if (sourceTypeIsACharSequence(sourceType) && typeIsSupported(targetType)) {
-            val unmarshaller = jaxbContext.createUnmarshaller()
-            StringReader(source as String).use {
-                return unmarshaller.unmarshal(it)
+    override fun convert(source: Any?, sourceType: TypeDescriptor, targetType: TypeDescriptor): Any =
+        source?.let {
+            if (sourceTypeIsACharSequence(sourceType) && typeIsSupported(targetType)) {
+                return@convert unmarshal(it)
+            } else if (targetTypeIsACharSequence(targetType) && typeIsSupported(sourceType)){
+                return@convert marshal(it)
             }
-        } else if (targetTypeIsACharSequence(targetType) && typeIsSupported(sourceType)){
-            val marshaller = jaxbContext.createMarshaller()
-            StringWriter().use {
-                return marshaller.marshal(source, it)
-            }
+            throw IllegalArgumentException("Cannot convert ${sourceType.objectType} to ${targetType.objectType}")
+        } ?:
+            throw IllegalArgumentException("Cannot convert null")
+
+    private fun marshal(source: Any): Any {
+        val marshaller = jaxbContext.createMarshaller()
+        StringWriter().use {
+            return marshaller.marshal(source, it)
         }
-        throw IllegalArgumentException("Cannot convert ${sourceType.objectType} to ${targetType.objectType}")
+    }
+
+    private fun unmarshal(source: Any): Any {
+        val unmarshaller = jaxbContext.createUnmarshaller()
+        StringReader(source as String).use {
+            return unmarshaller.unmarshal(it)
+        }
     }
 
     private fun typeIsSupported(sourceType: TypeDescriptor) =
