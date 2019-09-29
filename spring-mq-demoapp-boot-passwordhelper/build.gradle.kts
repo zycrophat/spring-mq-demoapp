@@ -16,6 +16,9 @@ dependencies {
     implementation(project(":spring-mq-demoapp-boot-common"))
     runtime("ch.qos.logback:logback-classic:1.2.3+")
 
+    implementation("org.springframework.security:spring-security-crypto:5.1.6.RELEASE")
+    runtime("commons-logging:commons-logging:1.2+")
+
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
@@ -24,7 +27,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "steffan.springmqdemoapp.stopper.Main"
+    mainClassName = "steffan.springmqdemoapp.passwordhelper.Main"
 }
 
 tasks.withType<KotlinCompile> {

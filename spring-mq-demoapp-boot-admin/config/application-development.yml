@@ -1,13 +1,13 @@
 application:
     clients:
       - username: admin
-        password: ENC(LfexnZYWo0Oxt+pkcnMl8otcizfelS9sz8r/Pfuulj+DA1I+1e/CUWADMuA6S//n)
+        password: "{bcrypt}$2a$10$SA1h5Cn.2JuIUJlOB6Vxse46mSEtRrAJwYY9VvAbuELBcMbkpkI/W"
         roles: READ,WRITE
       - username: boot-app
-        password: ENC(jvUxBrtCjDcXpyGnx7Zx9nhMdZlAhKu3EdUFm575Jx5+DbRyZuCrM9ygG/npyjnq)
+        password: "{bcrypt}$2a$10$Am9xOt6qAYcyFE.0rHaOz.d/dZtUHRf0v9C7oAHU.IdTkSdvuf6Tm"
         roles: READ,WRITE
       - username: self
-        password: ENC(Q+obuw+6fTY5AnMwUX97B26tAJ+CqNBJRDkNTIHmYkGiliqe03nUwc+uCdCzLxDY)
+        password: "{bcrypt}$2a$10$r5sza.dD0taVuVjPdKvVxeRlRAo9QRUue7HBhwVJvS7gSa6DVAmrS"
         roles: READ,WRITE
 spring:
   boot:
