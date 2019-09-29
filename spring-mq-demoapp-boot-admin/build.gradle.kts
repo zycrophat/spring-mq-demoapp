@@ -13,6 +13,7 @@ plugins {
 }
 
 project.evaluationDependsOn(":spring-mq-demoapp-boot-stopper")
+project.evaluationDependsOn(":spring-mq-demoapp-boot-passwordhelper")
 
 group = "steffan"
 java.sourceCompatibility = JavaVersion.VERSION_11
@@ -115,14 +116,18 @@ val createWindowsServiceConfig by tasks.registering {
     }
 }
 
+val passwordHelperInstallDistTask = project(":spring-mq-demoapp-boot-passwordhelper").tasks.named("installDist")
 val distCopySpec = project.copySpec {
     from("config") {
         into("config")
     }
     from(file("${project.rootDir}/LICENSE"))
     from(file("${project.rootDir}/README.md"))
-    from(file("${project.rootDir}/utils")) {
-        into("utils")
+    from(file("${project.rootDir}/utils/encrypt-pass")) {
+        into("utils/encrypt-pass")
+    }
+    from(passwordHelperInstallDistTask) {
+        into("utils/passwordhelper")
     }
 }
 

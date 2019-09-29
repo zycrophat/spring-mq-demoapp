@@ -229,8 +229,8 @@ val distCopySpec = project.copySpec {
     }
     from(file("${project.rootDir}/LICENSE"))
     from(file("${project.rootDir}/README.md"))
-    from(file("${project.rootDir}/utils")) {
-        into("utils")
+    from(file("${project.rootDir}/utils/encrypt-pass")) {
+        into("utils/encrypt-pass")
     }
 }
 
