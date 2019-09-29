@@ -15,8 +15,8 @@ plugins {
 project.evaluationDependsOn(":spring-mq-demoapp-boot-stopper")
 
 group = "steffan"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
-java.targetCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_11
+java.targetCompatibility = JavaVersion.VERSION_11
 
 
 repositories {
