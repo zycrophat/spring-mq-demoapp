@@ -24,3 +24,16 @@ winswconfig(project, executable, jmxPort) ::= <<
 projectFullName(project) ::= <<
 $project.name$-$project.version$
 >>
+
+installUninstallBat(project, command) ::= <<
+@echo off
+$projectFullName(project)$.exe $command$
+>>
+
+installBat(project) ::= <<
+$installUninstallBat(project, "install")$
+>>
+
+uninstallBat(project) ::= <<
+$installUninstallBat(project, "uninstall")$
+>>

@@ -22,3 +22,19 @@ fun getBootRunJvmArgs(jmxPort: Int) = listOf(
         "-Dcom.sun.management.jmxremote.rmi.port=$jmxPort",
         "-Djava.rmi.server.hostname=localhost"
 )
+
+fun createInstallScript(theProject: Project): String {
+    val stg = STGroupFile("${theProject.rootDir}/templates/winsw/winswconfig.stg")
+    val winswConfigTemplate = stg.getInstanceOf("installBat").apply {
+        add("project", theProject)
+    }
+    return winswConfigTemplate.render()
+}
+
+fun createUninstallScript(theProject: Project): String {
+    val stg = STGroupFile("${theProject.rootDir}/templates/winsw/winswconfig.stg")
+    val winswConfigTemplate = stg.getInstanceOf("uninstallBat").apply {
+        add("project", theProject)
+    }
+    return winswConfigTemplate.render()
+}

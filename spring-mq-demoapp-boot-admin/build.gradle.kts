@@ -113,6 +113,14 @@ val createWindowsServiceConfig by tasks.registering {
         val winswConfig = createWinswConfig(project, "bin/$bootScriptFileName", jmxPort)
         file("$windowsServiceDir/${project.name}-${project.version}.xml")
                 .writeText(winswConfig)
+
+        val installScript = createInstallScript(project)
+        file("$windowsServiceDir/${project.name}-${project.version}-install.bat")
+                .writeText(installScript)
+
+        val uninstallScript = createUninstallScript(project)
+        file("$windowsServiceDir/${project.name}-${project.version}-install.bat")
+                .writeText(uninstallScript)
     }
 }
 
