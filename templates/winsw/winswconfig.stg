@@ -1,0 +1,26 @@
+delimiters "$", "$"
+winswconfig(project, executable, jmxPort) ::= <<
+<configuration>
+	<id>$projectFullName(project)$</id>
+	<name>$projectFullName(project)$</name>
+	<description>Spring Boot Sample application $projectFullName(project)$</description>
+	<executable>$executable$</executable>
+	<priority>Normal</priority>
+	<stoptimeout>15 sec</stoptimeout>
+	<stopparentprocessfirst>false</stopparentprocessfirst>
+	<startmode>Automatic</startmode>
+	<waithint>15 sec</waithint>
+	<sleeptime>1 sec</sleeptime>
+	<log mode="append"/>
+	<stopexecutable>%BASE%/stopper/bin/spring-mq-demoapp-boot-stopper.bat</stopexecutable>
+	<stopargument>$jmxPort$</stopargument>
+	<onfailure action="restart"/>
+	<onfailure action="restart" delay="10 sec"/>
+	<onfailure action="restart" delay="20 sec"/>
+	<resetfailure>1 hour</resetfailure>
+</configuration>
+>>
+
+projectFullName(project) ::= <<
+$project.name$-$project.version$
+>>

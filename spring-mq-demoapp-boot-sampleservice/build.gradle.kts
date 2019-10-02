@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.redundent.kotlin.xml.PrintOptions
 
 plugins {
     id("org.springframework.boot")
@@ -220,7 +219,7 @@ val createWindowsServiceConfig by tasks.registering {
 
         val winswConfig = createWinswConfig(project, "bin/$bootScriptFileName", jmxPort)
         file("$windowsServiceDir/${project.name}-${project.version}.xml")
-                .writeText(winswConfig.toString(PrintOptions(singleLineTextElements = true)))
+                .writeText(winswConfig)
     }
 }
 

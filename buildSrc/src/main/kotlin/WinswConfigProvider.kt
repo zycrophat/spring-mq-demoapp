@@ -1,63 +1,16 @@
 import org.gradle.api.Project
-import org.redundent.kotlin.xml.Node
-import org.redundent.kotlin.xml.xml
+import org.stringtemplate.v4.STGroupFile
 
-fun createWinswConfig(theProject: Project, executable: String, jmxPort: Int): Node =
-        xml("configuration") {
-            "id" {
-                -"${theProject.name}-${theProject.version}"
-            }
-            "name" {
-                -"${theProject.name}-${theProject.version}"
-            }
-            "description" {
-                -"Spring Boot Sample application ${theProject.name}-${theProject.version}"
-            }
-            "executable" {
-                -executable
-            }
-            "priority" {
-                -"Normal"
-            }
-            "stoptimeout" {
-                -"15 sec"
-            }
-            "stopparentprocessfirst" {
-                -"false"
-            }
-            "startmode" {
-                -"Automatic"
-            }
-            "waithint" {
-                -"15 sec"
-            }
-            "sleeptime" {
-                -"1 sec"
-            }
-            "log" {
-                attribute("mode", "append")
-            }
-            "stopexecutable" {
-                -"%BASE%/stopper/bin/spring-mq-demoapp-boot-stopper.bat"
-            }
-            "stopargument" {
-                -"$jmxPort"
-            }
-            "onfailure" {
-                attribute("action", "restart")
-            }
-            "onfailure" {
-                attribute("action", "restart")
-                attribute("delay", "10 sec")
-            }
-            "onfailure" {
-                attribute("action", "restart")
-                attribute("delay", "20 sec")
-            }
-            "resetfailure" {
-                -"1 hour"
-            }
-        }
+
+fun createWinswConfig(theProject: Project, executable: String, jmxPort: Int): String {
+    val stg = STGroupFile("${theProject.rootDir}/templates/winsw/winswconfig.stg")
+    val winswConfigTemplate = stg.getInstanceOf("winswconfig").apply {
+        add("project", theProject)
+        add("executable", executable)
+        add("jmxPort", jmxPort)
+    }
+    return winswConfigTemplate.render()
+}
 
 fun getBootRunJvmArgs(jmxPort: Int) = listOf(
         "-Dcom.sun.management.jmxremote",

@@ -7,5 +7,5 @@ repositories {
 }
 
 dependencies {
-    implementation("org.redundent:kotlin-xml-builder:1.5.1")
+    implementation("org.antlr:ST4:4.1")
 }
