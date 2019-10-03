@@ -72,7 +72,7 @@ object Main : Logging {
                     when {
                         it.endsWith("EnvName") -> ENVIRONMENT_VARIABLE
                         it.endsWith("SysPropertyName") -> JVM_SYSTEM_PROPERTY
-                        else -> throw RuntimeException("Cannot determine property propertyType")
+                        else -> throw RuntimeException("Cannot determine propertyType: ${pair.first.name}")
                     }
                 }
 
