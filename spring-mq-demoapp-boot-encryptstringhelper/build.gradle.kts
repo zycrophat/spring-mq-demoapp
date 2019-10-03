@@ -27,8 +27,35 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
 
+val distCopySpec = copySpec {
+    from("config") {
+        into("config")
+    }
+}
+distributions {
+    main {
+        contents {
+            with(distCopySpec)
+        }
+    }
+}
+
 application {
     mainClassName = "steffan.springmqdemoapp.encryptstringhelper.Main"
+    applicationDefaultJvmArgs = listOf(
+            "-Dlogback.configurationFile=X_APP_HOME/config/logback.xml"
+    )
+
+}
+
+tasks.withType<CreateStartScripts>{
+    doLast {
+        val unixScriptText = unixScript.readText()
+        unixScript.writeText(unixScriptText.replace("X_APP_HOME", "\$APP_HOME"))
+
+        val windowsScriptText = windowsScript.readText()
+        windowsScript.writeText(windowsScriptText.replace("X_APP_HOME", "%~dp0.."))
+    }
 }
 
 tasks.withType<KotlinCompile> {
