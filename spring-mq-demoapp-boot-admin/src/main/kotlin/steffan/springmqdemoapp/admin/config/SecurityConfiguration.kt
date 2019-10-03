@@ -15,10 +15,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.defer
 import steffan.springmqdemoapp.util.logger as configLogger
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.beans.factory.annotation.Autowired
-
-
 
 
 @Configuration
