@@ -98,11 +98,11 @@ object Main : Logging {
         compareBy<Pair<KCallable<*>, Matcher>> { it.second.group(1) }
         .thenComparing(
                 { it.second.group(2) },
-                { o1, o2 ->
-                    when {
-                        "EnvName" == o1 -> 1
-                        "SysPropertyName" == o2 -> -1
-                        else -> 0
+                { o1, _ ->
+                    when (o1) {
+                        "EnvName" -> -1
+                        "SysPropertyName" -> 1
+                        else -> throw IllegalArgumentException("Illegal property suffix: $o1")
                     }
                 }
         )
