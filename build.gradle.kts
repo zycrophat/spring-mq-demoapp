@@ -12,7 +12,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.7.RELEASE" apply false
     id("org.jetbrains.kotlin.plugin.spring") version LibraryVersions.KOTLIN_VERSION apply false
     id("org.unbroken-dome.gitversion") version "0.10.0" apply true
-    id("com.github.jk1.dependency-license-report") version "1.6" apply false
+    id("com.github.jk1.dependency-license-report") version "1.11" apply true
     id("org.owasp.dependencycheck") version "5.0.0-M3.1" apply false
     kotlin("jvm") version LibraryVersions.KOTLIN_VERSION apply false
     kotlin("kapt") version LibraryVersions.KOTLIN_VERSION apply false
@@ -100,6 +100,10 @@ allprojects {
                 }
             }
         }
+    }
+
+    licenseReport {
+        allowedLicensesFile = file("$rootDir/config/allowed-licenses.json")
     }
 
 }
