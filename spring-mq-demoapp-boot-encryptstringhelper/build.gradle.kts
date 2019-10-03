@@ -45,7 +45,6 @@ application {
     applicationDefaultJvmArgs = listOf(
             "-Dlogback.configurationFile=X_APP_HOME/config/logback.xml"
     )
-
 }
 
 tasks.withType<CreateStartScripts>{
