@@ -1,3 +1,7 @@
+import com.github.jk1.license.filter.DependencyFilter
+import com.github.jk1.license.filter.LicenseBundleNormalizer
+import com.github.jk1.license.render.InventoryHtmlReportRenderer
+import com.github.jk1.license.render.ReportRenderer
 import org.unbrokendome.gradle.plugins.gitversion.model.HasObjectId
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -103,6 +107,8 @@ allprojects {
     }
 
     licenseReport {
+        renderers = arrayOf<ReportRenderer>(InventoryHtmlReportRenderer())
+        filters = arrayOf<DependencyFilter>(LicenseBundleNormalizer("$rootDir/config/license-normalizer-bundle.json", false))
         allowedLicensesFile = file("$rootDir/config/allowed-licenses.json")
     }
 

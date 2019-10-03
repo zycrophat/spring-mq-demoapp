@@ -1,0 +1,31 @@
+{
+  "bundles" : [
+    { "bundleName" : "apache1", "licenseName" : "Apache Software License, Version 1.1", "licenseUrl" : "http://www.apache.org/licenses/LICENSE-1.1" },
+    { "bundleName" : "apache2", "licenseName" : "Apache License, Version 2.0", "licenseUrl" : "http://www.apache.org/licenses/LICENSE-2.0" },
+    { "bundleName" : "cddl1", "licenseName" : "COMMON DEVELOPMENT AND DISTRIBUTION LICENSE Version 1.0 (CDDL-1.0)", "licenseUrl" : "http://opensource.org/licenses/CDDL-1.0" },
+    { "bundleName" : "publicDomain", "licenseName" : "Public Domain" },
+    { "bundleName" : "gplCpe", "licenseName" : "GNU General Public License, Version 2 with the Classpath Exception" },
+    { "bundleName" : "mit", "licenseName" : "MIT License" },
+    { "bundleName" : "newBsd", "licenseName" : "New BSD License" },
+    { "bundleName" : "epl1", "licenseName" : "Eclipse Public License 1.0" },
+    { "bundleName" : "epl2", "licenseName" : "Eclipse Public License 2.0" },
+    { "bundleName" : "cddlGpl2CE", "licenseName" : "CDDL/GPLv2+CE" },
+    { "bundleName" : "cddl1", "licenseName" : "CDDL 1.0" }
+  ],
+  "transformationRules" : [
+    { "bundleName" : "apache2", "licenseNamePattern" : ".*The Apache Software License, Version 2.0.*" },
+    { "bundleName" : "apache2", "licenseNamePattern" : "Apache 2" },
+    { "bundleName" : "apache2", "licenseUrlPattern" : "http://www.apache.org/licenses/LICENSE-2.0.txt" },
+    { "bundleName" : "apache2", "licenseNamePattern" : "Apache License 2.0" },
+    { "bundleName" : "publicDomain", "licenseNamePattern" : "PUBLIC DOMAIN", "transformName" : true },
+    { "bundleName" : "gplCpe", "licenseNamePattern" : "GNU General Public License, Version 2 with the Classpath Exception", "transformName" : true },
+    { "bundleName" : "gplCpe", "licenseNamePattern" : "GNU GENERAL PUBLIC LICENSE, Version 2 \\+ Classpath Exception", "transformName" : true },
+    { "bundleName" : "mit", "licenseNamePattern" : ".*MIT License.*" },
+    { "bundleName" : "newBsd", "licenseNamePattern" : ".*New BSD License.*", "transformName" : true },
+    { "bundleName" : "newBsd", "licenseNamePattern" : ".*Eclipse Public License.*1\\.0\\.*" },
+    { "bundleName" : "cddlGpl2CE", "licenseNamePattern" : ".*CDDL \\+ GPLv2 with classpath exception.*", "transformName" : true },
+    { "bundleName" : "epl1", "licenseNamePattern" : ".*EPL.*1\\.0.*" },
+    { "bundleName" : "epl2", "licenseNamePattern" : ".*Eclipse Public License.*2\\.0.*" },
+    { "bundleName" : "cddl1", "licenseNamePattern" : ".*COMMON DEVELOPMENT AND DISTRIBUTION LICENSE.*1\\.0.*" }
+  ]
+}
