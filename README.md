@@ -11,13 +11,13 @@ Demo playground application for Kotlin, Spring, Camel and other things.
 
 ## How to build
 
-```
+``` bash
 $ ./gradlew installBootDist
 ```
 
 ## How to run
 
-```
+``` bash
 $ ./gradlew bootRun
 ```
 
@@ -25,20 +25,20 @@ $ ./gradlew bootRun
 
 You can build a [winsw](https://github.com/kohsuke/winsw) based Windows service using the
 following commands:
-```
+``` bash
 $ ./gradlew installBootWinServiceDist
 ```
 
 To install & uninstall the service admin privileges are required:
-```
-# cd spring-mq-demoapp-boot-sampleservice/build/install/spring-mq-demoapp-boot-sampleservice-bootWinService
-# ./spring-mq-demoapp-boot-sampleservice-x.y.z.exe install
-# ./spring-mq-demoapp-boot-sampleservice-x.y.z.exe uninstall
+``` bash
+$ cd spring-mq-demoapp-boot-sampleservice/build/install/spring-mq-demoapp-boot-sampleservice-bootWinService
+$ ./spring-mq-demoapp-boot-sampleservice-x.y.z.exe install
+$ ./spring-mq-demoapp-boot-sampleservice-x.y.z.exe uninstall
 ```
 
 This also works for the spring-mq-demoapp-boot-admin subproject.
 
 Distribution zip files can also be created:
-```
+``` bash
 $ ./gradlew bootWinServiceDistZip
 ```

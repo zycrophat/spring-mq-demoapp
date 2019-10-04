@@ -8,13 +8,13 @@ Commandline utility to encrypt strings using the [Jasypt](http://www.jasypt.org/
 
 ## How to build
 
-```
+``` bash
 $ ./gradlew installDist
 ```
 
 ## How to run
 
-```
+``` bash
 $ cd build/install/spring-mq-demoapp-boot-encryptstringhelper/bin
 $ ./spring-mq-demoapp-boot-encryptstringhelper
 ```
@@ -36,7 +36,7 @@ Configuration is possible using environment variables or JVM system
 properties.
 
 Example:
-```
+``` bash
 $ export JAVA_OPTS="-DencStringOutputType=hexadecimal" # JVM system properties must be prefixed with enc and must be in camelCase format
 $ export ENC_PASSWORD=secret # environment variables must be prefixed with ENC_ and must be in underscore separated format
 $ export ENC_SALT_GENERATOR_CLASS_NAME=org.jasypt.salt.RandomSaltGenerator
