@@ -31,6 +31,7 @@ val distCopySpec = copySpec {
     from("config") {
         into("config")
     }
+    from("README.md")
 }
 distributions {
     main {
