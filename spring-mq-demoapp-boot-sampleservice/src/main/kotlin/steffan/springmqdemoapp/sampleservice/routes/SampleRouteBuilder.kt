@@ -2,6 +2,7 @@ package steffan.springmqdemoapp.sampleservice.routes
 
 import org.apache.camel.Exchange
 import org.apache.camel.ExchangePattern
+import org.apache.camel.ExchangeProperties
 import org.apache.camel.builder.xml.Namespaces
 import org.apache.camel.component.infinispan.processor.idempotent.InfinispanIdempotentRepository
 import org.apache.camel.model.dataformat.JsonLibrary
@@ -58,6 +59,8 @@ class SampleRouteBuilder(
         configureCopyFilesRoute()
 
         configureFooLoggingRoute()
+        configureContentBasedRoutingRoute()
+        configureDynamicRoutingRoute()
 
         logger().info("Finished configuring routes")
     }
@@ -141,6 +144,7 @@ class SampleRouteBuilder(
 
     private fun configureFooLoggingRoute() {
         from("timer:foologging?period=30000&delay=10000")
+        .autoStartup(false)
         .routeId("timerFooLoggingRoute")
                 .process { e ->
                     val date = e.properties[Exchange.TIMER_FIRED_TIME] as Date
@@ -149,6 +153,7 @@ class SampleRouteBuilder(
         .to("vm:fooLogging?waitForTaskToComplete=Always&timeout=-1")
 
         from("jms:fooLogger")
+                .autoStartup(false)
                 .transacted()
                 .routeId("jmsFooLoggingRoute")
         .to("vm:fooLogging?waitForTaskToComplete=Always&timeout=-1")
@@ -156,6 +161,61 @@ class SampleRouteBuilder(
         from("vm:fooLogging")
         .routeId("fooLoggingRoute")
                 .process(fooLoggingProcessor)
+    }
+
+    private fun configureContentBasedRoutingRoute() {
+        from("timer:randomTrigger?period=5000&delay=5000")
+                .autoStartup(false)
+                .routeId("contentBasedRoutingRoute")
+                .setBody { _ -> Random().nextInt(1000) }
+                .choice()
+                    .`when` { e -> (e.`in`.body as Int).rem(2) == 0 }
+                        .process {
+                            logger().info("processing even number: ${it.`in`.body}")
+                        }
+                    .otherwise()
+                        .process {
+                            logger().info("processing odd number: ${it.`in`.body}")
+                        }
+
+    }
+
+    private fun configureDynamicRoutingRoute() {
+        from("timer:randomTrigger2?period=1000&delay=1000")
+                .autoStartup(false)
+                .routeId("dynamicRoutingRoute")
+                .setBody { _ -> Random().nextInt(1000) }
+                .dynamicRouter(method(NumberRouter, "slip"))
+    }
+
+    companion object NumberRouter {
+
+        fun slip(body: Int, @ExchangeProperties properties: MutableMap<String, Any>): String? =
+            when {
+                !properties.containsKey("isEven") -> {
+                    val isEven = body.rem(2) == 0
+                    properties["isEven"] = isEven
+                    when {
+                        isEven -> "log:evenLogger"
+                        else -> "log:oddLogger"
+                    }
+                }
+                else -> when {
+                        properties["isEven"] as Boolean -> when {
+                                !properties.containsKey("isDividibleByTen") -> {
+                                    val isDividableByTen = body.rem(10) == 0
+                                    properties["isDividibleByTen"] = isDividableByTen
+                                    when {
+                                        isDividableByTen -> "log:div10Logger"
+                                        else -> null
+                                    }
+                                }
+                                else -> null
+                            }
+                        else -> null
+                }
+            }
+
     }
 
 }

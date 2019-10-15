@@ -21,8 +21,8 @@ spring:
                     metadata:
                         user:
                             name: adminserver
-                            password: ENC(Dq75t/pmQya0RAApPJY2+AiC7Aiyb/Fymhf1PG23prvFoFTwaqYb+Tas9zZbsJMo)
-                password: ENC(icf7/ZNrHGU9yrpemnQXQ5OOHdJj4h2Jd6yIggXY0MpqQq0LHWy4c0czZR8bbLnA)
+                            password: ENC(1RWlxERLwlmy/enIt7iiJcVTO7tgTc+ofH7cubKU6hzKaoYiKWLVADOdSGOy8u0v)
+                password: ENC(gDRK8GD/6DoatARtRnlc5Qrtm/EapeJrvL8mkajLiT2Se+hdoAYEUqb/RYi0qYkb)
                 url: http://localhost:8080
                 username: boot-app
 logging:

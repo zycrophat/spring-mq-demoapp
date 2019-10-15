@@ -4,7 +4,7 @@ application:
         password: "{bcrypt}$2a$10$SA1h5Cn.2JuIUJlOB6Vxse46mSEtRrAJwYY9VvAbuELBcMbkpkI/W"
         roles: READ,WRITE
       - username: boot-app
-        password: "{bcrypt}$2a$10$Am9xOt6qAYcyFE.0rHaOz.d/dZtUHRf0v9C7oAHU.IdTkSdvuf6Tm"
+        password: "{bcrypt}$2a$10$spgV4DWCvRDqs1WZXcF1POQ5wsG4yNMGQv/vuT9hVDBdscNh5tP2W"
         roles: READ,WRITE
       - username: self
         password: "{bcrypt}$2a$10$r5sza.dD0taVuVjPdKvVxeRlRAo9QRUue7HBhwVJvS7gSa6DVAmrS"
