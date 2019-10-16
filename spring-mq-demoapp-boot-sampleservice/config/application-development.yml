@@ -25,6 +25,7 @@ spring:
                 password: ENC(gDRK8GD/6DoatARtRnlc5Qrtm/EapeJrvL8mkajLiT2Se+hdoAYEUqb/RYi0qYkb)
                 url: http://localhost:8080
                 username: boot-app
+                auto-deregistration: true
 logging:
     level:
         steffan: DEBUG

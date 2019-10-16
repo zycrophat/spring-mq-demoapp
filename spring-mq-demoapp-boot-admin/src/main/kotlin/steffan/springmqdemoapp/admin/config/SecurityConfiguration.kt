@@ -4,6 +4,7 @@ import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 import de.codecentric.boot.admin.server.config.AdminServerProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.User
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.defer
 import steffan.springmqdemoapp.util.logger as configLogger
@@ -41,9 +43,10 @@ open class SecurityConfiguration(val adminServer: AdminServerProperties,
                 .httpBasic().and()
                 .csrf()
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringAntMatchers(
-                        this.adminServer.contextPath.plus("/instances"),
-                        this.adminServer.contextPath.plus("/actuator/**")
+                .ignoringRequestMatchers(
+                        AntPathRequestMatcher(this.adminServer.contextPath.plus("/instances"), HttpMethod.POST.toString()),
+                        AntPathRequestMatcher(this.adminServer.contextPath.plus("/instances/*"), HttpMethod.DELETE.toString()),
+                        AntPathRequestMatcher( this.adminServer.contextPath.plus("/actuator/**"), HttpMethod.POST.toString())
                 )
     }
 
