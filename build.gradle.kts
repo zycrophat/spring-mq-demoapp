@@ -24,7 +24,7 @@ plugins {
     kotlin("jvm") version LibraryVersions.KOTLIN_VERSION apply false
     kotlin("kapt") version LibraryVersions.KOTLIN_VERSION apply false
 }
-
+//
 if (isProjectInGitWorkspace()) {
     gitVersion.rules {
         val minorVersionPattern = """v?(\d+)\.(\d+)\.(0)""".toPattern()
@@ -43,7 +43,7 @@ if (isProjectInGitWorkspace()) {
             val latestPatch = latestPatchVersionTag?.matches?.getAt(3)?.toInt() ?: 0
 
             val head = head
-            if (head?.id != latestPatchVersionTag?.commit?.id) {
+            if (head?.id != latestPatchVersionTag?.commit?.id || !isGitWorkspaceClean()) {
                 if (countCommitsSinceLatestMinorVersionTag != latestPatch) {
                     val timeStamp =
                             DateTimeFormatter
@@ -56,7 +56,6 @@ if (isProjectInGitWorkspace()) {
                     val branchLabel = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
                     val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
 
-                    version.setPrereleaseTag("SNAPSHOT")
                     val label = "${ if(isGitWorkspaceClean()) "" else "dirty-" }$branchLabel"
                     version.setBuildMetadata("$countCommitsSinceTag-$label-$timeStamp")
                 }
