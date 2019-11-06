@@ -25,47 +25,53 @@ plugins {
     kotlin("kapt") version LibraryVersions.KOTLIN_VERSION apply false
 }
 
-gitVersion.rules {
-    val minorVersionPattern = """v?(\d+)\.(\d+)\.(0)""".toPattern()
-    val patchVersionPattern = """v?(\d+)\.(\d+)\.(\d+)""".toPattern()
-    
-    before {
-        val tag = findLatestTag(minorVersionPattern)
-        version.major = tag?.matches?.getAt(1)?.toInt() ?: 0
-        version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
-    }
+if (isProjectInGitWorkspace()) {
+    gitVersion.rules {
+        val minorVersionPattern = """v?(\d+)\.(\d+)\.(0)""".toPattern()
+        val patchVersionPattern = """v?(\d+)\.(\d+)\.(\d+)""".toPattern()
 
-    always {
-        val latestMinorVersionTag = findLatestTag(minorVersionPattern)
-        val countCommitsSinceLatestMinorVersionTag = countCommitsSince(latestMinorVersionTag as HasObjectId, true)
-        val latestPatchVersionTag = findLatestTag(patchVersionPattern)
-        val latestPatch = latestPatchVersionTag?.matches?.getAt(3)?.toInt() ?: 0
+        before {
+            val tag = findLatestTag(minorVersionPattern)
+            version.major = tag?.matches?.getAt(1)?.toInt() ?: 0
+            version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
+        }
 
-        val head = head
-        if (head?.id != latestPatchVersionTag?.commit?.id) {
-            if (countCommitsSinceLatestMinorVersionTag != latestPatch) {
-                val timeStamp =
-                        DateTimeFormatter
-                        .ofPattern("YYYYMMddHHmmss")
-                        .format(LocalDateTime.now(ZoneOffset.UTC))
+        always {
+            val latestMinorVersionTag = findLatestTag(minorVersionPattern)
+            val countCommitsSinceLatestMinorVersionTag = countCommitsSince(latestMinorVersionTag as HasObjectId, true)
+            val latestPatchVersionTag = findLatestTag(patchVersionPattern)
+            val latestPatch = latestPatchVersionTag?.matches?.getAt(3)?.toInt() ?: 0
 
-                val tag = findLatestTag(patchVersionPattern)
-                version.patch = tag?.matches?.getAt(3)?.toInt() ?: 0
+            val head = head
+            if (head?.id != latestPatchVersionTag?.commit?.id) {
+                if (countCommitsSinceLatestMinorVersionTag != latestPatch) {
+                    val timeStamp =
+                            DateTimeFormatter
+                                    .ofPattern("YYYYMMddHHmmss")
+                                    .format(LocalDateTime.now(ZoneOffset.UTC))
 
-                val branchLabel = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
-                val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
+                    val tag = findLatestTag(patchVersionPattern)
+                    version.patch = tag?.matches?.getAt(3)?.toInt() ?: 0
 
-                version.setPrereleaseTag("SNAPSHOT")
-                val label = "${ if(isGitWorkspaceClean()) "" else "dirty-" }$branchLabel"
-                version.setBuildMetadata("$countCommitsSinceTag-$label-$timeStamp")
+                    val branchLabel = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
+                    val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
+
+                    version.setPrereleaseTag("SNAPSHOT")
+                    val label = "${ if(isGitWorkspaceClean()) "" else "dirty-" }$branchLabel"
+                    version.setBuildMetadata("$countCommitsSinceTag-$label-$timeStamp")
+                }
+            } else {
+                version.patch = latestPatch
             }
-        } else {
-            version.patch = latestPatch
         }
     }
+
+    version = gitVersion.determineVersion()
+} else {
+    version = "x.y.z"
+    logger.warn("No git repository found. Cannot determine git based version. Defaulting to version {}", version)
 }
 
-version = gitVersion.determineVersion()
 
 allprojects {
     apply(plugin = "idea")
@@ -129,3 +135,10 @@ fun isGitWorkspaceClean() = FileRepositoryBuilder()
                 }
             }
         }
+
+fun isProjectInGitWorkspace() =
+    FileRepositoryBuilder()
+            .setGitDir(rootProject.projectDir.resolve(".git"))
+            .readEnvironment()
+            .findGitDir()
+            .gitDir.exists()
