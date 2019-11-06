@@ -24,7 +24,7 @@ plugins {
     kotlin("jvm") version LibraryVersions.KOTLIN_VERSION apply false
     kotlin("kapt") version LibraryVersions.KOTLIN_VERSION apply false
 }
-//
+
 if (isProjectInGitWorkspace()) {
     gitVersion.rules {
         val minorVersionPattern = """v?(\d+)\.(\d+)\.(0)""".toPattern()
