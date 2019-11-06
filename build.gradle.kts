@@ -2,10 +2,13 @@ import com.github.jk1.license.filter.DependencyFilter
 import com.github.jk1.license.filter.LicenseBundleNormalizer
 import com.github.jk1.license.render.InventoryHtmlReportRenderer
 import com.github.jk1.license.render.ReportRenderer
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import org.unbrokendome.gradle.plugins.gitversion.model.HasObjectId
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+
 
 plugins {
     id("base")
@@ -49,10 +52,11 @@ gitVersion.rules {
                 val tag = findLatestTag(patchVersionPattern)
                 version.patch = tag?.matches?.getAt(3)?.toInt() ?: 0
 
-                val label = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
+                val branchLabel = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
                 val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
 
                 version.setPrereleaseTag("SNAPSHOT")
+                val label = "${ if(isGitWorkspaceClean()) "" else "dirty-" }$branchLabel"
                 version.setBuildMetadata("$countCommitsSinceTag-$label-$timeStamp")
             }
         } else {
@@ -113,3 +117,15 @@ allprojects {
     }
 
 }
+
+fun isGitWorkspaceClean() = FileRepositoryBuilder()
+        .setGitDir(rootProject.projectDir.resolve(".git"))
+        .readEnvironment()
+        .findGitDir()
+        .build().use { repository ->
+            Git(repository).use { git ->
+                git.status().call().let {
+                    it.modified.isEmpty() && it.changed.isEmpty()
+                }
+            }
+        }
