@@ -16,7 +16,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:${LibraryVersions.KOTLIN_VERSION}")
     implementation("com.google.guava:guava:28.1-jre")
     implementation(project(":spring-mq-demoapp-boot-common"))
-    runtime("ch.qos.logback:logback-classic:1.2.3+")
+    runtimeOnly("ch.qos.logback:logback-classic:1.2.3+")
 
     implementation("org.jasypt:jasypt:1.9.3")
 

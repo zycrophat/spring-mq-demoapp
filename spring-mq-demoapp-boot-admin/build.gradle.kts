@@ -48,7 +48,7 @@ configurations.all {
 val winsw = configurations.create("winsw")
 dependencies {
     implementation(project(":spring-mq-demoapp-boot-common"))
-    runtime("ch.qos.logback:logback-classic:1.2.3+")
+    runtimeOnly("ch.qos.logback:logback-classic:1.2.3+")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${LibraryVersions.SPRING_BOOT_VERSION}")
 

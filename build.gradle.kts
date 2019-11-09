@@ -16,7 +16,7 @@ plugins {
     id("eclipse")
     id("maven-publish")
     id("org.springframework.boot") version LibraryVersions.SPRING_BOOT_VERSION apply false
-    id("io.spring.dependency-management") version "1.0.7.RELEASE" apply false
+    id("io.spring.dependency-management") version "1.0.8.RELEASE" apply false
     id("org.jetbrains.kotlin.plugin.spring") version LibraryVersions.KOTLIN_VERSION apply false
     id("org.unbroken-dome.gitversion") version "0.10.0" apply true
     id("com.github.jk1.dependency-license-report") version "1.11" apply true
@@ -86,7 +86,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven (
-                url = "http://repo.jenkins-ci.org/releases"
+                url = "https://repo.jenkins-ci.org/releases"
         )
     }
 

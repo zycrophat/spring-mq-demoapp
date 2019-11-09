@@ -56,7 +56,7 @@ val jaxb = configurations.create("jaxb")
 val winsw = configurations.create("winsw")
 dependencies {
     implementation(project(":spring-mq-demoapp-boot-common"))
-    runtime("ch.qos.logback:logback-classic:1.2.3+")
+    runtimeOnly("ch.qos.logback:logback-classic:1.2.3+")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${LibraryVersions.SPRING_BOOT_VERSION}")
 
@@ -90,10 +90,10 @@ dependencies {
 
     implementation("org.apache.camel:camel-spring-boot:${LibraryVersions.CAMEL_VERSION}")
     implementation("org.apache.camel:camel-spring-boot-starter:${LibraryVersions.CAMEL_VERSION}")
-    runtime("org.apache.activemq:activemq-camel:5.15.9")
+    runtimeOnly("org.apache.activemq:activemq-camel:5.15.9")
     implementation("org.apache.camel:camel-jms:${LibraryVersions.CAMEL_VERSION}")
     implementation("org.apache.camel:camel-jaxb:${LibraryVersions.CAMEL_VERSION}")
-    runtime("com.fasterxml.woodstox:woodstox-core:5.3.0")
+    runtimeOnly("com.fasterxml.woodstox:woodstox-core:5.3.0")
     implementation("org.apache.camel:camel-sql:${LibraryVersions.CAMEL_VERSION}")
 
     implementation("org.apache.camel:camel-infinispan:${LibraryVersions.CAMEL_VERSION}")
@@ -102,16 +102,16 @@ dependencies {
     implementation("org.springframework:spring-mock:2.0.8")
     implementation("org.infinispan:infinispan-cachestore-jdbc:9.4.14.Final")
     implementation("com.h2database:h2:1.4.199")
-    runtime("org.springframework.boot:spring-boot-starter-jdbc:${LibraryVersions.SPRING_BOOT_VERSION}")
+    runtimeOnly("org.springframework.boot:spring-boot-starter-jdbc:${LibraryVersions.SPRING_BOOT_VERSION}")
 
     jaxb("org.glassfish.jaxb:jaxb-xjc:${LibraryVersions.JAXB_VERSION}")
     jaxb("org.glassfish.jaxb:jaxb-runtime:${LibraryVersions.JAXB_VERSION}")
     jaxb("javax.activation:activation:1.1")
     implementation("com.migesok:jaxb-java-time-adapters:1.1.3")
 
-    runtime("org.springframework.boot:spring-boot-starter-aop:${LibraryVersions.SPRING_BOOT_VERSION}")
-    runtime("org.springframework:spring-aop:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
-    runtime("org.springframework:spring-aspects:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
+    runtimeOnly("org.springframework.boot:spring-boot-starter-aop:${LibraryVersions.SPRING_BOOT_VERSION}")
+    runtimeOnly("org.springframework:spring-aop:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
+    runtimeOnly("org.springframework:spring-aspects:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
 
     implementation("commons-io:commons-io:2.6")
 
