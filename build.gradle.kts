@@ -56,8 +56,8 @@ if (isProjectInGitWorkspace()) {
                     val branchLabel = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
                     val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
 
-                    val label = "${ if(isGitWorkspaceClean()) "" else "dirty-" }$branchLabel"
-                    version.setBuildMetadata("$countCommitsSinceTag-$label-$timeStamp")
+                    val label = "${ if(isGitWorkspaceClean()) "" else "dirty." }$branchLabel"
+                    version.setBuildMetadata("$countCommitsSinceTag.$label.$timeStamp")
                 }
             } else {
                 version.patch = latestPatch
