@@ -29,18 +29,13 @@ if (isProjectInGitWorkspace()) {
     gitVersion.rules {
         val patchVersionPattern = """v?(\d+)\.(\d+)\.(\d+)""".toPattern()
 
-        before {
-            val tag = findLatestTag(patchVersionPattern)
-            version.major = tag?.matches?.getAt(1)?.toInt() ?: 0
-            version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
-        }
-
         always {
-            val latestPatchVersionTag = findLatestTag(patchVersionPattern)
-            val latestPatch = latestPatchVersionTag?.matches?.getAt(3)?.toInt() ?: 0
+            val latestTag = findLatestTag(patchVersionPattern)
+            version.major = latestTag?.matches?.getAt(1)?.toInt() ?: 0
+            version.minor = latestTag?.matches?.getAt(2)?.toInt() ?: 0
 
             val head = head
-            if (head?.id != latestPatchVersionTag?.commit?.id || !isGitWorkspaceClean()) {
+            if (head?.id != latestTag?.commit?.id || !isGitWorkspaceClean()) {
                 val timeStamp =
                         DateTimeFormatter
                                 .ofPattern("YYYYMMddHHmmss")
@@ -55,6 +50,7 @@ if (isProjectInGitWorkspace()) {
                 val label = "${ if(isGitWorkspaceClean()) "" else "dirty." }$branchLabel"
                 version.setBuildMetadata("$countCommitsSinceTag.$label.$timeStamp")
             } else {
+                val latestPatch = latestTag?.matches?.getAt(3)?.toInt() ?: 0
                 version.patch = latestPatch
             }
         }
