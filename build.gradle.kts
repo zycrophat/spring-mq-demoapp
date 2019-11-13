@@ -20,7 +20,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.spring") version LibraryVersions.KOTLIN_VERSION apply false
     id("org.unbroken-dome.gitversion") version "0.10.0" apply true
     id("com.github.jk1.dependency-license-report") version "1.11" apply true
-    id("org.owasp.dependencycheck") version "5.0.0-M3.1" apply false
+    id("org.owasp.dependencycheck") version "5.2.4" apply false
     kotlin("jvm") version LibraryVersions.KOTLIN_VERSION apply false
     kotlin("kapt") version LibraryVersions.KOTLIN_VERSION apply false
 }
