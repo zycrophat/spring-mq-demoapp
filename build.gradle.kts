@@ -27,39 +27,30 @@ plugins {
 
 if (isProjectInGitWorkspace()) {
     gitVersion.rules {
-        val minorVersionPattern = """v?(\d+)\.(\d+)\.(0)""".toPattern()
         val patchVersionPattern = """v?(\d+)\.(\d+)\.(\d+)""".toPattern()
 
-        before {
-            val tag = findLatestTag(minorVersionPattern)
-            version.major = tag?.matches?.getAt(1)?.toInt() ?: 0
-            version.minor = tag?.matches?.getAt(2)?.toInt() ?: 0
-        }
-
         always {
-            val latestMinorVersionTag = findLatestTag(minorVersionPattern)
-            val countCommitsSinceLatestMinorVersionTag = countCommitsSince(latestMinorVersionTag as HasObjectId, true)
-            val latestPatchVersionTag = findLatestTag(patchVersionPattern)
-            val latestPatch = latestPatchVersionTag?.matches?.getAt(3)?.toInt() ?: 0
+            val latestTag = findLatestTag(patchVersionPattern)
+            version.major = latestTag?.matches?.getAt(1)?.toInt() ?: 0
+            version.minor = latestTag?.matches?.getAt(2)?.toInt() ?: 0
 
             val head = head
-            if (head?.id != latestPatchVersionTag?.commit?.id || !isGitWorkspaceClean()) {
-                if (countCommitsSinceLatestMinorVersionTag != latestPatch) {
-                    val timeStamp =
-                            DateTimeFormatter
-                                    .ofPattern("YYYYMMddHHmmss")
-                                    .format(LocalDateTime.now(ZoneOffset.UTC))
+            if (head?.id != latestTag?.commit?.id || !isGitWorkspaceClean()) {
+                val timeStamp =
+                        DateTimeFormatter
+                                .ofPattern("YYYYMMddHHmmss")
+                                .format(LocalDateTime.now(ZoneOffset.UTC))
 
-                    val tag = findLatestTag(patchVersionPattern)
-                    version.patch = tag?.matches?.getAt(3)?.toInt() ?: 0
+                val tag = findLatestTag(patchVersionPattern)
+                version.patch = tag?.matches?.getAt(3)?.toInt() ?: 0
 
-                    val branchLabel = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
-                    val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
+                val branchLabel = if ((branchName ?: "HEAD") != "HEAD") branchName else head?.id(6)
+                val countCommitsSinceTag = countCommitsSince(tag as HasObjectId, true)
 
-                    val label = "${ if(isGitWorkspaceClean()) "" else "dirty." }$branchLabel"
-                    version.setBuildMetadata("$countCommitsSinceTag.$label.$timeStamp")
-                }
+                val label = "${ if(isGitWorkspaceClean()) "" else "dirty." }$branchLabel"
+                version.setBuildMetadata("$countCommitsSinceTag.$label.$timeStamp")
             } else {
+                val latestPatch = latestTag?.matches?.getAt(3)?.toInt() ?: 0
                 version.patch = latestPatch
             }
         }
