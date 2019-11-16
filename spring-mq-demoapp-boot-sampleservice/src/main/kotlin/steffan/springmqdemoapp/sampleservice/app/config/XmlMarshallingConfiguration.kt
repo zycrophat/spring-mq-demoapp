@@ -10,10 +10,10 @@ import javax.xml.bind.JAXBContext
 import javax.xml.bind.annotation.XmlRootElement
 
 @Configuration
-open class XmlMarshallingConfiguration {
+class XmlMarshallingConfiguration {
 
     @Bean
-    open fun jaxb2marshaller(): Jaxb2Marshaller {
+    fun jaxb2marshaller(): Jaxb2Marshaller {
         val marshaller = Jaxb2Marshaller()
         val xmlRootElementClasses = jaxbClassesToBeBound()
         marshaller.setClassesToBeBound(*(xmlRootElementClasses.toTypedArray()))
@@ -22,13 +22,13 @@ open class XmlMarshallingConfiguration {
     }
 
     @Bean
-    open fun jaxbClassesToBeBound(): Set<Class<*>> {
+    fun jaxbClassesToBeBound(): Set<Class<*>> {
         val reflections = Reflections("steffan.springmqdemoapp.api.bindings")
         return reflections.getTypesAnnotatedWith(XmlRootElement::class.java)
     }
 
     @Bean
-    open fun converter(): MarshallingMessageConverter {
+    fun converter(): MarshallingMessageConverter {
         val converter = MarshallingMessageConverter()
         converter.setMarshaller(jaxb2marshaller())
         converter.setUnmarshaller(jaxb2marshaller())
@@ -37,12 +37,12 @@ open class XmlMarshallingConfiguration {
     }
 
     @Bean
-    open fun jaxbDataFormat(jaxbContext: JAXBContext): JaxbDataFormat {
+    fun jaxbDataFormat(jaxbContext: JAXBContext): JaxbDataFormat {
         return JaxbDataFormat(jaxbContext)
     }
 
     @Bean
-    open fun jaxbContext(): JAXBContext {
+    fun jaxbContext(): JAXBContext {
         return JAXBContext.newInstance(*(jaxbClassesToBeBound().toTypedArray()))
     }
 }

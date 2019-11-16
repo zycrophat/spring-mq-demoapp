@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @SpringBootApplication
 @EnableAdminServer
-open class Main
+class Main
 
 fun main(args: Array<String>) {
     runApplication<Main>(*args)

@@ -13,7 +13,7 @@ import java.io.IOException
 import java.nio.file.Path
 
 @Component
-open class FileCopyProcessor(
+class FileCopyProcessor(
     @Value("\${steffan.springmqdemoapp.sampleservice.filecopy.inputdir}")
     private val inputDirectoryPath: String,
 

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 import javax.sql.DataSource
 
 @Component
-open class JdbcMessageIdRepositoryFactory(
+class JdbcMessageIdRepositoryFactory(
         private val messageIdDataSource: DataSource,
         @Value("\${steffan.springmqdemoapp.sampleservice.camel.message-id-max-length}")
         private val messageIdMaxLength: Int

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component
 
 @Component
 @ConfigurationProperties("application")
-open class ApplicationClients {
+class ApplicationClients {
     lateinit var clients: List<ApplicationClient>
 }

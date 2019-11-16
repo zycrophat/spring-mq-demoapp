@@ -39,7 +39,7 @@ import javax.transaction.TransactionManager
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @EnableJms
 @EnableCaching
-open class ApplicationJmsConfiguration {
+class ApplicationJmsConfiguration {
 
     @Value("\${spring.activemq.broker-url}")
     lateinit var brokerUrl: String
@@ -56,10 +56,8 @@ open class ApplicationJmsConfiguration {
     @Value("\${app.camel.datasource.jdbc-url}")
     lateinit var messageIdDataSourceUrl: String
 
-    private val FILE_INPUT_CACHE_NAME = "fileInputCache"
-
     @Bean
-    open fun connectionFactory(): ConnectionFactory {
+    fun connectionFactory(): ConnectionFactory {
         return AtomikosConnectionFactoryBean().apply {
             xaConnectionFactory = ActiveMQXAConnectionFactory().apply {
                 brokerURL = brokerUrl
@@ -73,7 +71,7 @@ open class ApplicationJmsConfiguration {
     }
 
     @Bean
-    open fun jmsConfiguration(txManager: PlatformTransactionManager): JmsConfiguration {
+    fun jmsConfiguration(txManager: PlatformTransactionManager): JmsConfiguration {
         return JmsConfiguration().apply {
             connectionFactory = connectionFactory()
             transactionManager = txManager
@@ -83,7 +81,7 @@ open class ApplicationJmsConfiguration {
     }
 
     @Bean
-    open fun jmsListenerContainerFactory(configurer: DefaultJmsListenerContainerFactoryConfigurer):
+    fun jmsListenerContainerFactory(configurer: DefaultJmsListenerContainerFactoryConfigurer):
             JmsListenerContainerFactory<*> {
         val factory = DefaultJmsListenerContainerFactory()
         configurer.configure(factory, connectionFactory())
@@ -93,7 +91,7 @@ open class ApplicationJmsConfiguration {
     }
 
     @Bean
-    open fun messageIdDataSource(): XADataSource {
+    fun messageIdDataSource(): XADataSource {
         val dataSource = DataSourceBuilder
                 .create()
                 .type(JdbcDataSource::class.java)
@@ -109,7 +107,7 @@ open class ApplicationJmsConfiguration {
     }
 
     @Bean
-    open fun infinispanGlobalConfigurerlobalConfigurer(): InfinispanGlobalConfigurer {
+    fun infinispanGlobalConfigurerlobalConfigurer(): InfinispanGlobalConfigurer {
         return InfinispanGlobalConfigurer {
             GlobalConfigurationBuilder().transport()
                     .defaultTransport()
@@ -122,7 +120,7 @@ open class ApplicationJmsConfiguration {
 
     @Bean
     @DependsOn("messageIdDataSource")
-    open fun infinispanCacheConfigurer(txManager: TransactionManager): InfinispanCacheConfigurer {
+    fun infinispanCacheConfigurer(txManager: TransactionManager): InfinispanCacheConfigurer {
         return InfinispanCacheConfigurer { manager ->
             val txCacheConfig = createTransactionalCacheConfig(txManager)
 

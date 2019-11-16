@@ -21,8 +21,8 @@ import steffan.springmqdemoapp.util.logger as configLogger
 
 @Configuration
 @EnableEncryptableProperties
-open class SecurityConfiguration(val adminServer: AdminServerProperties,
-                                 val applicationClients: ApplicationClients) : WebSecurityConfigurerAdapter() {
+class SecurityConfiguration(val adminServer: AdminServerProperties,
+                            val applicationClients: ApplicationClients) : WebSecurityConfigurerAdapter() {
 
     // required to circumvent name clash with WebSecurityConfigurerAdapter::logger()
     companion object LoggerCompanion : Logging
@@ -44,9 +44,9 @@ open class SecurityConfiguration(val adminServer: AdminServerProperties,
                 .csrf()
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .ignoringRequestMatchers(
-                        AntPathRequestMatcher(this.adminServer.contextPath.plus("/instances"), HttpMethod.POST.toString()),
-                        AntPathRequestMatcher(this.adminServer.contextPath.plus("/instances/*"), HttpMethod.DELETE.toString()),
-                        AntPathRequestMatcher( this.adminServer.contextPath.plus("/actuator/**"), HttpMethod.POST.toString())
+                        AntPathRequestMatcher(this.adminServer.contextPath.plus("/instances"), "${HttpMethod.POST}"),
+                        AntPathRequestMatcher(this.adminServer.contextPath.plus("/instances/*"), "${HttpMethod.DELETE}"),
+                        AntPathRequestMatcher( this.adminServer.contextPath.plus("/actuator/**"), "${HttpMethod.POST}")
                 )
     }
 
@@ -70,6 +70,6 @@ open class SecurityConfiguration(val adminServer: AdminServerProperties,
     }
 
     @Bean
-    open fun passwordEncoder(): PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
+    fun passwordEncoder(): PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
 }

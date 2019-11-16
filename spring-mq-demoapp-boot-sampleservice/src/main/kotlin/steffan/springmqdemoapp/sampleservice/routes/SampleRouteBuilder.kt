@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 
+@Suppress("RedundantLambdaArrow")
 @Component
 class SampleRouteBuilder(
         private val jaxbDataFormat: DataFormat,
@@ -190,6 +191,7 @@ class SampleRouteBuilder(
 
     companion object NumberRouter {
 
+        @Suppress("unused")
         fun slip(body: Int, @ExchangeProperties properties: MutableMap<String, Any>): String? =
             when {
                 !properties.containsKey("isEven") -> {
@@ -219,4 +221,3 @@ class SampleRouteBuilder(
     }
 
 }
-

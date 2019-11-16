@@ -8,10 +8,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableEncryptableProperties
-open class SecurityConfiguration : WebSecurityConfigurerAdapter() {
+class SecurityConfiguration : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
-    protected override fun configure(http: HttpSecurity) {
+    override fun configure(http: HttpSecurity) {
         http.authorizeRequests().anyRequest().permitAll()
                 .and().csrf().disable()
     }

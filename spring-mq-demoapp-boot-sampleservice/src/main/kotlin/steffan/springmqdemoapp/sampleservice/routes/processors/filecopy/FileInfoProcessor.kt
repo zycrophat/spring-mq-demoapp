@@ -10,7 +10,7 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 @Component
-open class FileInfoProcessor: Processor, Logging {
+class FileInfoProcessor: Processor, Logging {
 
     override fun process(exchange: Exchange) {
         val headers = exchange.`in`.headers

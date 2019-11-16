@@ -8,7 +8,7 @@ import steffan.springmqdemoapp.api.bindings.GreetingRequest
 import steffan.springmqdemoapp.sampleservice.services.interfaces.Greeter
 
 @Component
-open class GreetMdb(private val greeter: Greeter) {
+class GreetMdb(private val greeter: Greeter) {
 
     @Transactional
     @JmsListener(destination = "greetMdb", containerFactory = "jmsListenerContainerFactory")

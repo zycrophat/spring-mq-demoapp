@@ -8,7 +8,7 @@ import steffan.springmqdemoapp.util.logger
 import javax.transaction.Transactional
 
 @Component
-public class FooLoggingProcessor: Processor, Logging {
+class FooLoggingProcessor: Processor, Logging {
 
     @Transactional
     override fun process(exchange: Exchange) {

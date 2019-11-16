@@ -6,10 +6,8 @@ import org.springframework.context.annotation.Configuration
 
 @SpringBootApplication
 @Configuration
-open class Main
+class Main
 
 fun main(args: Array<String>) {
     runApplication<Main>(*args)
 }
-
-
