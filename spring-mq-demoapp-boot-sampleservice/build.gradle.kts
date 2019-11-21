@@ -113,8 +113,6 @@ dependencies {
     runtimeOnly("org.springframework:spring-aop:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
     runtimeOnly("org.springframework:spring-aspects:${LibraryVersions.SPRING_FRAMEWORK_VERSION}")
 
-    implementation("commons-io:commons-io:2.6")
-
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:${LibraryVersions.JASYPT_SPRING_BOOT_VERSION}")
 
     winsw("com.sun.winsw:winsw:${LibraryVersions.WINSW_VERSION}")

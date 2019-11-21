@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component
 import steffan.springmqdemoapp.sampleservice.services.interfaces.FileInfo
 import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.logger
+import java.nio.file.Paths
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
@@ -17,7 +18,7 @@ class FileInfoProcessor: Processor, Logging {
         val message = exchange.`in`
 
         val fileInfo = FileInfo(
-                path = headers["CamelFileAbsolutePath"] as String,
+                path = Paths.get(headers["CamelFileAbsolutePath"] as String),
                 size = headers[Exchange.FILE_LENGTH] as Long,
                 lastModified = DateTimeFormatter.ISO_INSTANT.format(
                         Instant.ofEpochMilli(headers[Exchange.FILE_LAST_MODIFIED] as Long)

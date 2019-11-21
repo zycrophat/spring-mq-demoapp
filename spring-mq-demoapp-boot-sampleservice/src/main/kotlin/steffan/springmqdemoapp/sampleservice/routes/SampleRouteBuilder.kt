@@ -106,7 +106,7 @@ class SampleRouteBuilder(
                 .transacted()
                 .unmarshal().json(JsonLibrary.Jackson, FileInfo::class.java)
                 .idempotentConsumer()
-                    .body(FileInfo::class.java) { b -> b.path.takeLast(messageIdMaxLength).reversed() }
+                    .body(FileInfo::class.java) { b -> b.path.toString().takeLast(messageIdMaxLength).reversed() }
                     .messageIdRepository(
                             jdbcMessageIdRepositoryFactory.createIdempotentRepository("fileCopyProcessor")
                     )
