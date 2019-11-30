@@ -58,8 +58,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator:${LibraryVersions.SPRING_BOOT_VERSION}")
     implementation("org.springframework.boot:spring-boot-starter-security:${LibraryVersions.SPRING_BOOT_VERSION}")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${LibraryVersions.KOTLIN_VERSION}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}")
+    implementation(kotlin("reflect:${LibraryVersions.KOTLIN_VERSION}"))
+    implementation(kotlin("stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}"))
 
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:${LibraryVersions.JASYPT_SPRING_BOOT_VERSION}")
 

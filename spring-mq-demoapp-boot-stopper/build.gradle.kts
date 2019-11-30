@@ -12,15 +12,15 @@ java.targetCompatibility = JavaVersion.VERSION_11
 
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}")
+    implementation(kotlin("stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}"))
     implementation(project(":spring-mq-demoapp-boot-common"))
     runtimeOnly("ch.qos.logback:logback-classic:1.2.3+")
 
     // Use the Kotlin test library.
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation(kotlin("test"))
 
     // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation(kotlin("test-junit"))
 }
 
 application {

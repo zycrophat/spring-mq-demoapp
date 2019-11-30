@@ -70,8 +70,8 @@ dependencies {
     implementation("de.codecentric:spring-boot-admin-starter-client:${LibraryVersions.SPRING_BOOT_ADMIN_VERSION}")
     implementation("org.springframework.boot:spring-boot-starter-security:${LibraryVersions.SPRING_BOOT_VERSION}")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${LibraryVersions.KOTLIN_VERSION}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}")
+    implementation(kotlin("reflect:${LibraryVersions.KOTLIN_VERSION}"))
+    implementation(kotlin("stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}"))
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:${LibraryVersions.SPRING_BOOT_VERSION}")
 

@@ -17,8 +17,8 @@ repositories {
 dependencies {
     api("org.slf4j:slf4j-api:1.7.26+")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${LibraryVersions.KOTLIN_VERSION}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}")
+    implementation(kotlin("reflect:${LibraryVersions.KOTLIN_VERSION}"))
+    implementation(kotlin("stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}"))
 }
 
 tasks.withType<KotlinCompile> {

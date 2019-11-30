@@ -12,8 +12,8 @@ java.targetCompatibility = JavaVersion.VERSION_11
 
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${LibraryVersions.KOTLIN_VERSION}")
+    implementation(kotlin("reflect:${LibraryVersions.KOTLIN_VERSION}"))
+    implementation(kotlin("stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}"))
     implementation("com.google.guava:guava:28.1-jre")
     implementation(project(":spring-mq-demoapp-boot-common"))
     runtimeOnly("ch.qos.logback:logback-classic:1.2.3+")
@@ -21,10 +21,10 @@ dependencies {
     implementation("org.jasypt:jasypt:1.9.3")
 
     // Use the Kotlin test library.
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation(kotlin("test"))
 
     // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation(kotlin("test-junit"))
 }
 
 val distCopySpec = copySpec {

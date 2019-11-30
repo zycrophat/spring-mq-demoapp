@@ -36,7 +36,7 @@ steffan:
             camel:
                 message-id-max-length: 255
             filecopy:
-                inputdir: "tmp/input"
+                inputdir: "/home/andreas/temp/input"
                 targetdir: "tmp/target"
 
 jasypt:
