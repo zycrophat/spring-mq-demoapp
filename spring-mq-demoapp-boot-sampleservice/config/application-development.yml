@@ -38,6 +38,8 @@ steffan:
             filecopy:
                 inputdir: "/home/andreas/temp/input"
                 targetdir: "tmp/target"
+            filewatch:
+                dir-to-watch: "/home/andreas/temp/input2"
 
 jasypt:
     encryptor:

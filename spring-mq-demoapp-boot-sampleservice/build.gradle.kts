@@ -72,6 +72,8 @@ dependencies {
 
     implementation(kotlin("reflect:${LibraryVersions.KOTLIN_VERSION}"))
     implementation(kotlin("stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
+    implementation("io.methvin:directory-watcher:0.9.6")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:${LibraryVersions.SPRING_BOOT_VERSION}")
 

@@ -13,9 +13,9 @@ import org.infinispan.manager.EmbeddedCacheManager
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import steffan.springmqdemoapp.api.bindings.GreetingRequest
-import steffan.springmqdemoapp.sampleservice.routes.processors.foologging.FooLoggingProcessor
 import steffan.springmqdemoapp.sampleservice.routes.processors.filecopy.FileCopyProcessor
 import steffan.springmqdemoapp.sampleservice.routes.processors.filecopy.FileInfoProcessor
+import steffan.springmqdemoapp.sampleservice.routes.processors.foologging.FooLoggingProcessor
 import steffan.springmqdemoapp.sampleservice.routes.processors.greet.TypeConvertingGreetingRequestProcessor
 import steffan.springmqdemoapp.sampleservice.routes.processors.greet.UnmarshalledGreetingRequestProcessor
 import steffan.springmqdemoapp.sampleservice.services.interfaces.FileInfo
@@ -63,11 +63,21 @@ class SampleRouteBuilder(
         configureContentBasedRoutingRoute()
         configureDynamicRoutingRoute()
 
+        configureDirectoryWatchRoute()
+
         logger().info("Finished configuring routes")
     }
 
     private fun configureContextScoped() {
         context.isStreamCaching = true
+    }
+
+    private fun configureDirectoryWatchRoute() {
+        from("direct:newFiles")
+                .routeId("directoryWatch")
+                .transacted()
+                .marshal().json(JsonLibrary.Jackson)
+                .to("jms:newFiles")
     }
 
     private fun configureGreetConvertRoute() {
@@ -117,6 +127,7 @@ class SampleRouteBuilder(
 
     private fun configureReadFilesRoute() {
         from("file://$inputDirectoryPath?recursive=true&noop=true")
+                .autoStartup(false)
                 .errorHandler(defaultErrorHandler().apply { this.redeliveryPolicy = redeliveryByCamelPolicy })
                 .onException(RuntimeException::class.java)
                     .redeliveryPolicy(redeliveryByCamelPolicy)
