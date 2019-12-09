@@ -11,7 +11,10 @@ winswconfig(project, executable, jmxPort) ::= <<
 	<startmode>Automatic</startmode>
 	<waithint>15 sec</waithint>
 	<sleeptime>1 sec</sleeptime>
-	<log mode="append"/>
+	<log mode="roll-by-size">
+      <sizeThreshold>10240</sizeThreshold>
+      <keepFiles>8</keepFiles>
+    </log>
 	<stopexecutable>%BASE%/stopper/bin/spring-mq-demoapp-boot-stopper.bat</stopexecutable>
 	<stopargument>$jmxPort$</stopargument>
 	<onfailure action="restart"/>
