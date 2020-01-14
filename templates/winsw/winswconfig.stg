@@ -1,7 +1,7 @@
 delimiters "$", "$"
 winswconfig(project, executable, jmxPort) ::= <<
 <configuration>
-	<id>$projectFullName(project)$</id>
+	<id>$project.name$</id>
 	<name>$projectFullName(project)$</name>
 	<description>Spring Boot Sample application $projectFullName(project)$</description>
 	<executable>$executable$</executable>

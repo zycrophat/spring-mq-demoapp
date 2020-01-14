@@ -119,7 +119,7 @@ val createWindowsServiceConfig by tasks.registering {
                 .writeText(installScript)
 
         val uninstallScript = createUninstallScript(project)
-        file("$windowsServiceDir/${project.name}-${project.version}-install.bat")
+        file("$windowsServiceDir/${project.name}-${project.version}-uninstall.bat")
                 .writeText(uninstallScript)
     }
 }
