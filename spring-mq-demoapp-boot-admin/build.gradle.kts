@@ -99,6 +99,11 @@ val createWindowsServiceConfig by tasks.registering {
     description = "Creates xml config for deploying the application as a Windows service via winsw"
     group = ProjectSettings.DISTRIBUTION_GROUP_NAME
 
+    dependsOn(tasks.named("bootStartScripts"))
+
+    val templatesDir = file("${project.rootDir}/templates")
+    inputs.dir(templatesDir)
+
     val windowsServiceDir = file("${project.buildDir}/windows-service")
     outputs.dir(windowsServiceDir)
 
