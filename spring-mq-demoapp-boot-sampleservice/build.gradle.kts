@@ -118,6 +118,8 @@ dependencies {
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:${LibraryVersions.JASYPT_SPRING_BOOT_VERSION}")
 
     winsw("com.sun.winsw:winsw:${LibraryVersions.WINSW_VERSION}")
+
+    runtime(project(":spring-mq-demoapp-boot-dpapipropertysupport"))
 }
 
 dependencyManagement {
@@ -272,6 +274,11 @@ distributions {
 
             from(stopperInstallDistTask) {
                 into("stopper")
+            }
+
+            from(files("${rootDir}/spring-mq-demoapp-boot-dpapipropertysupport/dpapipasswordhelper",
+                    "${rootDir}/spring-mq-demoapp-boot-dpapipropertysupport/README.md")) {
+                into("utils/dpapipasswordhelper")
             }
         }
     }

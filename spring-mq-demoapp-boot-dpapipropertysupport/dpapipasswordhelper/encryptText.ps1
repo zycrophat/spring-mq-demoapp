@@ -1,3 +1,4 @@
+<#
 MIT License
 
 Copyright (c) 2020 Andreas Steffan
@@ -19,3 +20,26 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+#>
+
+Param(
+    [string] $Entropy
+)
+function SecureStringToString([System.Security.SecureString] $secureString) {
+    $([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureString)))
+}
+[void] [Reflection.Assembly]::LoadWithPartialName("System.Security")
+$scope = [System.Security.Cryptography.DataProtectionScope]::CurrentUser
+$encoding = New-Object System.Text.UTF8Encoding $False
+$entropyBytes = $null
+if ($Entropy -ne "")
+{
+    $entropyBytes = [System.Convert]::FromBase64String($Entropy)
+}
+
+$plainText = Read-Host "String to encrypt" -AsSecureString
+$plainTextBytes = $encoding.GetBytes($(SecureStringToString($plainText)))
+
+$ciphertext = [System.Security.Cryptography.ProtectedData]::Protect(
+        $plainTextBytes, $entropyBytes, $scope)
+[System.Convert]::ToBase64String($ciphertext)
