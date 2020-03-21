@@ -20,24 +20,38 @@ In order to encrypt a property value the PowerShell scripts in the
 
 1. (Optional) Generate random "Entropy" that is used by the DPAPI key
    derivation mechanism in addition to user account data:
+
    ``` powershell
    PS .\dpapipasswordhelper\generateEntropy.ps1
    PgrJmrefm9GsBNzJJXH8lUe2sX5tnpJUYX9MjhAkagM=
    ```
    This will generate 256 bit of random entropy in Base64 encoded form.
 
+   The value must be stored in the Spring config file containing  
+   encrypted properties:
+
+    ``` yaml
+    steffan:
+      springmqdemoapp:
+        dpapipropertysupport:
+          entropy: "PgrJmrefm9GsBNzJJXH8lUe2sX5tnpJUYX9MjhAkagM="
+    ```
+
 2. Encrypt the desired text:
+
     ``` powershell
    PS .\dpapipasswordhelper\encryptText.ps1 -Entropy PgrJmrefm9GsBNzJJXH8lUe2sX5tnpJUYX9MjhAkagM=
    String to encrypt: ***********
    AQAAAN.....iNpZ137Ka2SQ=
    ```
+
    The output the cipher text in in Base64 encoded form.  
    If you skipped step 1, omit the `Entropy` argument.
 
 3. Add the encrypted value in `DPAPI(<ciphertext>)` form to a Spring
    config file.
    For example:
+
    ``` yaml
    my:
     secret: DPAPI(AQAAAN.....iNpZ137Ka2SQ=)
