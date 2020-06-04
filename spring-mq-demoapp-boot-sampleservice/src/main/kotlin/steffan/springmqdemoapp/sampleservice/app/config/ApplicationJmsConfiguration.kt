@@ -10,8 +10,9 @@ import org.infinispan.persistence.jdbc.configuration.JdbcStringBasedStoreConfigu
 import org.infinispan.spring.starter.embedded.InfinispanCacheConfigurer
 import org.infinispan.spring.starter.embedded.InfinispanGlobalConfigurer
 import org.infinispan.transaction.TransactionMode
-import org.infinispan.transaction.TransactionProtocol
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.boot.jta.atomikos.AtomikosConnectionFactoryBean
@@ -25,6 +26,7 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory
 import org.springframework.jms.config.JmsListenerContainerFactory
 import org.springframework.jms.listener.DefaultMessageListenerContainer
 import org.springframework.mock.jndi.SimpleNamingContextBuilder
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import steffan.springmqdemoapp.sampleservice.routes.processors.greet.TypeConvertingGreetingRequestProcessor
@@ -39,6 +41,8 @@ import javax.transaction.TransactionManager
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @EnableJms
 @EnableCaching
+@EnableScheduling
+@EnableAutoConfiguration(exclude=[DataSourceAutoConfiguration::class])
 class ApplicationJmsConfiguration {
 
     @Value("\${spring.activemq.broker-url}")
@@ -112,7 +116,7 @@ class ApplicationJmsConfiguration {
             GlobalConfigurationBuilder().transport()
                     .defaultTransport()
                     .defaultCacheName("defaultCache")
-                    .globalJmxStatistics()
+                    .jmx()
                     .enable()
                     .build()
         }
@@ -134,7 +138,6 @@ class ApplicationJmsConfiguration {
                 .transactionMode(TransactionMode.TRANSACTIONAL)
                 .transactionManagerLookup { txManager }
                 .autoCommit(false)
-                .transactionProtocol(TransactionProtocol.DEFAULT)
                 .recovery()
                 .enable()
 
@@ -147,6 +150,8 @@ class ApplicationJmsConfiguration {
                 .purgeOnStartup(false)
                 .shared(false)
                 .table()
+                .segmentColumnName("SEG_COLUMN")
+                .segmentColumnType("VARCHAR(255)")
                 .dropOnExit(false)
                 .createOnStart(true)
                 .tableNamePrefix("ISPN_STRING_TABLE")
@@ -160,6 +165,6 @@ class ApplicationJmsConfiguration {
                 .lifespan(1, TimeUnit.DAYS)
                 .enableReaper()
 
-        jmxStatistics().enable()
+        statistics().enable()
     }
 }

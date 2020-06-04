@@ -23,7 +23,7 @@ class XmlMarshallingConfiguration {
 
     @Bean
     fun jaxbClassesToBeBound(): Set<Class<*>> {
-        val reflections = Reflections("steffan.springmqdemoapp.api.bindings")
+        val reflections = Reflections(arrayOf("steffan.springmqdemoapp.api.bindings"))
         return reflections.getTypesAnnotatedWith(XmlRootElement::class.java)
     }
 

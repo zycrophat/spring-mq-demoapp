@@ -72,8 +72,8 @@ dependencies {
 
     implementation(kotlin("reflect:${LibraryVersions.KOTLIN_VERSION}"))
     implementation(kotlin("stdlib-jdk8:${LibraryVersions.KOTLIN_VERSION}"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
-    implementation("io.methvin:directory-watcher:0.9.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
+    implementation("io.methvin:directory-watcher:0.9.10")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:${LibraryVersions.SPRING_BOOT_VERSION}")
 
@@ -102,8 +102,8 @@ dependencies {
     implementation("org.infinispan:infinispan-spring-boot-starter:2.1.5.Final")
     implementation("org.springframework:spring-context")
     implementation("org.springframework:spring-mock:2.0.8")
-    implementation("org.infinispan:infinispan-cachestore-jdbc:9.4.14.Final")
-    implementation("com.h2database:h2:1.4.199")
+    implementation("org.infinispan:infinispan-cachestore-jdbc:10.1.8.Final")
+    implementation("com.h2database:h2:1.4.200")
     runtimeOnly("org.springframework.boot:spring-boot-starter-jdbc:${LibraryVersions.SPRING_BOOT_VERSION}")
 
     jaxb("org.glassfish.jaxb:jaxb-xjc:${LibraryVersions.JAXB_VERSION}")
@@ -119,7 +119,7 @@ dependencies {
 
     winsw("com.sun.winsw:winsw:${LibraryVersions.WINSW_VERSION}")
 
-    runtime(project(":spring-mq-demoapp-boot-dpapipropertysupport"))
+    runtimeOnly(project(":spring-mq-demoapp-boot-dpapipropertysupport"))
 }
 
 dependencyManagement {
