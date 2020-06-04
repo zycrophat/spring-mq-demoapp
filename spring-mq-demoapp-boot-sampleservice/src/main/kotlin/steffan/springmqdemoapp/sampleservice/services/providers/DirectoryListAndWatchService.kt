@@ -7,13 +7,18 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withLock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import steffan.springmqdemoapp.util.Logging
+import steffan.springmqdemoapp.util.logger
 import java.nio.file.Files
 import java.nio.file.Path
-import javax.annotation.PostConstruct
+import java.util.*
 
 @Component
 class DirectoryListAndWatchService(
@@ -25,31 +30,78 @@ class DirectoryListAndWatchService(
 
 ) : Logging {
 
-    @PostConstruct
-    fun start() {
-        GlobalScope.launch {
-            val channel = Channel<Path>()
-            launch {
-                val directoryWatcher = createDirectoryWatcher(channel)
 
-                GlobalScope.launch(Dispatchers.IO) {
-                    directoryWatcher.watch()
+    private val stateCheckMutex = Mutex()
+    private var isWatching = false
+    private var isListing = false
+    private var finishedListing = false
+    private var watchingStoppedBeforeListing = false
+    private val numberOfWorkers = 25
+    private var processorSemaphore = Semaphore(numberOfWorkers)
+    private val channel = Channel<Path>()
+    private var optionalDirectoryWatcher = Optional.empty<DirectoryWatcher>()
+
+    @Scheduled(initialDelay = 1000 * 5, fixedDelay = 1000 * 15)
+    private fun watchAndListFiles() {
+        if (!stateCheckMutex.isLocked) {
+            GlobalScope.launch {
+                stateCheckMutex.withLock {
+                    if (!isWatching) {
+                        launch {
+                            try {
+                                GlobalScope.launch(Dispatchers.IO) {
+                                    try {
+                                        val directoryWatcher = createDirectoryWatcher(channel)
+                                        optionalDirectoryWatcher = Optional.of(directoryWatcher)
+                                        logger().info("Watching directory ${directoryWatcher}")
+
+                                        isWatching = true
+                                        watchingStoppedBeforeListing = false
+                                        directoryWatcher.watch()
+                                    } catch (e: Exception) {
+                                        logger().error("Exception while creating directory watcher for $directoryToWatch", e)
+                                    } finally {
+                                        isWatching = false
+                                        if (!isListing && !finishedListing) {
+                                            watchingStoppedBeforeListing = true
+                                        }
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                logger().error("Exception while creating directory watcher for directory $directoryToWatch", e)
+                            }
+                        }
+                    }
+
+                    if ((!isListing && !finishedListing) || watchingStoppedBeforeListing) {
+                        isListing = true
+                        listFiles(channel)
+                    }
+
+                    if (processorSemaphore.availablePermits > 0) {
+                        processFiles(channel)
+                    }
+
                 }
             }
-
-            listFiles(channel)
-            processFiles(channel)
+        } else {
+            logger().info("Already watching or listing. Skipping.")
         }
+
     }
 
     private fun processFiles(channel: ReceiveChannel<Path>) {
-        val numberOfWorkers = 25
-        repeat(numberOfWorkers) {
+        repeat(processorSemaphore.availablePermits) {
             GlobalScope.launch {
-                while (isActive) {
-                    val path = channel.receive()
-                    sender.send(path)
-                    yield()
+                try {
+                    processorSemaphore.acquire()
+                    while (isActive) {
+                        val path = channel.receive()
+                        sender.send(path)
+                        yield()
+                    }
+                } finally {
+                    processorSemaphore.release()
                 }
             }
         }
@@ -58,12 +110,21 @@ class DirectoryListAndWatchService(
     private fun CoroutineScope.listFiles(channel: SendChannel<Path>) {
         launch(Dispatchers.IO) {
             val ctx = coroutineContext
-            Files.list(directoryToWatch).use { stream ->
-                stream.forEach {
-                    launch(ctx) {
-                        channel.send(it)
+            try {
+                isListing = true
+                Files.list(directoryToWatch).use { stream ->
+                    stream.forEach {
+                        launch(ctx) {
+                            channel.send(it)
+                        }
                     }
+                    finishedListing = true
                 }
+            } catch (e: Exception) {
+                logger().error("Exception while listing files in directory $directoryToWatch", e)
+            }
+            finally {
+                isListing = false
             }
         }
     }
@@ -88,6 +149,10 @@ class DirectoryListAndWatchService(
                     }
                 }
                 .build()
+    }
+
+    fun close() {
+        optionalDirectoryWatcher.ifPresent { it.close() }
     }
 
 }
