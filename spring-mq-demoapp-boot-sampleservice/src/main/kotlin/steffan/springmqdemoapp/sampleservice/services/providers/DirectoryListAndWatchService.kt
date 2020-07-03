@@ -2,7 +2,6 @@ package steffan.springmqdemoapp.sampleservice.services.providers
 
 import io.methvin.watcher.DirectoryChangeEvent
 import io.methvin.watcher.DirectoryWatcher
-import io.methvin.watcher.hashing.FileHasher
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -18,7 +17,6 @@ import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.logger
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.*
 
 @Component
 class DirectoryListAndWatchService(
@@ -30,16 +28,13 @@ class DirectoryListAndWatchService(
 
 ) : Logging {
 
-
     private val stateCheckMutex = Mutex()
     private var isWatching = false
-    private var isListing = false
-    private var finishedListing = false
-    private var watchingStoppedBeforeListing = false
+    private var listingStatus = ListingStatus.INITIAL
     private val numberOfWorkers = 25
     private var processorSemaphore = Semaphore(numberOfWorkers)
     private val channel = Channel<Path>()
-    private var optionalDirectoryWatcher = Optional.empty<DirectoryWatcher>()
+    private var optionalDirectoryWatcher: DirectoryWatcher? = null
 
     @Scheduled(initialDelay = 1000 * 5, fixedDelay = 1000 * 15)
     private fun watchAndListFiles() {
@@ -52,19 +47,15 @@ class DirectoryListAndWatchService(
                                 GlobalScope.launch(Dispatchers.IO) {
                                     try {
                                         val directoryWatcher = createDirectoryWatcher(channel)
-                                        optionalDirectoryWatcher = Optional.of(directoryWatcher)
-                                        logger().info("Watching directory ${directoryWatcher}")
+                                        optionalDirectoryWatcher = directoryWatcher
+                                        logger().info("Watching directory ${directoryToWatch}")
 
                                         isWatching = true
-                                        watchingStoppedBeforeListing = false
                                         directoryWatcher.watch()
                                     } catch (e: Exception) {
-                                        logger().error("Exception while creating directory watcher for $directoryToWatch", e)
+                                        logger().error("Exception while watching directory $directoryToWatch", e)
                                     } finally {
                                         isWatching = false
-                                        if (!isListing && !finishedListing) {
-                                            watchingStoppedBeforeListing = true
-                                        }
                                     }
                                 }
                             } catch (e: Exception) {
@@ -73,35 +64,38 @@ class DirectoryListAndWatchService(
                         }
                     }
 
-                    if ((!isListing && !finishedListing) || watchingStoppedBeforeListing) {
-                        isListing = true
+                    if (unwatchedFilesMayExist()) {
                         listFiles(channel)
                     }
-
-                    if (processorSemaphore.availablePermits > 0) {
-                        processFiles(channel)
-                    }
-
                 }
             }
         } else {
             logger().info("Already watching or listing. Skipping.")
         }
 
+        if (processorSemaphore.availablePermits > 0) {
+            processFiles(channel)
+        }
     }
+
+    private fun unwatchedFilesMayExist() =
+            !isWatching || listingStatus == ListingStatus.INITIAL
+                    || listingStatus == ListingStatus.LISTING_FAILED
 
     private fun processFiles(channel: ReceiveChannel<Path>) {
         repeat(processorSemaphore.availablePermits) {
             GlobalScope.launch {
+                val semaphoreAcquired = processorSemaphore.tryAcquire()
                 try {
-                    processorSemaphore.acquire()
-                    while (isActive) {
+                    while (isActive && semaphoreAcquired) {
                         val path = channel.receive()
                         sender.send(path)
                         yield()
                     }
                 } finally {
-                    processorSemaphore.release()
+                    if (semaphoreAcquired) {
+                        processorSemaphore.release()
+                    }
                 }
             }
         }
@@ -111,20 +105,18 @@ class DirectoryListAndWatchService(
         launch(Dispatchers.IO) {
             val ctx = coroutineContext
             try {
-                isListing = true
+                listingStatus = ListingStatus.IS_LISTING
                 Files.list(directoryToWatch).use { stream ->
                     stream.forEach {
                         launch(ctx) {
                             channel.send(it)
                         }
                     }
-                    finishedListing = true
+                    listingStatus = ListingStatus.FINISHED_LISTING
                 }
             } catch (e: Exception) {
                 logger().error("Exception while listing files in directory $directoryToWatch", e)
-            }
-            finally {
-                isListing = false
+                listingStatus = ListingStatus.LISTING_FAILED
             }
         }
     }
@@ -132,14 +124,16 @@ class DirectoryListAndWatchService(
     private fun createDirectoryWatcher(channel: SendChannel<Path>): DirectoryWatcher {
         return DirectoryWatcher.builder()
                 .path(directoryToWatch)
-                .fileHasher(FileHasher.LAST_MODIFIED_TIME)
+                .fileHashing(false)
                 .listener { event ->
                     runBlocking {
                         when (event.eventType()) {
                             DirectoryChangeEvent.EventType.CREATE -> {
                                 val path = event.path()
                                 when {
-                                    Files.isRegularFile(path) -> channel.send(path)
+                                    Files.isRegularFile(path) -> {
+                                        channel.send(path)
+                                    }
                                 }
                             }
                             else -> {
@@ -152,7 +146,15 @@ class DirectoryListAndWatchService(
     }
 
     fun close() {
-        optionalDirectoryWatcher.ifPresent { it.close() }
+        optionalDirectoryWatcher?.close()
+        channel.close()
+    }
+
+    private enum class ListingStatus {
+        INITIAL,
+        IS_LISTING,
+        FINISHED_LISTING,
+        LISTING_FAILED
     }
 
 }
