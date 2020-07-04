@@ -17,6 +17,7 @@ import steffan.springmqdemoapp.util.Logging
 import steffan.springmqdemoapp.util.logger
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.Executors
 
 @Component
 class DirectoryListAndWatchService(
@@ -36,14 +37,14 @@ class DirectoryListAndWatchService(
     private val channel = Channel<Path>()
     private var optionalDirectoryWatcher: DirectoryWatcher? = null
 
+    private val coroutineDispatcher = Executors.newFixedThreadPool(64).asCoroutineDispatcher()
+
     @Scheduled(initialDelay = 1000 * 5, fixedDelay = 1000 * 15)
     private fun watchAndListFiles() {
         if (!stateCheckMutex.isLocked) {
-            GlobalScope.launch {
+            GlobalScope.launch(coroutineDispatcher) {
                 stateCheckMutex.withLock {
                     if (!isWatching) {
-                        launch {
-                            try {
                                 GlobalScope.launch(Dispatchers.IO) {
                                     try {
                                         val directoryWatcher = createDirectoryWatcher(channel)
@@ -58,10 +59,6 @@ class DirectoryListAndWatchService(
                                         isWatching = false
                                     }
                                 }
-                            } catch (e: Exception) {
-                                logger().error("Exception while creating directory watcher for directory $directoryToWatch", e)
-                            }
-                        }
                     }
 
                     if (unwatchedFilesMayExist()) {
@@ -84,7 +81,7 @@ class DirectoryListAndWatchService(
 
     private fun processFiles(channel: ReceiveChannel<Path>) {
         repeat(processorSemaphore.availablePermits) {
-            GlobalScope.launch {
+            GlobalScope.launch(coroutineDispatcher) {
                 val semaphoreAcquired = processorSemaphore.tryAcquire()
                 try {
                     while (isActive && semaphoreAcquired) {
@@ -126,7 +123,7 @@ class DirectoryListAndWatchService(
                 .path(directoryToWatch)
                 .fileHashing(false)
                 .listener { event ->
-                    runBlocking {
+                    GlobalScope.launch(coroutineDispatcher) {
                         when (event.eventType()) {
                             DirectoryChangeEvent.EventType.CREATE -> {
                                 val path = event.path()

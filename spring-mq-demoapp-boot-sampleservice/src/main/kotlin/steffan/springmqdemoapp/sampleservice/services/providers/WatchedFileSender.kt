@@ -15,7 +15,7 @@ class WatchedFileSender(@Autowired private val producerTemplate: ProducerTemplat
     @Transactional
     fun send(path: Path) {
         val fileInfo = FileInfo(path)
-        logger().debug("Sending file path to route: ${fileInfo}")
+        logger().debug("Sending file path to route: $fileInfo")
         producerTemplate.sendBody(
                 "direct:newFiles",
                 fileInfo
