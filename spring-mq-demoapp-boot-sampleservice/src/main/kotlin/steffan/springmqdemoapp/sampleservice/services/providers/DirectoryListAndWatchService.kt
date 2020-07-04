@@ -30,14 +30,14 @@ class DirectoryListAndWatchService(
 ) : Logging {
 
     private val stateCheckMutex = Mutex()
-    private var isWatching = false
-    private var listingStatus = ListingStatus.INITIAL
-    private val numberOfWorkers = 25
-    private var processorSemaphore = Semaphore(numberOfWorkers)
+    private val numberOfWorkers = 48
+    private val processorSemaphore = Semaphore(numberOfWorkers)
     private val channel = Channel<Path>()
     private var optionalDirectoryWatcher: DirectoryWatcher? = null
+    private val coroutineDispatcher = Executors.newCachedThreadPool().asCoroutineDispatcher()
 
-    private val coroutineDispatcher = Executors.newFixedThreadPool(64).asCoroutineDispatcher()
+    private var isWatching = false
+    private var listingStatus = ListingStatus.INITIAL
 
     @Scheduled(initialDelay = 1000 * 5, fixedDelay = 1000 * 15)
     private fun watchAndListFiles() {
@@ -107,6 +107,7 @@ class DirectoryListAndWatchService(
                     stream.forEach {
                         launch(ctx) {
                             channel.send(it)
+                            logger().info("sent $it")
                         }
                     }
                     listingStatus = ListingStatus.FINISHED_LISTING
@@ -145,6 +146,7 @@ class DirectoryListAndWatchService(
     fun close() {
         optionalDirectoryWatcher?.close()
         channel.close()
+        coroutineDispatcher.close()
     }
 
     private enum class ListingStatus {
